@@ -34,6 +34,18 @@ public class ContentCheckMojo extends AbstractMojo {
      */
     File contentListing;
 
+    /**
+     * If true, stops the build when there is any file missing.
+     * @parameter default-value="false"
+     */
+    boolean failOnMissing;
+
+    /**
+     * If true, stops the build when there is any unexpected file.
+     * @parameter default-value="true"
+     */
+    boolean failOnUnexpected;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
             getLog().info("Reading listing: " + contentListing);
@@ -46,7 +58,13 @@ public class ContentCheckMojo extends AbstractMojo {
             // report unexpected entries
             final Set<String> unexpectedEntries = new HashSet<String>(archiveEntries);
             unexpectedEntries.removeAll(expectedEntries);
-            // todo: fail as neccessary
+            // fail as neccessary
+            if (failOnMissing && ! missingEntries.isEmpty()) {
+                throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + archive);
+            }
+            if (failOnUnexpected && ! unexpectedEntries.isEmpty()) {
+                throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + archive);
+            }
         } catch (IOException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
