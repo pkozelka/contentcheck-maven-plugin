@@ -46,6 +46,18 @@ public class ContentCheckMojo extends AbstractMojo {
      */
     boolean failOnUnexpected;
 
+    /**
+     * Message used to report missing entry - uses the {@link java.util.Formatter} syntax to embed entry name.
+     * @parameter default-value="File is expected but not found: %s"
+     */
+    String msgMissing;
+
+    /**
+     * Message used to report unexpected entry - uses the {@link java.util.Formatter} syntax to embed entry name.
+     * @parameter default-value="File is expected but not found: %s"
+     */
+    String msgUnexpected;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
             getLog().info("Reading listing: " + contentListing);
@@ -55,10 +67,16 @@ public class ContentCheckMojo extends AbstractMojo {
             // report missing entries
             final Set<String> missingEntries = new HashSet<String>(expectedEntries);
             missingEntries.removeAll(archiveEntries);
+            for (String entry : missingEntries) {
+                getLog().error(String.format(msgMissing, entry));
+            }
             // report unexpected entries
             final Set<String> unexpectedEntries = new HashSet<String>(archiveEntries);
             unexpectedEntries.removeAll(expectedEntries);
-            // fail as neccessary
+            for (String entry : unexpectedEntries) {
+                getLog().error(String.format(msgUnexpected, entry));
+            }
+            // fail as neccessary, after reporting all detected problems
             if (failOnMissing && ! missingEntries.isEmpty()) {
                 throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + archive);
             }
