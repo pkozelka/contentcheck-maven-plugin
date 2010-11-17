@@ -9,7 +9,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
- * Yhis MOJO checks an archive content according to an authoritative source. This authoritative source
+ * This MOJO checks an archive content according to an authoritative source. This authoritative source
  * defines set of allowed files in the archive.
  *
  * @author Petr Kozelka (pkozelka@gmail.com)
@@ -52,7 +52,7 @@ public class ContentCheckMojo extends AbstractMojo {
     
     /**
      * The vendor identification. This value is used for JAR's manifest checking
-     * when {@link #noCheckVendorArchives} is turned on.
+     * when {@link #ignoreVendorArchives} is turned on.
      * @parameter
      * 
      * @see #manifestVendorEntry
