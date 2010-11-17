@@ -1,0 +1,5 @@
+####################
+# Test             # 
+####################
+WEB-INF/lib/b.jar
+WEB-INF/testfile.txt

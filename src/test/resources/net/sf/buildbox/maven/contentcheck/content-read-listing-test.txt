@@ -1,0 +1,9 @@
+####################
+# Test             # 
+####################
+WEB-INF/lib/a.jar
+WEB-INF/lib/b.jar
+WEB-INF/lib/c.jar
+WEB-INF/lib/d.jar
+WEB-INF/lib/e.jar
+

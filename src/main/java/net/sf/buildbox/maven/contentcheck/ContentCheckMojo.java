@@ -1,140 +1,137 @@
 package net.sf.buildbox.maven.contentcheck;
 
-import java.io.*;
-import java.util.HashSet;
+import java.io.File;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
- * Check an archive's content against given content listing.
+ * Yhis MOJO checks an archive content according to an authoritative source. This authoritative source
+ * defines set of allowed files in the archive.
  *
  * @author Petr Kozelka (pkozelka@gmail.com)
+ * 
  * @goal check
  * @phase verify
  */
 public class ContentCheckMojo extends AbstractMojo {
 
+    public final static String DEFAULT_VENDOR_MANIFEST_ENTRY_NAME = "Implementation-Vendor-Id";
+    public final static String DEFAULT_CHECK_FILES_PATTERN = "WEB-INF/lib/*.jar";
+    
     /**
-     * The archive file to check
+     * The archive file to be checked
      *
-     * @parameter default-value="${project.artifactFile}"
+     * @parameter default-value="${project.build.directory}/${project.build.finalName}.${project.packaging}"
      */
-    File archive;
+    protected File archive;
 
     /**
-     * Pointer to the file with list of expected files.
+     * The file with list of expected files.
      * Each line in that file represents one pathname entry.
      * Empty lines and comments (starting with '#') are ignored.
      *
      * @parameter default-value="src/main/content.txt"
      */
-    File contentListing;
+    protected File contentListing;
 
     /**
      * If true, stops the build when there is any file missing.
      * @parameter default-value="false"
      */
-    boolean failOnMissing;
+    protected boolean failOnMissing;
 
     /**
      * If true, stops the build when there is any unexpected file.
      * @parameter default-value="true"
      */
-    boolean failOnUnexpected;
+    protected boolean failOnUnexpected;
+    
+    /**
+     * The vendor identification. This value is used for JAR's manifest checking
+     * when {@link #noCheckVendorArchives} is turned on.
+     * @parameter
+     * 
+     * @see #manifestVendorEntry
+     */
+    protected String vendorId;
+
+    /**
+     * The name of manifest entry that holds vendor's identification
+     * 
+     * @parameter default-value="Implementation-Vendor-Id"
+     */
+    protected String manifestVendorEntry;
+
+    /**
+     * If true, doesn't check vendor JAR files. A vendor JAR file is determined by 
+     * a value ({@link #vendorId}) in its manifest key ({@link #manifestVendorEntry}).
+     *   
+     * @parameter default-value="false"
+     */
+    protected boolean ignoreVendorArchives;
+
+    /**
+     * An Ant like file pattern. If this roperty is present only files matching 
+     * that pattern are checked. Otherwise all JAR files are checked.
+     * 
+     * @parameter default-value="WEB-INF/lib/*.jar"
+     */
+    protected String checkFilesPattern;
 
     /**
      * Message used to report missing entry - uses the {@link java.util.Formatter} syntax to embed entry name.
      * @parameter default-value="File is expected but not found: %s"
      */
-    String msgMissing;
+    protected String msgMissing;
 
     /**
      * Message used to report unexpected entry - uses the {@link java.util.Formatter} syntax to embed entry name.
-     * @parameter default-value="File is expected but not found: %s"
+     * @parameter default-value="Found unexpected file: %s"
      */
-    String msgUnexpected;
+    protected String msgUnexpected;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        try {
-            getLog().info("Reading listing: " + contentListing);
-            final Set<String> expectedEntries = readListing(contentListing);
-            getLog().info("Reading archive: " + archive);
-            final Set<String> archiveEntries = readArchive(archive);
-            // report missing entries
-            final Set<String> missingEntries = new HashSet<String>(expectedEntries);
-            missingEntries.removeAll(archiveEntries);
-            for (String entry : missingEntries) {
-                getLog().error(String.format(msgMissing, entry));
-            }
-            // report unexpected entries
-            final Set<String> unexpectedEntries = new HashSet<String>(archiveEntries);
-            unexpectedEntries.removeAll(expectedEntries);
-            for (String entry : unexpectedEntries) {
-                getLog().error(String.format(msgUnexpected, entry));
-            }
-            // fail as neccessary, after reporting all detected problems
-            if (failOnMissing && ! missingEntries.isEmpty()) {
-                throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + archive);
-            }
-            if (failOnUnexpected && ! unexpectedEntries.isEmpty()) {
-                throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + archive);
-            }
-        } catch (IOException e) {
-            throw new MojoExecutionException(e.getMessage(), e);
+        validateMojoArguments();
+
+        ContentChecker contentChecker = new ContentChecker(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+        CheckerOutput output = contentChecker.check(contentListing, archive);
+
+        // report missing entries
+        Set<String> missingEntries = output.diffMissingEntries();
+        for (String entry : missingEntries) {
+            getLog().error(String.format(msgMissing, entry));
         }
-    }
-
-    private Set<String> readArchive(File archive) throws IOException {
-        final ZipInputStream zis = new ZipInputStream(new FileInputStream(archive));
-        final Set<String> archiveEntries = new HashSet<String>();
-        try {
-            ZipEntry entry = zis.getNextEntry();
-            while (entry != null) {
-                final String entryName = entry.getName();
-                if (entry.isDirectory()) continue;
-                if (! shouldBeChecked(entryName)) continue;
-                if (! archiveEntries.add(entryName)) {
-                    getLog().error("ERROR: Archive file " + archive + " contains duplicate entry: " + entryName);
-                    //TODO: should we just fail here ? or on config option ?
-                }
-            }
-        } finally {
-            zis.close();
+        // report unexpected entries
+        Set<String> unexpectedEntries = output.diffUnexpectedEntries();
+        for (String entry : unexpectedEntries) {
+            getLog().error(String.format(msgUnexpected, entry));
         }
-        return archiveEntries;
+        // fail as neccessary, after reporting all detected problems
+        if (failOnMissing && ! missingEntries.isEmpty()) {
+            throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + archive);
+        }
+        if (failOnUnexpected && ! unexpectedEntries.isEmpty()) {
+            throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + archive);
+        }
+        
+        getLog().info("Archive file " + archive.getPath() + " has valid content regarding to " + contentListing.getPath());
     }
 
-    private static boolean shouldBeChecked(String name) {
-        return name.toLowerCase().endsWith(".jar");
-    }
-
-    private static Set<String> readListing(File listingFile) throws IOException {
-        final Set<String> expectedPaths = new HashSet<String>();
-        final InputStream is = new FileInputStream(listingFile);
-        try {
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            String line = reader.readLine();
-            while (line != null) {
-                if (line.trim().length() == 0) {
-                    // we ignore empty lines
-                } else if (line.startsWith("#")) {
-                    // we ignore comments
-                } else if (expectedPaths.add(line)) {
-                    line = reader.readLine();
-                } else {
-                    // this helps to keep the listing free of duplicates
-                    throw new IllegalStateException(listingFile + " : duplicate entry encountered: " + line);
-                }
-            }
-        } finally {
-            is.close();
+    private void validateMojoArguments() throws MojoExecutionException{
+        if(!archive.exists()) {
+            throw new MojoExecutionException("Archive file " + archive.getPath() + " you are trying to check doesn't exist.");
         }
 
-        return expectedPaths;
+        if(!contentListing.exists()) {
+            throw new MojoExecutionException("Content listing file  " + contentListing.getPath() + " doesn't exist.");
+        }
+        
+        if(ignoreVendorArchives && (vendorId == null || vendorId.isEmpty())) {
+            throw new MojoExecutionException("ignoreVendorArchives is turned on, but 'vendorId' configuration property is missing. Please specify vendorId property in the plugin configuration.");
+        }
     }
-
 }
