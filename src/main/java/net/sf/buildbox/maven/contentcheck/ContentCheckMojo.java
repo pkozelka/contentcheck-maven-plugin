@@ -130,7 +130,7 @@ public class ContentCheckMojo extends AbstractMojo {
             throw new MojoExecutionException("Content listing file  " + contentListing.getPath() + " doesn't exist.");
         }
         
-        if(ignoreVendorArchives && (vendorId == null || vendorId.isEmpty())) {
+        if(ignoreVendorArchives && (vendorId == null || vendorId.length() == 0)) {
             throw new MojoExecutionException("ignoreVendorArchives is turned on, but 'vendorId' configuration property is missing. Please specify vendorId property in the plugin configuration.");
         }
     }

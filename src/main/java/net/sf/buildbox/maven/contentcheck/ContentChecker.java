@@ -72,7 +72,7 @@ public class ContentChecker {
             String line;
             while ((line = reader.readLine())!= null) {
                 line = line.trim();
-                boolean ignoreLine = line.isEmpty() || line.startsWith("#");// we ignore empty and comments lines
+                boolean ignoreLine = line.length() == 0 || line.startsWith("#");// we ignore empty and comments lines
                 if (!ignoreLine) { 
                     if(expectedPaths.contains(line)) {
                         log.warn("The listing file " + listingFile + "  defines duplicate entry " + line);
