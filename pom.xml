@@ -6,7 +6,7 @@
   <artifactId>contentcheck-maven-plugin</artifactId>
   <version>1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
-  <name>${artifactId}:${version}</name>
+  <name>${project.artifactId}:${project.version}</name>
   <parent>
     <groupId>net.sf.buildbox.maven</groupId>
     <artifactId>buildbox-pom</artifactId>
@@ -41,9 +41,9 @@
       <version>2.2.1</version>
     </dependency>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>1.4</version>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>2.0.5</version>
     </dependency>
     <dependency>
       <!-- We need this dependency only for org.springframework.util.AntPathMatcher  -->

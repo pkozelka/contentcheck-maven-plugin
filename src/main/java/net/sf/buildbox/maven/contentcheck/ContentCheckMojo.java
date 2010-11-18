@@ -1,6 +1,7 @@
 package net.sf.buildbox.maven.contentcheck;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 
@@ -95,30 +96,34 @@ public class ContentCheckMojo extends AbstractMojo {
     protected String msgUnexpected;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        validateMojoArguments();
+        try {
+            validateMojoArguments();
 
-        ContentChecker contentChecker = new ContentChecker(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-        CheckerOutput output = contentChecker.check(contentListing, archive);
+            final ContentChecker contentChecker = new ContentChecker(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final CheckerOutput output = contentChecker.check(contentListing, archive);
 
-        // report missing entries
-        Set<String> missingEntries = output.diffMissingEntries();
-        for (String entry : missingEntries) {
-            getLog().error(String.format(msgMissing, entry));
+            // report missing entries
+            Set<String> missingEntries = output.diffMissingEntries();
+            for (String entry : missingEntries) {
+                getLog().error(String.format(msgMissing, entry));
+            }
+            // report unexpected entries
+            Set<String> unexpectedEntries = output.diffUnexpectedEntries();
+            for (String entry : unexpectedEntries) {
+                getLog().error(String.format(msgUnexpected, entry));
+            }
+            // fail as neccessary, after reporting all detected problems
+            if (failOnMissing && ! missingEntries.isEmpty()) {
+                throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + archive);
+            }
+            if (failOnUnexpected && ! unexpectedEntries.isEmpty()) {
+                throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + archive);
+            }
+
+            getLog().info("Archive file " + archive.getPath() + " has valid content regarding to " + contentListing.getPath());
+        } catch (IOException e) {
+            throw new MojoFailureException(e.getMessage(), e);
         }
-        // report unexpected entries
-        Set<String> unexpectedEntries = output.diffUnexpectedEntries();
-        for (String entry : unexpectedEntries) {
-            getLog().error(String.format(msgUnexpected, entry));
-        }
-        // fail as neccessary, after reporting all detected problems
-        if (failOnMissing && ! missingEntries.isEmpty()) {
-            throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + archive);
-        }
-        if (failOnUnexpected && ! unexpectedEntries.isEmpty()) {
-            throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + archive);
-        }
-        
-        getLog().info("Archive file " + archive.getPath() + " has valid content regarding to " + contentListing.getPath());
     }
 
     private void validateMojoArguments() throws MojoExecutionException{

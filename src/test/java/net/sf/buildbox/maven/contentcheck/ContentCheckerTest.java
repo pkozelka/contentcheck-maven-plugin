@@ -5,14 +5,11 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
-import java.util.List;
 import java.util.Set;
 
-
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.junit.Test;
-import org.mockito.InOrder;
+import org.codehaus.plexus.util.FileUtils;
 
 public class ContentCheckerTest {
 

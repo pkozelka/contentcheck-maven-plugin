@@ -1,13 +1,6 @@
 package net.sf.buildbox.maven.contentcheck;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -17,10 +10,8 @@ import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  * The checker itself thread safe implementation.
@@ -53,22 +44,20 @@ public class ContentChecker {
      * 
      * @return the result of archive check
      * 
-     * @throws MojoExecutionException if something very bad happen
+     * @throws IOException if something very bad happen
      */
-    public CheckerOutput check(final File listingFile, final File archiveFile) throws MojoExecutionException{
+    public CheckerOutput check(final File listingFile, final File archiveFile) throws IOException{
         Set<String> allowedEntries = readListing(listingFile);
         Set<String> archiveContent = readArchive(archiveFile);
         return new CheckerOutput(allowedEntries, archiveContent);
     }
 
-    protected Set<String> readListing(final File listingFile) throws MojoExecutionException {
+    protected Set<String> readListing(final File listingFile) throws IOException {
         log.info("Reading listing: " + listingFile);
         final Set<String> expectedPaths = new LinkedHashSet<String>();
-        InputStream is = null;
-        BufferedReader reader = null;
+        InputStream is =  new FileInputStream(listingFile);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         try {
-            is =  new FileInputStream(listingFile);
-            reader = new BufferedReader(new InputStreamReader(is));
             String line;
             while ((line = reader.readLine())!= null) {
                 line = line.trim();
@@ -80,27 +69,21 @@ public class ContentChecker {
                     expectedPaths.add(line);
                 } 
             }
-        } catch (FileNotFoundException e) {
-            throw new MojoExecutionException("Cannot read file " + listingFile +  " because doesn't exist.");
-        } catch (IOException e) {
-            throw new MojoExecutionException("Cannot read content of file " + listingFile + ". This file defines allowed content for checked archive.", e);
         } finally {
-            IOUtils.closeQuietly(is);
-            IOUtils.closeQuietly(reader);
+            is.close();
+            reader.close();
         }
 
         return expectedPaths;
     }
 
-    protected Set<String> readArchive(final File archive) throws MojoExecutionException {
+    protected Set<String> readArchive(final File archive) throws IOException {
         log.info("Reading archive: " + archive);
         final Set<String> archiveEntries = new  LinkedHashSet<String>();
-        ZipFile zipFile = null;
-        ZipInputStream zis = null;
+        final ZipFile zipFile = new ZipFile(archive);
+        final ZipInputStream zis = new ZipInputStream(new FileInputStream(archive));
         try {
-            zipFile = new ZipFile(archive);
-            zis = new ZipInputStream(new FileInputStream(archive));
-            ZipEntry entry = null;
+            ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
                 final String entryName = entry.getName();
                 if (! shouldBeChecked(entryName)) continue;
@@ -118,13 +101,13 @@ public class ContentChecker {
                     //XXX Dagi: i don't think that the archive may have duplicit entries
                 }
             }
-        } catch(IOException e) {
-            throw new MojoExecutionException("Cannot read archive " + archive.getPath(), e);
         } finally {
-            IOUtils.closeQuietly(zis);
+            zis.close();
             try { 
                 zipFile.close();
-            } catch(IOException e) {}
+            } catch(IOException e) {
+                // ignored
+            }
         }
         return archiveEntries;
     }
@@ -137,17 +120,19 @@ public class ContentChecker {
         return pathMatcher.match(JAR_FILE_EXTENSION, path);
     }
     
-    private boolean isVendorArchive(final String jarPath, final InputStream archiveInputStream) throws MojoExecutionException {
+    private boolean isVendorArchive(final String jarPath, final InputStream archiveInputStream) throws IOException {
         File tempFile = null;
         try {
             tempFile = copyStreamToTemporaryFile(jarPath, archiveInputStream);
         } finally {	
-            IOUtils.closeQuietly(archiveInputStream);
+            archiveInputStream.close();
         }
         return checkArchiveManifest(jarPath, tempFile);
     }
 
     /**
+     * @param jarPath -
+     * @param tempJAR -
      * @return true when vendorId matches with jar's manifest otherwise false
      */
     private boolean checkArchiveManifest(final String jarPath, File tempJAR) {
@@ -167,19 +152,15 @@ public class ContentChecker {
         return false;
     }
 
-    private File copyStreamToTemporaryFile(final String jarPath, final InputStream archiveInputStream) throws MojoExecutionException {
-        File tempFile = null;
-        FileOutputStream fos = null;
+    private File copyStreamToTemporaryFile(final String jarPath, final InputStream archiveInputStream) throws IOException {
+        final File tempFile = File.createTempFile(UUID.randomUUID().toString(), "jar");
+        final FileOutputStream fos = new  FileOutputStream(tempFile);
         try {
-            log.debug("Checking " + jarPath + " to be a vendor archive");
-            tempFile = File.createTempFile(UUID.randomUUID().toString(), "jar");
-            fos = new  FileOutputStream(tempFile);
-            IOUtils.copy(archiveInputStream, fos);
-        } catch(IOException e) {
-            throw new MojoExecutionException("Cannot create temporary copy of JAR "  + jarPath, e);
+            log.debug("Checking " + jarPath + " to be a vendor archive, using tempfile " + tempFile);
+            IOUtil.copy(archiveInputStream, fos);
+            return tempFile;
         } finally {
-            IOUtils.closeQuietly(fos);
+            fos.close();
         }
-        return tempFile;
     }
 }
