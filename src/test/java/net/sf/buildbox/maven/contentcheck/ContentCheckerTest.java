@@ -92,13 +92,4 @@ public class ContentCheckerTest {
         checker.readListing(listingFile);
         verify(log, times(1)).warn(anyString());
     }
-
-    @Test
-    public void testDirectoryScannerMatchSanity() {
-        // matches:
-        assertTrue(DirectoryScanner.match("**/*.jar","a/b/c/something.jar"));
-        assertTrue(DirectoryScanner.match("**/B/**/*.jar","a/b/B/c/something.jar"));
-        // does not match:
-        assertFalse(DirectoryScanner.match("**/*.jar","a/b/c/something.war"));
-    }
 }
