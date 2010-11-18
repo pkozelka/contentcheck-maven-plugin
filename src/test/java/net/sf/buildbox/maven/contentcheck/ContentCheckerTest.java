@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.maven.plugin.logging.Log;
 import org.junit.Test;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.DirectoryScanner;
 
 public class ContentCheckerTest {
 
@@ -90,5 +91,14 @@ public class ContentCheckerTest {
         File listingFile = FileUtils.toFile(getClass().getResource("content-duplicit-entries-test.txt"));
         checker.readListing(listingFile);
         verify(log, times(1)).warn(anyString());
+    }
+
+    @Test
+    public void testDirectoryScannerMatchSanity() {
+        // matches:
+        assertTrue(DirectoryScanner.match("**/*.jar","a/b/c/something.jar"));
+        assertTrue(DirectoryScanner.match("**/B/**/*.jar","a/b/B/c/something.jar"));
+        // does not match:
+        assertFalse(DirectoryScanner.match("**/*.jar","a/b/c/something.war"));
     }
 }

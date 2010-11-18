@@ -12,6 +12,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.DirectoryScanner;
 
 /**
  * The checker itself thread safe implementation.
@@ -19,7 +20,6 @@ import org.codehaus.plexus.util.IOUtil;
  */
 public class ContentChecker {
     private static final String JAR_FILE_EXTENSION = "**/*.jar";
-    private final PathMatcher pathMatcher = new PathMatcher();
 
     private final Log log;
     private final boolean ignoreVendorArchives;
@@ -113,11 +113,11 @@ public class ContentChecker {
     }
 
     private boolean shouldBeChecked(String path) {
-        return pathMatcher.match(checkFilesPattern, path);
+        return DirectoryScanner.match(checkFilesPattern, path);
     }
     
     private boolean isJarFileExtension(String path) {
-        return pathMatcher.match(JAR_FILE_EXTENSION, path);
+        return DirectoryScanner.match(JAR_FILE_EXTENSION, path);
     }
     
     private boolean isVendorArchive(final String jarPath, final InputStream archiveInputStream) throws IOException {
