@@ -20,6 +20,7 @@ import org.apache.maven.plugin.MojoFailureException;
  */
 public class ContentCheckMojo extends AbstractMojo {
 
+    // [pk] not sure if these constants make any sense here ...
     public final static String DEFAULT_VENDOR_MANIFEST_ENTRY_NAME = "Implementation-Vendor-Id";
     public final static String DEFAULT_CHECK_FILES_PATTERN = "WEB-INF/lib/*.jar";
     
@@ -101,11 +102,6 @@ public class ContentCheckMojo extends AbstractMojo {
 
             final ContentChecker contentChecker = new ContentChecker(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             final CheckerOutput output = contentChecker.check(contentListing, archive);
-            getLog().info(output.getArchiveEntries().size() + " checked entries found in archive: " + archive);
-            getLog().info(output.getAllowedEntries().size() + " expected entries found in content listing file: " + contentListing);
-
-            getLog().info("archiveEntries: " + output.getArchiveEntries());
-            getLog().info("allowedEntries: " + output.getAllowedEntries());
 
             // report missing entries
             final Set<String> missingEntries = output.diffMissingEntries();
