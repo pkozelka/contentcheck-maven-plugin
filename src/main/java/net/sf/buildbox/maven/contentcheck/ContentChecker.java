@@ -126,7 +126,7 @@ public class ContentChecker {
         try {
             tempFile = copyStreamToTemporaryFile(jarPath, archiveInputStream);
         } finally {	
-//DO NOT!!!            archiveInputStream.close();
+            archiveInputStream.close();
         }
         return checkArchiveManifest(jarPath, tempFile);
     }
