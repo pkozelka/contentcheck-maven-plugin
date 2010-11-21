@@ -55,8 +55,7 @@ public class ContentChecker {
     protected Set<String> readListing(final File listingFile) throws IOException {
         log.info("Reading listing: " + listingFile);
         final Set<String> expectedPaths = new LinkedHashSet<String>();
-        InputStream is =  new FileInputStream(listingFile);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        final BufferedReader reader = new BufferedReader(new FileReader(listingFile));
         try {
             String line;
             while ((line = reader.readLine())!= null) {
@@ -70,7 +69,6 @@ public class ContentChecker {
                 } 
             }
         } finally {
-            is.close();
             reader.close();
         }
 
@@ -82,9 +80,11 @@ public class ContentChecker {
         final Set<String> archiveEntries = new  LinkedHashSet<String>();
         final ZipFile zipFile = new ZipFile(archive);
         final ZipInputStream zis = new ZipInputStream(new FileInputStream(archive));
+        int totalCnt = 0;
         try {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
+                totalCnt ++;
                 final String entryName = entry.getName();
                 if (! shouldBeChecked(entryName)) continue;
                 
@@ -109,6 +109,7 @@ public class ContentChecker {
                 // ignored
             }
         }
+        log.info(String.format("%s: archive contains %d checked and %d total files", archive, archiveEntries.size(), totalCnt));
         return archiveEntries;
     }
 
