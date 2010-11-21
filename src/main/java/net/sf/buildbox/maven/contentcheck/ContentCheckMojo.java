@@ -120,7 +120,7 @@ public class ContentCheckMojo extends AbstractMojo {
                 throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + archive);
             }
 
-            getLog().info("Archive file " + archive.getPath() + " has valid content regarding to " + contentListing.getPath());
+            getLog().info("Archive file " + archive.getPath() + " has valid content according to " + contentListing.getPath());
         } catch (IOException e) {
             throw new MojoFailureException(e.getMessage(), e);
         }
