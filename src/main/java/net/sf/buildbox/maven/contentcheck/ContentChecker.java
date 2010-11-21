@@ -82,9 +82,11 @@ public class ContentChecker {
         final Set<String> archiveEntries = new  LinkedHashSet<String>();
         final ZipFile zipFile = new ZipFile(archive);
         final ZipInputStream zis = new ZipInputStream(new FileInputStream(archive));
+        int totalCnt = 0;
         try {
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
+                totalCnt ++;
                 final String entryName = entry.getName();
                 if (! shouldBeChecked(entryName)) continue;
                 
@@ -109,6 +111,7 @@ public class ContentChecker {
                 // ignored
             }
         }
+        log.info(String.format("%s: archive contains %d checked and %d total files", archive, archiveEntries.size(), totalCnt));
         return archiveEntries;
     }
 
@@ -125,7 +128,7 @@ public class ContentChecker {
         try {
             tempFile = copyStreamToTemporaryFile(jarPath, archiveInputStream);
         } finally {	
-            archiveInputStream.close();
+//DO NOT!!!            archiveInputStream.close();
         }
         return checkArchiveManifest(jarPath, tempFile);
     }

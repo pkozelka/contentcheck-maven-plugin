@@ -79,7 +79,7 @@ public class ContentCheckMojo extends AbstractMojo {
      * An Ant like file pattern. If this roperty is present only files matching 
      * that pattern are checked. Otherwise all JAR files are checked.
      * 
-     * @parameter default-value="WEB-INF/lib/*.jar"
+     * @parameter default-value="**\/*.jar"
      */
     protected String checkFilesPattern;
 
@@ -101,16 +101,28 @@ public class ContentCheckMojo extends AbstractMojo {
 
             final ContentChecker contentChecker = new ContentChecker(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             final CheckerOutput output = contentChecker.check(contentListing, archive);
+            getLog().info(output.getArchiveEntries().size() + " checked entries found in archive: " + archive);
+            getLog().info(output.getAllowedEntries().size() + " expected entries found in content listing file: " + contentListing);
+
+            getLog().info("archiveEntries: " + output.getArchiveEntries());
+            getLog().info("allowedEntries: " + output.getAllowedEntries());
 
             // report missing entries
-            Set<String> missingEntries = output.diffMissingEntries();
+            final Set<String> missingEntries = output.diffMissingEntries();
             for (String entry : missingEntries) {
                 getLog().error(String.format(msgMissing, entry));
             }
             // report unexpected entries
-            Set<String> unexpectedEntries = output.diffUnexpectedEntries();
+            final Set<String> unexpectedEntries = output.diffUnexpectedEntries();
             for (String entry : unexpectedEntries) {
                 getLog().error(String.format(msgUnexpected, entry));
+            }
+            // error summary
+            if (missingEntries.size() > 0) {
+                getLog().error("Missing: " + missingEntries.size() + " entries");
+            }
+            if (unexpectedEntries.size() > 0) {
+                getLog().error("Unexpected: " + unexpectedEntries.size() + " entries");
             }
             // fail as neccessary, after reporting all detected problems
             if (failOnMissing && ! missingEntries.isEmpty()) {
