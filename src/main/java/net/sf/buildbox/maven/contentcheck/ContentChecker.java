@@ -57,8 +57,10 @@ public class ContentChecker {
         final Set<String> expectedPaths = new LinkedHashSet<String>();
         final BufferedReader reader = new BufferedReader(new FileReader(listingFile));
         try {
+            int totalCnt = 0;
             String line;
             while ((line = reader.readLine())!= null) {
+                totalCnt ++;
                 line = line.trim();
                 boolean ignoreLine = line.length() == 0 || line.startsWith("#");// we ignore empty and comments lines
                 if (!ignoreLine) { 
@@ -68,11 +70,12 @@ public class ContentChecker {
                     expectedPaths.add(line);
                 } 
             }
+            log.info(String.format("%s: listing contains %d paths and %d total lines", listingFile, expectedPaths.size(), totalCnt));
+            return expectedPaths;
         } finally {
             reader.close();
         }
 
-        return expectedPaths;
     }
 
     protected Set<String> readArchive(final File archive) throws IOException {
@@ -101,6 +104,8 @@ public class ContentChecker {
                     //XXX Dagi: i don't think that the archive may have duplicit entries
                 }
             }
+            log.info(String.format("%s: archive contains %d checked and %d total files", archive, archiveEntries.size(), totalCnt));
+            return archiveEntries;
         } finally {
             zis.close();
             try { 
@@ -109,8 +114,6 @@ public class ContentChecker {
                 // ignored
             }
         }
-        log.info(String.format("%s: archive contains %d checked and %d total files", archive, archiveEntries.size(), totalCnt));
-        return archiveEntries;
     }
 
     private boolean shouldBeChecked(String path) {
