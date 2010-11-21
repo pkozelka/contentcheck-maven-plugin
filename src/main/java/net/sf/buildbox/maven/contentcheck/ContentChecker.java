@@ -55,8 +55,7 @@ public class ContentChecker {
     protected Set<String> readListing(final File listingFile) throws IOException {
         log.info("Reading listing: " + listingFile);
         final Set<String> expectedPaths = new LinkedHashSet<String>();
-        InputStream is =  new FileInputStream(listingFile);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        final BufferedReader reader = new BufferedReader(new FileReader(listingFile));
         try {
             String line;
             while ((line = reader.readLine())!= null) {
@@ -70,7 +69,6 @@ public class ContentChecker {
                 } 
             }
         } finally {
-            is.close();
             reader.close();
         }
 
