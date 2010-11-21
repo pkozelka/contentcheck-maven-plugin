@@ -79,7 +79,7 @@ public class ContentCheckMojo extends AbstractMojo {
      * An Ant like file pattern. If this roperty is present only files matching 
      * that pattern are checked. Otherwise all JAR files are checked.
      * 
-     * @parameter default-value="WEB-INF/lib/*.jar"
+     * @parameter default-value="**\/*.jar"
      */
     protected String checkFilesPattern;
 
