@@ -80,11 +80,11 @@ public class ContentChecker {
 
     protected Set<String> readArchive(final File archive) throws IOException {
         log.info("Reading archive: " + archive);
-        final Set<String> archiveEntries = new  LinkedHashSet<String>();
         final ZipFile zipFile = new ZipFile(archive);
         final ZipInputStream zis = new ZipInputStream(new FileInputStream(archive));
         int totalCnt = 0;
         try {
+            final Set<String> archiveEntries = new LinkedHashSet<String>();
             ZipEntry entry;
             while ((entry = zis.getNextEntry()) != null) {
                 totalCnt ++;
@@ -92,7 +92,7 @@ public class ContentChecker {
                 if (! shouldBeChecked(entryName)) continue;
                 
                 if(isJarFileExtension(entryName) && ignoreVendorArchives) {
-                    InputStream archiveInputStream = zipFile.getInputStream(entry);
+                    final InputStream archiveInputStream = zipFile.getInputStream(entry);
                     if(isVendorArchive(entryName, archiveInputStream)) {
                         continue;
                     }
@@ -108,11 +108,7 @@ public class ContentChecker {
             return archiveEntries;
         } finally {
             zis.close();
-            try { 
-                zipFile.close();
-            } catch(IOException e) {
-                // ignored
-            }
+            zipFile.close();
         }
     }
 
@@ -125,13 +121,12 @@ public class ContentChecker {
     }
     
     private boolean isVendorArchive(final String jarPath, final InputStream archiveInputStream) throws IOException {
-        File tempFile = null;
         try {
-            tempFile = copyStreamToTemporaryFile(jarPath, archiveInputStream);
-        } finally {	
+            final File tempFile = copyStreamToTemporaryFile(jarPath, archiveInputStream);
+            return checkArchiveManifest(jarPath, tempFile);
+        } finally {
             archiveInputStream.close();
         }
-        return checkArchiveManifest(jarPath, tempFile);
     }
 
     /**
