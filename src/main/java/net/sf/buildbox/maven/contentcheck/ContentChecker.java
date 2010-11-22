@@ -92,8 +92,7 @@ public class ContentChecker {
                 if (! shouldBeChecked(entryName)) continue;
                 
                 if(isJarFileExtension(entryName) && ignoreVendorArchives) {
-                    final InputStream archiveInputStream = zipFile.getInputStream(entry);
-                    if(isVendorArchive(entryName, archiveInputStream)) {
+                    if(isVendorArchive(entry, zipFile)) {
                         continue;
                     }
                 }
@@ -120,10 +119,11 @@ public class ContentChecker {
         return DirectoryScanner.match(JAR_FILE_EXTENSION, "/" + path);
     }
     
-    private boolean isVendorArchive(final String jarPath, final InputStream archiveInputStream) throws IOException {
+    private boolean isVendorArchive(final ZipEntry entry, final ZipFile zipFile) throws IOException {
+        final InputStream archiveInputStream = zipFile.getInputStream(entry);
         try {
-            final File tempFile = copyStreamToTemporaryFile(jarPath, archiveInputStream);
-            return checkArchiveManifest(jarPath, tempFile);
+            final File tempFile = copyStreamToTemporaryFile(entry.getName(), archiveInputStream);
+            return checkArchiveManifest(entry.getName(), tempFile);
         } finally {
             archiveInputStream.close();
         }
