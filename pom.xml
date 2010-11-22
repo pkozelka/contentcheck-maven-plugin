@@ -46,4 +46,21 @@
       <version>2.0.5</version>
     </dependency>
   </dependencies>
+  <developers>
+    <developer>
+      <name>Petr Kozelka</name>
+      <email>pkozelka@gmail.com</email>
+      <id>pkozelka</id>
+      <url>http://kozelka.net</url>
+    </developer>
+    <developer>
+      <name>Roman Pichlík</name>
+      <id>dagi</id>
+      <url>http://www.dagblog.cz</url>
+    </developer>
+  </developers>
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/buildbox/contentcheck-maven-plugin/issues</url>
+  </issueManagement>
 </project>
