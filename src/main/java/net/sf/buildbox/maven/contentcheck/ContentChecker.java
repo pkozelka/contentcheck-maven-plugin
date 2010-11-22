@@ -70,7 +70,7 @@ public class ContentChecker {
                     expectedPaths.add(line);
                 } 
             }
-            log.info(String.format("%s: listing contains %d paths and %d total lines", listingFile, expectedPaths.size(), totalCnt));
+            log.info(String.format("Content listing file '%s' contains %d paths on %d total lines", listingFile, expectedPaths.size(), totalCnt));
             return expectedPaths;
         } finally {
             reader.close();
@@ -98,12 +98,12 @@ public class ContentChecker {
                 }
                 
                 if (! archiveEntries.add(entryName)) {
-                    log.error("ERROR: Archive file " + archive + " contains duplicate entry: " + entryName);
+                    log.error("ATTENTION! Archive file " + archive + " contains duplicate entry: " + entryName);
                     //TODO: should we just fail here ? or on config option ?
                     //XXX Dagi: i don't think that the archive may have duplicit entries
                 }
             }
-            log.info(String.format("%s: archive contains %d checked and %d total files", archive, archiveEntries.size(), totalCnt));
+            log.info(String.format("Archive '%s' contains %d checked and %d total files", archive, archiveEntries.size(), totalCnt));
             return archiveEntries;
         } finally {
             zis.close();
