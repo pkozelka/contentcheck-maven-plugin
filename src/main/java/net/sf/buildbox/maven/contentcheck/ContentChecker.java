@@ -112,11 +112,11 @@ public class ContentChecker {
     }
 
     private boolean shouldBeChecked(String path) {
-        return DirectoryScanner.match(checkFilesPattern, "/" + path);
+        return DirectoryScanner.match("/" + checkFilesPattern, "/" + path);
     }
     
     private boolean isJarFileExtension(String path) {
-        return DirectoryScanner.match(JAR_FILE_EXTENSION, "/" + path);
+        return DirectoryScanner.match("/" + JAR_FILE_EXTENSION, "/" + path);
     }
     
     private boolean isVendorArchive(final ZipEntry entry, final ZipFile zipFile) throws IOException {
