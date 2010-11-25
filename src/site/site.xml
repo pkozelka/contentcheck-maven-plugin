@@ -21,7 +21,6 @@
       <item name="Releasator" href="http://buildbox.sourceforge.net/releasator"/>
     </breadcrumbs>
 
-
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
       <item name="Goals" href="plugin-info.html"/>
@@ -33,7 +32,6 @@
       <item name="Google groups" href="http://groups.google.com/group/buildbox"/>
     </menu>
 
-    <menu ref="reports"/>
     <menu ref="reports"/>
   </body>
 </project>
