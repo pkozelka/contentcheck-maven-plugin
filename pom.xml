@@ -12,11 +12,12 @@
     <artifactId>buildbox-pom</artifactId>
     <version>1-SNAPSHOT</version>
   </parent>
+  <url>http://buildbox.sf.net/${project.artifactId}</url>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.8.1</version>
+      <version>4.8.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -46,8 +47,8 @@
       <version>2.0.5</version>
     </dependency>
   </dependencies>
-<!--
--->
+  <!--
+  -->
   <build>
     <plugins>
       <plugin>
@@ -135,4 +136,9 @@
     <system>github</system>
     <url>https://github.com/buildbox/contentcheck-maven-plugin/issues</url>
   </issueManagement>
+  <scm>
+    <connection>scm:git:git://github.com:buildbox/contentcheck-maven-plugin.git</connection>
+    <developerConnection>scm:git:git://github.com:buildbox/contentcheck-maven-plugin.git</developerConnection>
+    <url>http://github.com/buildbox/contentcheck-maven-plugin</url>
+  </scm>
 </project>
