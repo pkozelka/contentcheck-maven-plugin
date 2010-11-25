@@ -10,7 +10,7 @@
   <parent>
     <groupId>net.sf.buildbox.maven</groupId>
     <artifactId>buildbox-pom</artifactId>
-    <version>1.0.2-2</version>
+    <version>1-SNAPSHOT</version>
   </parent>
   <dependencies>
     <dependency>
@@ -47,6 +47,7 @@
     </dependency>
   </dependencies>
 <!--
+-->
   <build>
     <plugins>
       <plugin>
@@ -64,7 +65,6 @@
       </plugin>
     </plugins>
   </build>
--->
   <reporting>
     <plugins>
       <plugin>

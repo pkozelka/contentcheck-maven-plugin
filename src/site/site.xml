@@ -24,10 +24,11 @@
     <menu name="Overview">
       <item name="Introduction" href="index.html"/>
       <item name="Goals" href="plugin-info.html"/>
+      <item name="Readme @ github" href="https://github.com/buildbox/contentcheck-maven-plugin#readme"/>
     </menu>
 
     <menu name="Buildbox">
-      <item name="About" href="http://buildbox.sourceforge.net/index.html"/>
+      <item name="GitHub" href="http://github.com/buildbox"/>
       <item name="SourceForge" href="http://sourceforge.net/projects/buildbox"/>
       <item name="Google groups" href="http://groups.google.com/group/buildbox"/>
     </menu>
