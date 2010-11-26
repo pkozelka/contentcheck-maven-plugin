@@ -6,7 +6,7 @@
   <artifactId>contentcheck-maven-plugin</artifactId>
   <version>1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
-  <name>${project.artifactId}:${project.version}</name>
+  <name>Maven Content Check Plugin</name>
   <parent>
     <groupId>net.sf.buildbox.maven</groupId>
     <artifactId>buildbox-pom</artifactId>
