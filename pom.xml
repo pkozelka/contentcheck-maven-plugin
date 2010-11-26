@@ -135,8 +135,8 @@
     <url>https://github.com/buildbox/contentcheck-maven-plugin/issues</url>
   </issueManagement>
   <scm>
-    <connection>scm:git:git://github.com:buildbox/contentcheck-maven-plugin.git</connection>
-    <developerConnection>scm:git:git://github.com:buildbox/contentcheck-maven-plugin.git</developerConnection>
+    <connection>scm:git:http://github.com/buildbox/contentcheck-maven-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:buildbox/contentcheck-maven-plugin.git</developerConnection>
     <url>http://github.com/buildbox/contentcheck-maven-plugin</url>
   </scm>
 </project>
