@@ -18,7 +18,7 @@ Put the following XML fragment to POM file producing the archive (e.g. WAR) you 
         <plugin>
 	    <groupId>net.sf.buildbox.maven</groupId>
 	    <artifactId>contentcheck-maven-plugin</artifactId>
-	    <version>1-SNAPSHOT</version>
+	    <version>1.0.0</version>
             <configuration>
             <!-- optional configuration see below -->      
             </configuration>
@@ -29,7 +29,7 @@ Create "content.txt" text file  and put this file into "src/main" directory of t
 
 Now you can run the plugin (be sure that the archive is present in module's target directory)
 
-``mvn net.sf.buildbox.maven:contentcheck-maven-plugin:1-SNAPSHOT:check``
+``mvn net.sf.buildbox.maven:contentcheck-maven-plugin:1.0.0:check``
 
 ## Content definition file structure
 
@@ -110,7 +110,7 @@ Content check plugin has to be configured to *ignoreVendorArchives* for a given 
         <plugin>
         <groupId>net.sf.buildbox.maven</groupId>
         <artifactId>contentcheck-maven-plugin</artifactId>
-        <version>1-SNAPSHOT</version>
+        <version>1.0.0</version>
         <configuration>
             <vendorId>com.example</vendorId>
             <ignoreVendorArchives>true</ignoreVendorArchives>               
