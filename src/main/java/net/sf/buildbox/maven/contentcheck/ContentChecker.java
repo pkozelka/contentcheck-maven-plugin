@@ -1,25 +1,22 @@
 package net.sf.buildbox.maven.contentcheck;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
+
+import net.sf.buildbox.maven.contentcheck.introspection.DefaultIntrospector;
+
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.DirectoryScanner;
 
 /**
- * The checker itself thread safe implementation.
- *
+ * The content checker implementation. 
+ * <br />
+ * Thread safe implementation.
  */
 public class ContentChecker {
-    private static final String JAR_FILE_EXTENSION = "**/*.jar";
 
     private final Log log;
     private final boolean ignoreVendorArchives;
@@ -47,9 +44,13 @@ public class ContentChecker {
      * @throws IOException if something very bad happen
      */
     public CheckerOutput check(final File listingFile, final File archiveFile) throws IOException{
-        Set<String> allowedEntries = readListing(listingFile);
-        Set<String> archiveContent = readArchive(archiveFile);
-        return new CheckerOutput(allowedEntries, archiveContent);
+        final Set<String> allowedEntries = readListing(listingFile);
+        DefaultIntrospector introspector = new DefaultIntrospector(log, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+        int count = introspector.readArchive(archiveFile);
+        //XXX dagi: duplicit entries detection https://github.com/buildbox/contentcheck-maven-plugin/issues#issue/4
+        final Set<String> archiveEntries = introspector.getArchiveEntries();
+        log.info(String.format("Archive '%s' contains %d checked and %d total files", archiveFile, archiveEntries.size(), count));
+        return new CheckerOutput(allowedEntries, archiveEntries);
     }
 
     protected Set<String> readListing(final File listingFile) throws IOException {
@@ -74,92 +75,6 @@ public class ContentChecker {
             return expectedPaths;
         } finally {
             reader.close();
-        }
-
-    }
-
-    protected Set<String> readArchive(final File archive) throws IOException {
-        log.info("Reading archive: " + archive);
-        final ZipFile zipFile = new ZipFile(archive);
-        final ZipInputStream zis = new ZipInputStream(new FileInputStream(archive));
-        int totalCnt = 0;
-        try {
-            final Set<String> archiveEntries = new LinkedHashSet<String>();
-            ZipEntry entry;
-            while ((entry = zis.getNextEntry()) != null) {
-                totalCnt ++;
-                final String entryName = entry.getName();
-                if (! shouldBeChecked(entryName)) continue;
-                
-                if(isJarFileExtension(entryName) && ignoreVendorArchives) {
-                    if(isVendorArchive(entry, zipFile)) {
-                        continue;
-                    }
-                }
-                
-                if (! archiveEntries.add(entryName)) {
-                    log.error("ATTENTION! Archive file " + archive + " contains duplicate entry: " + entryName);
-                    //TODO: should we just fail here ? or on config option ?
-                    //XXX Dagi: i don't think that the archive may have duplicit entries
-                }
-            }
-            log.info(String.format("Archive '%s' contains %d checked and %d total files", archive, archiveEntries.size(), totalCnt));
-            return archiveEntries;
-        } finally {
-            zis.close();
-            zipFile.close();
-        }
-    }
-
-    private boolean shouldBeChecked(String path) {
-        return DirectoryScanner.match("/" + checkFilesPattern, "/" + path);
-    }
-    
-    private boolean isJarFileExtension(String path) {
-        return DirectoryScanner.match("/" + JAR_FILE_EXTENSION, "/" + path);
-    }
-    
-    private boolean isVendorArchive(final ZipEntry entry, final ZipFile zipFile) throws IOException {
-        final InputStream archiveInputStream = zipFile.getInputStream(entry);
-        try {
-            final File tempFile = copyStreamToTemporaryFile(entry.getName(), archiveInputStream);
-            return checkArchiveManifest(entry.getName(), tempFile);
-        } finally {
-            archiveInputStream.close();
-        }
-    }
-
-    /**
-     * @param jarPath -
-     * @param tempJAR -
-     * @return true when vendorId matches with jar's manifest otherwise false
-     */
-    private boolean checkArchiveManifest(final String jarPath, File tempJAR) {
-        try {
-            JarFile jarFile = new JarFile(tempJAR);
-            Manifest manifest = jarFile.getManifest();
-            if(manifest != null) {
-                Attributes mainAttributes = manifest.getMainAttributes();
-                if(mainAttributes != null) {
-                    String vendor = mainAttributes.getValue(manifestVendorEntry);
-                    return vendorId.equals(vendor);
-                }
-            }
-        } catch (IOException e) {
-            log.warn("Cannot check MANIFEST.MF file in JAR archive " + jarPath, e);
-        } 
-        return false;
-    }
-
-    private File copyStreamToTemporaryFile(final String jarPath, final InputStream archiveInputStream) throws IOException {
-        final File tempFile = File.createTempFile(UUID.randomUUID().toString(), "jar");
-        final FileOutputStream fos = new  FileOutputStream(tempFile);
-        try {
-            log.debug("Checking " + jarPath + " to be a vendor archive, using tempfile " + tempFile);
-            IOUtil.copy(archiveInputStream, fos);
-            return tempFile;
-        } finally {
-            fos.close();
         }
     }
 }
