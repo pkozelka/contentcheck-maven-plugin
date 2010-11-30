@@ -50,6 +50,37 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <!-- here we construct a zip (target/test-classes/myself.zip) out of project dependencies as suggested in https://github.com/buildbox/contentcheck-maven-plugin/issues/#issue/5 -->
+            <id>pack-deps-for-junit</id>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <pathconvert property="compileJars" refid="maven.compile.classpath" pathsep=",">
+                  <globmapper from="${settings.localRepository}/*" to="*"/>
+                </pathconvert>
+                <dirname property="junit.dir" file="${junit:junit:jar}"/>
+                <zip destfile="${project.build.testOutputDirectory}/myself.zip">
+                  <!-- compile deps will be stored in maven2 layout -->
+                  <zipfileset dir="${settings.localRepository}" includes="${compileJars}"/>
+                  <!-- additionally, we will add junit on toplevel -->
+                  <!-- note: cannot use just *.jar because it would also add javadoc and sources which might not be present - but we require strictly consistent behavior-->
+                  <zipfileset dir="${junit.dir}" includes="junit-?.?.?.jar"/>
+                </zip>
+                <!-- now it is ready for use in a junit test -->
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>2.6</version>
         <executions>
