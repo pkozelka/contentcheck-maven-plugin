@@ -10,9 +10,7 @@ The plugin checks an archive content and reports unexpected or missing entries. 
 
 ## Usage
 
-Note: the plugin is not yet available in any public Maven repository therefore you have to checkout source code and run `mvn install`in order to put the plugin in to your local repository or you can of course deploy the plugin to your corporate repository or whatever you have for hosting 3rd party artifacts. 
-
-Put the following XML fragment to POM file producing the archive (e.g. WAR) you would like to check.
+Put the following XML fragment to a POM file producing an archive (e.g. WAR) you would like to check.
 
     <plugins>
         <plugin>
@@ -25,11 +23,11 @@ Put the following XML fragment to POM file producing the archive (e.g. WAR) you 
         </plugin>
     </plugins>
 
-Create "content.txt" text file  and put this file into "src/main" directory of the some module. This file contains allowed and also expected entries that the archive should contain TODO link to file structure.
+Create "content.txt" text file  and put this file into "src/main" directory of the some module. This file contains allowed and also expected entries that the archive should contain.
 
-Now you can run the plugin (be sure that the archive is present in module's target directory)
+Now you can run the plugin  (be sure that the archive is present in module's target directory)
 
-``mvn net.sf.buildbox.maven:contentcheck-maven-plugin:1.0.0:check``
+``mvn net.sf.buildbox.maven:contentcheck-maven-plugin:check``
 
 ## Content definition file structure
 
