@@ -25,7 +25,7 @@ Put the following XML fragment to a POM file producing an archive (e.g. WAR) you
 
 Create "content.txt" text file  and put this file into "src/main" directory of the some module. This file contains allowed and also expected entries that the archive should contain.
 
-Now you can run the plugin  (be sure that the archive is present in module's target directory)
+Now you can run the plugin, but  ensure that the archive is present in module's target directory.
 
 ``mvn net.sf.buildbox.maven:contentcheck-maven-plugin:check``
 
