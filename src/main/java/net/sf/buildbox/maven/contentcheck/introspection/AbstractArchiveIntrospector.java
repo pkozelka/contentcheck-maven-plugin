@@ -15,8 +15,8 @@ import java.util.zip.ZipInputStream;
 
 
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.SelectorUtils;
 
 /**
  * This class provides archive's content introspection in a template manner. Please
@@ -102,7 +102,7 @@ public abstract class AbstractArchiveIntrospector {
      * @return <code>true</code> - path to JAR otherwise <code>false</code>
      */
     protected boolean isJarFileExtension(String path) {
-        return DirectoryScanner.match("/" + JAR_FILE_EXTENSION, "/" + path);
+        return SelectorUtils.matchPath(JAR_FILE_EXTENSION, path);
     }
 
     /**
@@ -141,7 +141,7 @@ public abstract class AbstractArchiveIntrospector {
     }
 
     private boolean shouldBeChecked(String path) {
-        return DirectoryScanner.match("/" + checkFilesPattern, "/" + path);
+        return SelectorUtils.matchPath("/" + checkFilesPattern, "/" + path);
     }
 
     private boolean isVendorArchive(final ZipEntry entry, final ZipFile zipFile) throws IOException {
