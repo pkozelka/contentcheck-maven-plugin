@@ -8,9 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-import net.sf.buildbox.maven.contentcheck.ContentCheckMojo;
 import net.sf.buildbox.maven.contentcheck.SupportUtils;
-import net.sf.buildbox.maven.contentcheck.introspection.DefaultIntrospector;
 
 import org.apache.maven.plugin.logging.Log;
 import org.junit.Test;
@@ -21,7 +19,7 @@ public class DefaultIntrospectorTest {
     @Test
     public void testIntrospection() throws IOException{
         Log log = mock(Log.class);
-        DefaultIntrospector introspector = new DefaultIntrospector(log, false, "com.buildbox", ContentCheckMojo.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, ContentCheckMojo.DEFAULT_CHECK_FILES_PATTERN);
+        DefaultIntrospector introspector = new DefaultIntrospector(log, false, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File archive = SupportUtils.getFile("test.war");
         introspector.readArchive(archive);
         Set<String> archiveEntries = introspector.getArchiveEntries();
@@ -34,7 +32,7 @@ public class DefaultIntrospectorTest {
     @Test
     public void testIntrospectionWithIgnoringOwnArtifacts() throws IOException{
         Log log = mock(Log.class);
-        DefaultIntrospector introspector = new DefaultIntrospector(log, true, "com.buildbox", ContentCheckMojo.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, ContentCheckMojo.DEFAULT_CHECK_FILES_PATTERN);
+        DefaultIntrospector introspector = new DefaultIntrospector(log, true, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File archive = SupportUtils.getFile("test.war");
         introspector.readArchive(archive);
         Set<String> archiveEntries = introspector.getArchiveEntries();

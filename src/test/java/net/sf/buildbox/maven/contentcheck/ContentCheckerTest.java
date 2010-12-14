@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 import org.apache.maven.plugin.logging.Log;
@@ -19,7 +20,7 @@ public class ContentCheckerTest {
     @Test
     public void testUnexpectedEntries() throws Exception {
         Log log = mock(Log.class);
-        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", ContentCheckMojo.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, ContentCheckMojo.DEFAULT_CHECK_FILES_PATTERN);
+        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = getFile("content.txt");
         File archiveFile = getFile("test.war");
         CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
@@ -31,7 +32,7 @@ public class ContentCheckerTest {
     @Test
     public void testUnexpectedEntriesIgnoreVendorArchives() throws Exception {
         Log log = mock(Log.class);
-        ContentChecker checker = new ContentChecker(log, true, "com.buildbox", ContentCheckMojo.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, ContentCheckMojo.DEFAULT_CHECK_FILES_PATTERN);
+        ContentChecker checker = new ContentChecker(log, true, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = getFile("content.txt");
         File archiveFile = getFile("test.war");
         CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
@@ -43,7 +44,7 @@ public class ContentCheckerTest {
     @Test
     public void testCheckFilePatternScan() throws Exception {
         Log log = mock(Log.class);
-        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", ContentCheckMojo.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, "WEB-INF/**/*");
+        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, "WEB-INF/**/*");
         File listingFile = getFile("content.txt");
         File archiveFile = getFile("test.war");
         CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
@@ -58,7 +59,7 @@ public class ContentCheckerTest {
     @Test
     public void testUnexpectedEntriesIgnoreVendorArchivesCustomVendorHeader() throws Exception {
         Log log = mock(Log.class);
-        ContentChecker checker = new ContentChecker(log, true, "com.buildbox", "Producer", ContentCheckMojo.DEFAULT_CHECK_FILES_PATTERN);
+        ContentChecker checker = new ContentChecker(log, true, "com.buildbox", "Producer", SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = getFile("content.txt");
         File archiveFile = getFile("test.war");
         CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
@@ -69,7 +70,7 @@ public class ContentCheckerTest {
     @Test
     public void testMissingEntries() throws Exception {
         Log log = mock(Log.class);
-        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", ContentCheckMojo.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, ContentCheckMojo.DEFAULT_CHECK_FILES_PATTERN);
+        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = getFile("content-missing-entries.txt");
         File archiveFile = getFile("test.war");
         CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
@@ -80,7 +81,7 @@ public class ContentCheckerTest {
     @Test
     public void testReadListingFile() throws Exception{
         Log log = mock(Log.class);
-        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", ContentCheckMojo.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, ContentCheckMojo.DEFAULT_CHECK_FILES_PATTERN);
+        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = getFile("content-read-listing-test.txt");
         Set<String> content = checker.readListing(listingFile);
         assertThat(content.size(), is(5));
@@ -89,7 +90,7 @@ public class ContentCheckerTest {
     @Test
     public void testReadListinFileWithDuplicitEntries() throws Exception{
         Log log = mock(Log.class);
-        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", ContentCheckMojo.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, ContentCheckMojo.DEFAULT_CHECK_FILES_PATTERN);
+        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = getFile("content-duplicit-entries-test.txt");
         checker.readListing(listingFile);
         verify(log, times(1)).warn(anyString());
@@ -98,9 +99,20 @@ public class ContentCheckerTest {
     @Test
     public void testReadListingFileEmptyLines() throws Exception{
         Log log = mock(Log.class);
-        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", ContentCheckMojo.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, ContentCheckMojo.DEFAULT_CHECK_FILES_PATTERN);
+        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = getFile("content-empty-lines-test.txt");
         Set<String> entries = checker.readListing(listingFile);
         assertThat("Unexpecting count of entries. Whitespaces and empty lines must be ignored.", entries.size(), is(0));
+    }
+
+    @Test
+    public void testTopLevelJARS() throws IOException {
+        Log log = mock(Log.class);
+        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        File listingFile = getFile("content-toplevel-jars.txt");
+        File archiveFile = getFile("test.ear");
+        CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
+        assertThat("Default file matching pattern (All JARs) is broken, there are reported missing entries but shouldn't.", checkerOutput.diffMissingEntries().isEmpty(), is(true));
+        assertThat("Default file matching pattern (All JARs) is broken, there are reported unexpected entries but shouldn't.",checkerOutput.diffUnexpectedEntries().isEmpty(), is(true));
     }
 }

@@ -8,10 +8,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 public abstract class AbstractArchiveContentMojo extends AbstractMojo {
-    // [pk] not sure if these constants make any sense here ...
-    public final static String DEFAULT_VENDOR_MANIFEST_ENTRY_NAME = "Implementation-Vendor-Id";
-    public final static String DEFAULT_CHECK_FILES_PATTERN = "WEB-INF/lib/*.jar";
-    
+
     /**
      * The archive file to be checked
      *

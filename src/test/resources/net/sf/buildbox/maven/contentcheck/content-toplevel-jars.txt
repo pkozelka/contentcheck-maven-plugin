@@ -1,0 +1,7 @@
+#################################
+# Test default checking pattern #
+#################################
+lib/b.jar
+a.jar
+c.jar
+
