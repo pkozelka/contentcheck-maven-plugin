@@ -33,7 +33,7 @@ You can run the goal by following command
 
 ## contentcheck-maven-plugin:show-licenses   
 
-The goal shows license information for an archive entries.
+The goal shows license information for an archive entries. License information is gathered from dependency's POM, but a project may define dditional mapping between files in a project archive and licenses. Please see section Additional license information structure.
 
 You can run the goal by following command
 
@@ -85,7 +85,13 @@ The plugin might be configured by following properties. If a property is valid o
  * Default ``Found unexpected file: %s``
  
 * *overwriteExistingListing* (valid for goals: generate) If it's true the 'generate' goal overwrite content listing file.
- * Default false  
+ * Default ``false``
+ 
+* *csvOutput* (valid for goals: show-licenses) If true print the result of check to a CSV file in project build directory.
+  * Default ``true``  
+
+* *csvOutputFile* (valid for goals: show-licenses) The CSV output file that is used when (*csvOutput*) is turned on.
+    * Default ``src/main/license.mapping``
 
 Put the desired configuration properties into  ``configuration`` element
 
@@ -149,3 +155,44 @@ WAR's content definition
     WEB-INF/lib/akka-core_2.8.0-0.10.jar
     WEB-INF/lib/aopalliance-1.0.jar
     WEB-INF/lib/asm-3.2.jar
+    
+## Additional license information structure
+
+Not all archive entries have to have license information defined in their POMs. Therefore you may define such additional information in JSON file ( ``src/main/license.mapping``). 
+
+The JSON structure is defined as following
+
+     {
+       "licenses": [
+           {
+              "name" : "License name",
+               "url"  : "License text URL",
+               "files": [
+                   "file name"
+                ]
+           }
+       ]
+     }
+     
+JSON license mapping example
+
+     {
+       "licenses": [
+           {
+               "name"  : "The LGPL license 2.1",
+               "url"   : "http://www.gnu.org/licenses/lgpl-2.1.html",
+               "files" : [
+                             "aspectwerkz-nodeps-jdk5-2.2.1.jar"
+               ]
+           },
+           {
+               "name"  : "The BSD license",
+               "url"   : "http://www.opensource.org/licenses/bsd-license.php",
+               "files" : [
+                             "antlr-2.7.6.jar",
+                             "asm-3.1.jar",
+                             "dom4j-1.6.1.jar"
+               ]
+           }
+       ]
+     }
