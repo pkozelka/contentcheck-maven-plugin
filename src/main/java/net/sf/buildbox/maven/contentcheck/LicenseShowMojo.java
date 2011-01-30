@@ -248,7 +248,8 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
                 String version = mavenProject.getVersion();
                 String jarName = artifactId + "-" + version + ".jar"; //guess jar name
                 if(archiveEntry.endsWith(jarName)) {
-                    List _licenses = mavenProject.getLicenses();
+                    @SuppressWarnings("unchecked")
+                    List<License> _licenses = mavenProject.getLicenses();
                     licenses = _licenses == null || _licenses.size() == 0 ? null : _licenses  ;
                     break;
                 }
@@ -259,13 +260,14 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
             if(licenses == null && licensesMappingFile == null) {//misising license information
                 getLog().debug(String.format("Cannot resolve license information for archive entry %s neither from the POM file nor the file for license mapping", archiveEntry));
                 //archive entry must be present even if there is no a matching Maven Project
-                entries.put(archiveEntry, Collections.EMPTY_LIST);
+                entries.put(archiveEntry, Collections.<License>emptyList());
             } else if(licenses != null && licensesMappingFile != null) {//licenses specified in both - POM and license mapping file
                 getLog().warn(String.format("The license information for file %s are defined in the POM file and also in the file for license mapping. Using license information from the the file for license mapping.", archiveEntry));
                 entries.put(archiveEntry, licensesMappingFile); //mapping manually specified licenses precedes licenses from POM
             } else if (licenses != null) {//license information in POM
                 entries.put(archiveEntry, licenses);//license
-            } else if (licensesMappingFile != null) {//license information in mapping file
+            } else {
+                //license information in mapping file
                 //put additional license information to the object that holds this information
                 entries.put(archiveEntry, licensesMappingFile);
             }
