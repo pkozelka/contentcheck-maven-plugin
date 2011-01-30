@@ -33,7 +33,7 @@ You can run the goal by following command
 
 ## contentcheck-maven-plugin:show-licenses   
 
-The goal shows license information for an archive entries. License information is gathered from dependency's POM, but a project may define dditional mapping between files in a project archive and licenses. Please see section Additional license information structure.
+The goal shows license information for an archive entries. License information is gathered from dependency's POM, but a project may define additional mapping between files in a project archive and licenses. Please see section Additional license information structure.
 
 You can run the goal by following command
 
