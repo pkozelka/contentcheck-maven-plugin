@@ -19,7 +19,7 @@ public class LicenseMappingParserTest {
 
     @Test
     public void testParseLicenseMappingFile()  throws Exception{
-        File licenseMappingFile = SupportUtils.getFile("license.mapping");
+        File licenseMappingFile = SupportUtils.getFile("license.mapping.json");
         Log log = mock(Log.class);
         LicenseMappingParser parser = new LicenseMappingParser(log, licenseMappingFile);
         Map<String, List<License>> mapping = parser.parseLicenseMappingFile();

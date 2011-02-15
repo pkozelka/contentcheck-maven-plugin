@@ -54,7 +54,7 @@ import org.apache.maven.shared.jar.classes.JarClassesAnalysis;
  * <p>
  * License information is gathered from dependency's POM, but a project may define
  * additional mapping between files in a project archive and licenses. This mapping
- * file is <cite>src/main/license.mapping</cite> and its structure is JSON.
+ * file is <cite>src/main/license.mapping.json</cite> and its structure is JSON.
  * <h4>Additional license information</h4>
  * <pre><code>
  * {
@@ -103,7 +103,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
      * The license mapping file. This file may define additional license information
      * for JARs that are not recognized.
      *
-     * @parameter default-value="src/main/license.mapping"
+     * @parameter default-value="src/main/license.mapping.json"
      */
     private File licenseMappingFile;
 
