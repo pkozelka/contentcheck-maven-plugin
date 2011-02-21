@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.sf.buildbox.maven</groupId>
   <artifactId>contentcheck-maven-plugin</artifactId>
-  <version>1.0.2</version>
+  <version>1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>Maven Content Check Plugin</name>
   <parent>
