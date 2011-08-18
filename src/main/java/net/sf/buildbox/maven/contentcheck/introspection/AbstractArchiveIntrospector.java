@@ -13,7 +13,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.SelectorUtils;
@@ -158,8 +157,9 @@ public abstract class AbstractArchiveIntrospector {
      * @return true when vendorId matches with jar's manifest otherwise false
      */
     private boolean checkArchiveManifest(final String jarPath, File tempJAR) {
+        JarFile jarFile = null;
         try {
-            JarFile jarFile = new JarFile(tempJAR);
+            jarFile = new JarFile(tempJAR);
             Manifest manifest = jarFile.getManifest();
             if(manifest != null) {
                 Attributes mainAttributes = manifest.getMainAttributes();
@@ -168,9 +168,18 @@ public abstract class AbstractArchiveIntrospector {
                     return vendorId.equals(vendor);
                 }
             }
+
         } catch (IOException e) {
             log.warn("Cannot check MANIFEST.MF file in JAR archive " + jarPath, e);
-        } 
+        } finally {
+            if(jarFile != null) {
+                try {
+                    jarFile.close();
+                } catch (IOException e) {
+                    log.warn("Cannot close temporary JAR file " + jarPath,e);
+                }
+            }
+        }
         return false;
     }
 
