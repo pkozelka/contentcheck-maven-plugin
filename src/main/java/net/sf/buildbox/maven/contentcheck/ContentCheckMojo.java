@@ -51,19 +51,19 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
         // report missing entries
         final Set<String> missingEntries = output.diffMissingEntries();
         for (String entry : missingEntries) {
-            getLog().error(String.format(msgMissing, entry));//XXX dagi: really ERROR? I would expect WARN.
+            log(failOnMissing, String.format(msgMissing, entry));
         }
         // report unexpected entries
         final Set<String> unexpectedEntries = output.diffUnexpectedEntries();
         for (String entry : unexpectedEntries) {
-            getLog().error(String.format(msgUnexpected, entry));
+            log(failOnUnexpected, String.format(msgUnexpected, entry));
         }
         // error summary
         if (missingEntries.size() > 0) {
-            getLog().error("Missing: " + missingEntries.size() + " entries");
+            log(failOnMissing, "Missing: " + missingEntries.size() + " entries");
         }
         if (unexpectedEntries.size() > 0) {
-            getLog().error("Unexpected: " + unexpectedEntries.size() + " entries");
+            log(failOnUnexpected, "Unexpected: " + unexpectedEntries.size() + " entries");
         }
         // fail as neccessary, after reporting all detected problems
         if (failOnMissing && ! missingEntries.isEmpty()) {
@@ -75,5 +75,13 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
         }
 
         getLog().info("Archive file " + getArchive().getPath() + " has valid content according to " + getContentListing().getPath());
+    }
+
+    private void log(boolean error, String message) {
+        if (error) {
+            getLog().error(message);
+        } else {
+            getLog().warn(message);
+        }
     }
 }
