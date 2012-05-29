@@ -124,15 +124,6 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
     private File csvOutputFile;
 
     /**
-     * The Maven Project.
-     *
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
-
-    /**
      * Artifact collector component.
      *
      * @component
@@ -284,6 +275,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
 
     private List<MavenProject> getMavenProjectForDependencies() throws MojoExecutionException, MojoFailureException {
         DependencyNode dependencyTreeNode = resolveProject();
+        MavenProject project = getMavenProject();
         Dependencies dependencies = new Dependencies( project, dependencyTreeNode, classesAnalyzer );
         Log log = getLog();
         RepositoryUtils repoUtils = new RepositoryUtils( log, wagonManager, settings, mavenProjectBuilder, factory, resolver, project.getRemoteArtifactRepositories(), project.getPluginArtifactRepositories(), localRepository,repositoryMetadataManager );
@@ -311,7 +303,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         try
         {
             ArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_TEST );
-            return dependencyTreeBuilder.buildDependencyTree( project, localRepository, factory, artifactMetadataSource, artifactFilter, collector );
+            return dependencyTreeBuilder.buildDependencyTree( getMavenProject(), localRepository, factory, artifactMetadataSource, artifactFilter, collector );
         }
         catch ( DependencyTreeBuilderException e )
         {

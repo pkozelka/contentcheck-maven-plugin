@@ -3,7 +3,6 @@ package net.sf.buildbox.maven.contentcheck;
 import java.io.IOException;
 import java.util.Set;
 
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -41,6 +40,12 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
     private boolean failOnUnexpected;
 
     protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
+        
+        if("POM".equalsIgnoreCase(getMavenProject().getPackaging())) {
+            log(false, "Skipping content check for project with POM packaging");
+            return;
+        }
+        
         if(!getContentListing().exists()) {
             throw new MojoExecutionException("Content listing file  " + getContentListing().getPath() + " doesn't exist.");
         }

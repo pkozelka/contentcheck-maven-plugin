@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractArchiveContentMojo extends AbstractMojo {
 
@@ -58,6 +59,15 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
      */
     private String checkFilesPattern;
 
+    /**
+     * The Maven Project.
+     *
+     * @parameter expression="${project}"
+     * @required
+     * @readonly
+     */
+    private MavenProject project;
+
     public final void execute() throws MojoExecutionException, MojoFailureException {
         try {
             doExecute();
@@ -100,5 +110,9 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
 
     protected String getCheckFilesPattern() {
         return checkFilesPattern;
+    }
+
+    public MavenProject getMavenProject() {
+        return project;
     }
 }
