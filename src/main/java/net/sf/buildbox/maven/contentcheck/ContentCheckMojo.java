@@ -39,9 +39,16 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
      */
     private boolean failOnUnexpected;
 
+    /**
+     * If true, modules with POM packaging are skipped (excluded from the content check).
+     * 
+     * @parameter default-value="false"
+     */
+    private boolean skipPOMPackaging;
+
     protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
         
-        if("POM".equalsIgnoreCase(getMavenProject().getPackaging())) {
+        if(skipPOMPackaging && "POM".equalsIgnoreCase(getMavenProject().getPackaging())) {
             log(false, "Skipping content check for project with POM packaging");
             return;
         }

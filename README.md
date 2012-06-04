@@ -83,7 +83,10 @@ The plugin might be configured by following properties. If a property is valid o
 
 * *msgUnexpected* (valid for goals: check) Message used to report unexpected entry - uses the ``java.util.Formatter`` syntax to embed entry name.
  * Default ``Found unexpected file: %s``
- 
+
+* *skipPOMPackaging* modules with POM packaging are skipped (excluded from the content check)
+ * Default value is ``false``
+
 * *overwriteExistingListing* (valid for goals: generate) If it's true the 'generate' goal overwrite content listing file.
  * Default ``false``
  
