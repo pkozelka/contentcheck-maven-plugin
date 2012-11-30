@@ -147,7 +147,10 @@ public abstract class AbstractArchiveIntrospector {
         final InputStream archiveInputStream = zipFile.getInputStream(entry);
         try {
             final File tempFile = copyStreamToTemporaryFile(entry.getName(), archiveInputStream);
-            return checkArchiveManifest(entry.getName(), tempFile);
+            tempFile.deleteOnExit();
+            boolean vendorArchive = checkArchiveManifest(entry.getName(), tempFile);
+            tempFile.delete();//only for sure if the plugin is used in long live JVM
+            return vendorArchive;
         } finally {
             archiveInputStream.close();
         }
