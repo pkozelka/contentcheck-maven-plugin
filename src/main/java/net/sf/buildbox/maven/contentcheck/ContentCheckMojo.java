@@ -12,6 +12,7 @@ import org.apache.maven.plugin.MojoFailureException;
  *
  * @goal check
  * @phase verify
+ * @threadSafe
  */
 public class ContentCheckMojo extends AbstractArchiveContentMojo {
     
