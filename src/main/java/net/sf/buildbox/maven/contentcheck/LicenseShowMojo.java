@@ -103,7 +103,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
      * The license mapping file. This file may define additional license information
      * for JARs that are not recognized.
      *
-     * @parameter default-value="src/main/license.mapping.json"
+     * @parameter default-value="src/main/license.mapping.json" expression="${licenseMappingFile}"
      */
     private File licenseMappingFile;
 
@@ -122,6 +122,13 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
      * @parameter default-value="${project.build.directory}/licenses.csv"
      */
     private File csvOutputFile;
+
+    /**
+     * The archive file to be checked
+     *
+     * @parameter default-value="${project.build.directory}/${project.build.finalName}.zip"
+     */
+    private File defaultBundleForPOMPacking;
 
     /**
      * Artifact collector component.
@@ -214,10 +221,16 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
      */
     @Override
     protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
+        File archive = getArchive();
+        if(!archive.exists()) {
+            getLog().warn("Skipping project since there is no archive to being check.");
+            return;
+        }
+
         List<MavenProject> mavenProjectForDependencies = getMavenProjectForDependencies();
 
         DefaultIntrospector introspector = new DefaultIntrospector(getLog(), isIgnoreVendorArchives(), getVendorId(), getManifestVendorEntry(), getCheckFilesPattern());
-        introspector.readArchive(getArchive());
+        introspector.readArchive(archive);
 
         Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getArchiveEntries());
         Map<String, List<License>> entries = new LinkedHashMap<String, List<License>>();
@@ -322,5 +335,13 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
             return Collections.EMPTY_LIST;
         }
 
+    }
+
+    @Override
+    protected File getArchive() {
+        if(super.getArchive().exists()) {
+            super.getArchive();
+        }
+        return defaultBundleForPOMPacking;
     }
 }
