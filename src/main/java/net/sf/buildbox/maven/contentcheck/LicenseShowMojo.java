@@ -340,7 +340,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
     @Override
     protected File getArchive() {
         if(super.getArchive().exists()) {
-            super.getArchive();
+            return super.getArchive();
         }
         return defaultBundleForPOMPacking;
     }
