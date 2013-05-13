@@ -44,7 +44,7 @@ import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.apache.maven.shared.jar.classes.JarClassesAnalysis;
 
 /**
- * This MOJO shows license information for an archive entries. Artifact resolving
+ * This MOJO shows license information for a source entries. Artifact resolving
  * and the rest of Maven repo magic taken from <a href="http://maven.apache.org/plugins/maven-project-info-reports-plugin/index.html">Maven Project Info Reports Plugin</a>.
  * The MOJO shows license information only for entities that matches criteria
  * defined by {@link #getCheckFilesPattern()} and {@link #isIgnoreVendorArchives()}.
@@ -221,8 +221,8 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
      */
     @Override
     protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
-        File archive = getArchive();
-        if(!archive.exists()) {
+        File sourceFile = getSourceFile();
+        if(!sourceFile.exists()) {
             getLog().warn("Skipping project since there is no archive to being check.");
             return;
         }
@@ -230,9 +230,9 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         List<MavenProject> mavenProjectForDependencies = getMavenProjectForDependencies();
 
         DefaultIntrospector introspector = new DefaultIntrospector(getLog(), isIgnoreVendorArchives(), getVendorId(), getManifestVendorEntry(), getCheckFilesPattern());
-        introspector.readArchive(archive);
+        introspector.readEntries(sourceFile);
 
-        Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getArchiveEntries());
+        Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getEntries());
         Map<String, List<License>> entries = new LinkedHashMap<String, List<License>>();
 
         Map<String, List<License>> additionalLicenseInformation = new LinkedHashMap<String, List<License>>();
@@ -338,9 +338,9 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
     }
 
     @Override
-    protected File getArchive() {
-        if(super.getArchive().exists()) {
-            return super.getArchive();
+    protected File getSourceFile() {
+        if(super.getSourceFile().exists()) {
+            return super.getSourceFile();
         }
         return defaultBundleForPOMPacking;
     }
