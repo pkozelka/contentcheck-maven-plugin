@@ -20,13 +20,13 @@ public class DefaultIntrospectorTest {
     public void testIntrospection() throws IOException{
         Log log = mock(Log.class);
         DefaultIntrospector introspector = new DefaultIntrospector(log, false, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
-        File archive = SupportUtils.getFile("test.war");
-        introspector.readArchive(archive);
-        Set<String> archiveEntries = introspector.getArchiveEntries();
-        assertThat("Unexpected count of archiveEntries", archiveEntries.size(), is(3));
-        assertThat("Missing entry WEB-INF/lib/a.jar in collection of archiveEntries", archiveEntries.contains("WEB-INF/lib/a.jar"), is(true));
-        assertThat("Missing entry WEB-INF/lib/b.jar in collection of archiveEntries", archiveEntries.contains("WEB-INF/lib/b.jar"), is(true));
-        assertThat("Missing entry WEB-INF/lib/c.jar in collection of archiveEntries", archiveEntries.contains("WEB-INF/lib/c.jar"), is(true));
+        File sourceArchive = SupportUtils.getFile("test.war");
+        introspector.readEntries(sourceArchive);
+        Set<String> sourceEntries = introspector.getEntries();
+        assertThat("Unexpected count of source archive entries", sourceEntries.size(), is(3));
+        assertThat("Missing entry WEB-INF/lib/a.jar in collection of source archive entries", sourceEntries.contains("WEB-INF/lib/a.jar"), is(true));
+        assertThat("Missing entry WEB-INF/lib/b.jar in collection of source archive entries", sourceEntries.contains("WEB-INF/lib/b.jar"), is(true));
+        assertThat("Missing entry WEB-INF/lib/c.jar in collection of source archive entries", sourceEntries.contains("WEB-INF/lib/c.jar"), is(true));
     }
     
     @Test
@@ -34,10 +34,10 @@ public class DefaultIntrospectorTest {
         Log log = mock(Log.class);
         DefaultIntrospector introspector = new DefaultIntrospector(log, true, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File archive = SupportUtils.getFile("test.war");
-        introspector.readArchive(archive);
-        Set<String> archiveEntries = introspector.getArchiveEntries();
-        assertThat("Unexpected count of archiveEntries", archiveEntries.size(), is(2));
-        assertThat("Missing entry WEB-INF/lib/b.jar in collection of archiveEntries", archiveEntries.contains("WEB-INF/lib/b.jar"), is(true));
-        assertThat("Missing entry WEB-INF/lib/c.jar in collection of archiveEntries", archiveEntries.contains("WEB-INF/lib/c.jar"), is(true));
+        introspector.readEntries(archive);
+        Set<String> sourceEntries = introspector.getEntries();
+        assertThat("Unexpected count of source entries", sourceEntries.size(), is(2));
+        assertThat("Missing entry WEB-INF/lib/b.jar in collection of source archive entries", sourceEntries.contains("WEB-INF/lib/b.jar"), is(true));
+        assertThat("Missing entry WEB-INF/lib/c.jar in collection of source archive entries", sourceEntries.contains("WEB-INF/lib/c.jar"), is(true));
     }
 }

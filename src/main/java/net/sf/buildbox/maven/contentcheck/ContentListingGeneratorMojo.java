@@ -12,8 +12,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
- * MOJO for content listing generation from a given archive. This MOJO takes {@link #getArchive()}
- * and generates archive content to {@link #getContentListing()}.The MOJO generates 
+ * MOJO for content listing generation from a given source file. This MOJO takes {@link #getSourceFile()}
+ * and generates its content to {@link #getContentListing()}.The MOJO generates
  * to the output only entities that matches criteria defined by {@link #getCheckFilesPattern()} 
  * and {@link #isIgnoreVendorArchives()}.
  *
@@ -33,9 +33,9 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
         }
 
         DefaultIntrospector introspector = new DefaultIntrospector(getLog(), isIgnoreVendorArchives(), getVendorId(), getManifestVendorEntry(), getCheckFilesPattern());
-        int count = introspector.readArchive(getArchive());
-        Set<String> archiveEntries = introspector.getArchiveEntries();
-        getLog().info(String.format("The archive contains entries %d, but only %d matches the plugin configuration criteria.", count, archiveEntries.size()));
+        int count = introspector.readEntries(getSourceFile());
+        Set<String> sourceEntries = introspector.getEntries();
+        getLog().info(String.format("The source contains entries %d, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));
         
 
         FileWriter writer = null;
@@ -44,12 +44,12 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
             writer.write("# Content listing generated Maven Content Check Plugin (https://github.com/buildbox/contentcheck-maven-plugin)\n");
             writer.write("#\n");
             writer.write(String.format("# At '%s' \n", new Date().toString()));
-            writer.write(String.format("# Source '%s'\n",getArchive()));
+            writer.write(String.format("# Source '%s'\n", getSourceFile()));
             writer.write(String.format("# Used options: checkFilesPattern='%s' ignoreVendorArchives='%s'\n", getCheckFilesPattern(), Boolean.toString(isIgnoreVendorArchives())));
             writer.write("#\n");
             writer.write("# Feel free to edit this file\n");
             writer.write("\n");
-            for (String entryName : archiveEntries) {
+            for (String entryName : sourceEntries) {
                 writer.write(entryName);
                 writer.write("\n");
         }

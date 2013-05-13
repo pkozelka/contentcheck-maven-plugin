@@ -24,19 +24,19 @@ public class LogOutput implements LicenseOutput {
         Set<String> knownEntries = new LinkedHashSet<String>();
         Set<String> unknownEntries = new LinkedHashSet<String>();
 
-        for (String archiveEntry : keySet) {
-            List<License> licenses = entries.get(archiveEntry);
+        for (String entry : keySet) {
+            List<License> licenses = entries.get(entry);
             if(licenses.size() > 1) {
                 String l = "";
                 for(License licence : licenses) {
                     l+= licence.getName() + "(" +  licence.getUrl() + ") ";
                 }
-                knownEntries.add(String.format("%s has multiple licenses %s", archiveEntry, l));
+                knownEntries.add(String.format("%s has multiple licenses %s", entry, l));
             } else if(licenses.size() == 1) {
                 License licence = licenses.get(0);
-                knownEntries.add(String.format("%s %s (%s)", archiveEntry, licence.getName(), licence.getUrl()));
+                knownEntries.add(String.format("%s %s (%s)", entry, licence.getName(), licence.getUrl()));
             } else {
-                unknownEntries.add(archiveEntry);
+                unknownEntries.add(entry);
             }
         }
 

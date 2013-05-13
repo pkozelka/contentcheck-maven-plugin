@@ -59,7 +59,7 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
         }
         
         final ContentChecker contentChecker = new ContentChecker(getLog(), isIgnoreVendorArchives(), getVendorId(), getManifestVendorEntry(), getCheckFilesPattern());
-        final CheckerOutput output = contentChecker.check(getContentListing(), getArchive());
+        final CheckerOutput output = contentChecker.check(getContentListing(), getSourceFile());
 
         // report missing entries
         final Set<String> missingEntries = output.diffMissingEntries();
@@ -80,14 +80,14 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
         }
         // fail as neccessary, after reporting all detected problems
         if (failOnMissing && ! missingEntries.isEmpty()) {
-            throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + getArchive());
+            throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + getSourceFile());
         }
 
         if (failOnUnexpected && ! unexpectedEntries.isEmpty()) {
-            throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + getArchive());
+            throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + getSourceFile());
         }
 
-        getLog().info("Archive file " + getArchive().getPath() + " has valid content according to " + getContentListing().getPath());
+        getLog().info("Source " + getSourceFile().getPath() + " has valid content according to " + getContentListing().getPath());
     }
 
     private void log(boolean error, String message) {

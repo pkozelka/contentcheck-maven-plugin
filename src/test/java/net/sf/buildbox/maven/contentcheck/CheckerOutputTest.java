@@ -24,14 +24,14 @@ public class CheckerOutputTest {
             }
         };
         
-        Set<String> archiveContent = new LinkedHashSet<String>() {
+        Set<String> sourceContent = new LinkedHashSet<String>() {
             {
                 add("a.jar");
                 add("d.jar");
             }
         };
         
-        this.output = new CheckerOutput(allowedEntries, archiveContent);
+        this.output = new CheckerOutput(allowedEntries, sourceContent);
     }
 
     @Test
@@ -41,9 +41,9 @@ public class CheckerOutputTest {
 	}
 
     @Test
-    public void testGetArchiveEntries() {
-        assertThat(output.getArchiveEntries(), notNullValue());
-        assertThat(output.getArchiveEntries().size(), is(2));
+    public void testGetSourceEntries() {
+        assertThat(output.getSourceEntries(), notNullValue());
+        assertThat(output.getSourceEntries().size(), is(2));
     }
 
     @Test

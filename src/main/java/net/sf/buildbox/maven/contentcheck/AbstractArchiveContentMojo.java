@@ -11,11 +11,22 @@ import org.apache.maven.project.MavenProject;
 public abstract class AbstractArchiveContentMojo extends AbstractMojo {
 
     /**
-     * The archive file to be checked
+     * The archive file to be checked.
+     * You should specify either {@link #archive} or {@link #directory}.
+     * Directory takes a precedence before archive.
      *
      * @parameter default-value="${project.build.directory}/${project.build.finalName}.${project.packaging}"
      */
     private File archive;
+
+    /**
+     * The directory to be checked.
+     * You should specify either {@link #archive} or {@link #directory}.
+     * Directory parameter has no default value therefore it takes a precedence before {@link #archive}.
+     *
+     * @parameter
+     */
+    private File directory;
 
     /**
      * The file with list of expected files.
@@ -77,7 +88,9 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     }
     
     protected void validateMojoArguments() throws MojoExecutionException{
-        if(!archive.exists()) {
+        if (directory != null &&  ! directory.exists()) {
+            throw new MojoExecutionException("Directory " + directory.getPath() + " you are trying to check doesn't exist.");
+        } else if(!archive.exists()) {
             throw new MojoExecutionException("Archive file " + archive.getPath() + " you are trying to check doesn't exist.");
         }
         
@@ -88,8 +101,12 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     
     protected abstract void doExecute() throws IOException, MojoExecutionException, MojoFailureException;
 
-    protected File getArchive() {
-        return archive;
+    /**
+     * Returns correct source file, directory takes a precedence before archive file.
+     * @return directory if not null, archive file otherwise
+     */
+    protected File getSourceFile() {
+        return directory != null ? directory : archive;
     }
 
     protected File getContentListing() {

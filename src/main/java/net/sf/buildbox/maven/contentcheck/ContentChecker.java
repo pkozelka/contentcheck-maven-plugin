@@ -34,23 +34,23 @@ public class ContentChecker {
     }
 
     /**
-     * Checks an archive content according to an allowed content. 
+     * Checks a content of {@code sourceFile} according to an allowed content defined by {@code listingFile}.
      * 
      * @param listingFile a file that defines allowed content
-     * @param archiveFile an archive to be checked
+     * @param sourceFile directory or archive file to be checked
      * 
-     * @return the result of archive check
+     * @return the result of source check
      * 
      * @throws IOException if something very bad happen
      */
-    public CheckerOutput check(final File listingFile, final File archiveFile) throws IOException{
+    public CheckerOutput check(final File listingFile, final File sourceFile) throws IOException{
         final Set<String> allowedEntries = readListing(listingFile);
         DefaultIntrospector introspector = new DefaultIntrospector(log, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-        int count = introspector.readArchive(archiveFile);
+        int count = introspector.readEntries(sourceFile);
         //XXX dagi: duplicit entries detection https://github.com/buildbox/contentcheck-maven-plugin/issues#issue/4
-        final Set<String> archiveEntries = introspector.getArchiveEntries();
-        log.info(String.format("Archive '%s' contains %d checked and %d total files", archiveFile, archiveEntries.size(), count));
-        return new CheckerOutput(allowedEntries, archiveEntries);
+        final Set<String> entries = introspector.getEntries();
+        log.info(String.format("'%s' contains %d checked and %d total files", sourceFile, entries.size(), count));
+        return new CheckerOutput(allowedEntries, entries);
     }
 
     protected Set<String> readListing(final File listingFile) throws IOException {

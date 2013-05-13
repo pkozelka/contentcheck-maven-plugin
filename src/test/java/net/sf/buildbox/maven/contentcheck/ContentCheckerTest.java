@@ -3,6 +3,7 @@ package net.sf.buildbox.maven.contentcheck;
 import static net.sf.buildbox.maven.contentcheck.SupportUtils.getFile;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -27,6 +28,19 @@ public class ContentCheckerTest {
         Set<String> diffUnexpectedEntries = checkerOutput.diffUnexpectedEntries();
         assertThat("Missing entry WEB-INF/lib/a.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/a.jar"), is(true));
         assertThat("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/c.jar"), is(true));
+    }
+
+    @Test
+    public void testUnexpectedEntriesInDirectory() throws Exception {
+        Log log = mock(Log.class);
+        ContentChecker checker = new ContentChecker(log, false, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        File listingFile = getFile("content.txt");
+        File directoryToBeChecked = getFile("test");
+        CheckerOutput checkerOutput = checker.check(listingFile, directoryToBeChecked);
+        Set<String> diffUnexpectedEntries = checkerOutput.diffUnexpectedEntries();
+        assertTrue("Missing entry WEB-INF/lib/a.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/a.jar"));
+        assertTrue("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/c.jar"));
+        assertThat("Incorrect number of unexpected entries", diffUnexpectedEntries.size(), is(2));
     }
 
     @Test

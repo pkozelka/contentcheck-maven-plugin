@@ -33,18 +33,18 @@ public class CsvOutput implements LicenseOutput {
         try {
             csvWriter = new FileWriter(outputFile);
             log.info(String.format("Creating license output to CSV file %s", outputFile.getPath()));
-            for (String archiveEntry : keySet) {
-                List<License> licenses = entries.get(archiveEntry);
+            for (String entry : keySet) {
+                List<License> licenses = entries.get(entry);
                 if(licenses.size() > 1) {
                     for(License licence : licenses) {
-                        csvWriter.write(String.format("%s,%s,%s\n", stripJARNameFromPath(archiveEntry), safeString(licence.getName()), safeString(licence.getUrl())));
+                        csvWriter.write(String.format("%s,%s,%s\n", stripJARNameFromPath(entry), safeString(licence.getName()), safeString(licence.getUrl())));
                     }
 
                 } else if(licenses.size() == 1) {
                     License licence = licenses.get(0);
-                    csvWriter.write(String.format("%s,%s,%s\n", stripJARNameFromPath(archiveEntry), safeString(licence.getName()), safeString(licence.getUrl())));
+                    csvWriter.write(String.format("%s,%s,%s\n", stripJARNameFromPath(entry), safeString(licence.getName()), safeString(licence.getUrl())));
                 } else {
-                    csvWriter.write(String.format("%s,%s,%s\n", stripJARNameFromPath(archiveEntry), "unknown", ""));
+                    csvWriter.write(String.format("%s,%s,%s\n", stripJARNameFromPath(entry), "unknown", ""));
                 }
             }
             csvWriter.flush();

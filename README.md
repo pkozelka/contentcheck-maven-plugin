@@ -1,22 +1,22 @@
 # Maven Content Check Plugin
 
-Maven Content Check plugin is able to perform various kind of content checks on project's output artifact. There is a couple of use cases for such kind of check.
+Maven Content Check plugin is able to perform various kind of content checks on project's output artifact (source file). There is a couple of use cases for such kind of check.
 
 * legal issues 
- * an archive must contain only approved 3rd party libraries 
- * an archive must contain a license file
+ * source file must contain only approved 3rd party libraries
+ * source file must contain a license file
 * content completeness
- * an archive must/must not contain some files
+ * source file must/must not contain some files
  
 # Goals
 
 ## contentcheck-maven-plugin:check
 
-The goal checks an archive content and reports unexpected or missing entries.
+The goal checks a content of specified source file (typically project artifact) and reports unexpected or missing entries.
 
 ### Usage
 
-Create "content.txt" text file and put this file into "src/main" directory of the some module. This file contains allowed and also expected entries that the archive should contain. You can also let the goal 'generate' create initial version of this file. 
+Create "content.txt" text file and put this file into "src/main" directory of the some module. This file contains allowed and also expected entries that the source file should contain. You can also let the goal 'generate' create initial version of this file.
 
 Now you can run the goal by following command, but  ensure that the archive is present in module's target directory.
 
@@ -25,7 +25,7 @@ Now you can run the goal by following command, but  ensure that the archive is p
 
 ## contentcheck-maven-plugin:generate
 
-The goal generates a content definition from a given archive.
+The goal generates a content definition from a given source.
 
 You can run the goal by following command
 
@@ -33,14 +33,14 @@ You can run the goal by following command
 
 ## contentcheck-maven-plugin:show-licenses   
 
-The goal shows license information for an archive entries. License information is gathered from dependency's POM, but a project may define additional mapping between files in a project archive and licenses. Please see section Additional license information structure.
+The goal shows license information for a source's entries. License information is gathered from dependency's POM, but a project may define additional mapping between files in a project archive and licenses. Please see section Additional license information structure.
 
 You can run the goal by following command
 
 ``mvn net.sf.buildbox.maven:contentcheck-maven-plugin:show-licenses``
 
 ## Configuration
-Put the following XML fragment to a POM file producing an archive (e.g. WAR) on which you would like to perform Maven Content Check Plugin's goals.
+Put the following XML fragment to a POM file producing an artifact (e.g. WAR or exploded directory) on which you would like to perform Maven Content Check Plugin's goals.
 
     <plugins>
         <plugin>
@@ -55,19 +55,22 @@ Put the following XML fragment to a POM file producing an archive (e.g. WAR) on 
 
 The plugin might be configured by following properties. If a property is valid only for some goals then a goal name will be specified.
 
-* *archive* The archive file to be checked
+* *archive* The archive file to be checked. If *directory* is specified then *archive* is ignored.
  * Default ``${project.build.directory}/${project.build.finalName}.${project.packaging}``
 
 * *contentListing* (valid for goals: check, generate) The content definition file (source of true)
  * Default ``src/main/content.txt``
 
 * *checkFilesPattern* An Ant like file pattern determines which files will be checked int the archive
- * Default ``WEB-INF/lib/*.jar`` (All JARs in WAR) 
+ * Default ``WEB-INF/lib/*.jar`` (All JARs in WAR)
 
-* *failOnUnexpected* (valid for goals: check) Break the build when the archive contains files that are not declared in the content definition file.
+* *directory* The directory file to be checked, takes a precedence before *archive*
+ * No default
+
+* *failOnUnexpected* (valid for goals: check) Break the build when the source contains files that are not declared in the content definition file.
  * Default ``true`` 
   
-* *failOnMissing*  (valid for goals: check) Break the build when the archive doesn't contain all files that are declared in the content definition file.
+* *failOnMissing*  (valid for goals: check) Break the build when the source doesn't contain all files that are declared in the content definition file.
  * Default ``false``
 
 * *ignoreVendorArchives* If it's true then doesn't check vendor JAR files. A vendor JAR file is determined by a value (*vendorId*) in its manifest key (*manifestVendorEntry*).
@@ -150,7 +153,7 @@ Matches every MANIFEST.MF with key/value pair ``Producer: com.example``.
 
 * empty lines and lines starting to # are ignored
 * one entry per line
-* path is relation to archive root
+* path is relation to source root
 
 WAR's content definition
 
