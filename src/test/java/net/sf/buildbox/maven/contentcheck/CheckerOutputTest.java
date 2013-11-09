@@ -21,6 +21,7 @@ public class CheckerOutputTest {
                 add("a.jar");
                 add("b.jar");
                 add("c.jar");
+                add("x-1.2.*.jar");
             }
         };
         
@@ -28,6 +29,7 @@ public class CheckerOutputTest {
             {
                 add("a.jar");
                 add("d.jar");
+                add("x-1.2.3.jar");
             }
         };
         
@@ -37,13 +39,13 @@ public class CheckerOutputTest {
     @Test
     public void testGetAllowedEntries() {
         assertThat(output.getAllowedEntries(), notNullValue());
-        assertThat(output.getAllowedEntries().size(), is(3));
+        assertThat(output.getAllowedEntries().size(), is(4));
 	}
 
     @Test
     public void testGetSourceEntries() {
         assertThat(output.getSourceEntries(), notNullValue());
-        assertThat(output.getSourceEntries().size(), is(2));
+        assertThat(output.getSourceEntries().size(), is(3));
     }
 
     @Test

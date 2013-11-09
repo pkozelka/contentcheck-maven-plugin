@@ -156,6 +156,7 @@ Matches every MANIFEST.MF with key/value pair ``Producer: com.example``.
 * empty lines and lines starting to # are ignored
 * one entry per line
 * path is relation to source root
+* Ant wildcards are support
 
 WAR's content definition
 
@@ -163,7 +164,8 @@ WAR's content definition
     WEB-INF/lib/akka-core_2.8.0-0.10.jar
     WEB-INF/lib/aopalliance-1.0.jar
     WEB-INF/lib/asm-3.2.jar
-    
+    WEB-INF/lib/spring-web-3.*.jar
+
 ## Additional license information structure
 
 Not all archive entries have to have license information defined in their POMs. Therefore you may define such additional information in JSON file ( ``src/main/license.mapping``). 
