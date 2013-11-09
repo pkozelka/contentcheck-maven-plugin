@@ -4,12 +4,12 @@
 
 Maven Content Check plugin is able to perform various kind of content checks on project's output artifact (source file). There is a couple of use cases for such kind of check.
 
-* legal issues 
+* legal issues
  * source file must contain only approved 3rd party libraries
  * source file must contain a license file
-* content completeness
+ * content completeness
  * source file must/must not contain some files
- 
+
 # Goals
 
 ## contentcheck-maven-plugin:check
@@ -33,7 +33,7 @@ You can run the goal by following command
 
 ``mvn net.sf.buildbox.maven:contentcheck-maven-plugin:generate``
 
-## contentcheck-maven-plugin:show-licenses   
+## contentcheck-maven-plugin:show-licenses
 
 The goal shows license information for a source's entries. License information is gathered from dependency's POM, but a project may define additional mapping between files in a project archive and licenses. Please see section Additional license information structure.
 
@@ -46,11 +46,11 @@ Put the following XML fragment to a POM file producing an artifact (e.g. WAR or 
 
     <plugins>
         <plugin>
-	    <groupId>net.sf.buildbox.maven</groupId>
-	    <artifactId>contentcheck-maven-plugin</artifactId>
-	    <version>1.0.0</version>
+        <groupId>net.sf.buildbox.maven</groupId>
+        <artifactId>contentcheck-maven-plugin</artifactId>
+        <version>1.0.0</version>
             <configuration>
-            <!-- optional configuration see below -->      
+            <!-- optional configuration see below -->
             </configuration>
         </plugin>
     </plugins>
@@ -70,16 +70,16 @@ The plugin might be configured by following properties. If a property is valid o
  * No default
 
 * *failOnUnexpected* (valid for goals: check) Break the build when the source contains files that are not declared in the content definition file.
- * Default ``true`` 
-  
+ * Default ``true``
+
 * *failOnMissing*  (valid for goals: check) Break the build when the source doesn't contain all files that are declared in the content definition file.
  * Default ``false``
 
 * *ignoreVendorArchives* If it's true then doesn't check vendor JAR files. A vendor JAR file is determined by a value (*vendorId*) in its manifest key (*manifestVendorEntry*).
  * Default ``false``
-   
+
 * *vendorId*  The vendor id. This value is used for JAR's manifest checking when *noCheckVendorArchives* is turned on.
-    
+
 * *manifestVendorEntry* The name of manifest entry that holds vendor's identification. This value is used for JAR's manifest checking when *noCheckVendorArchives* is turned on.
  * Default ``Implementation-Vendor-Id``
 
@@ -94,9 +94,9 @@ The plugin might be configured by following properties. If a property is valid o
 
 * *overwriteExistingListing* (valid for goals: generate) If it's true the 'generate' goal overwrite content listing file.
  * Default ``false``
- 
+
 * *csvOutput* (valid for goals: show-licenses) If true print the result of check to a CSV file in project build directory.
-  * Default ``true``  
+  * Default ``true``
 
 * *csvOutputFile* (valid for goals: show-licenses) The CSV output file that is used when (*csvOutput*) is turned on.
     * Default ``src/main/license.mapping``
@@ -104,7 +104,7 @@ The plugin might be configured by following properties. If a property is valid o
 Put the desired configuration properties into  ``configuration`` element
 
         <configuration>
-            <${propertyName}>${value}</${propertyName}>       
+            <${propertyName}>${value}</${propertyName}>
         </configuration>
 
 
@@ -118,14 +118,14 @@ It's quite common to ignore own  artifacts during checking. The plugin supports 
         <configuration>
            <archive>
                <manifestEntries>
-                   <Implementation-Vendor-Id>com.example</Implementation-Vendor-Id>                   
+                   <Implementation-Vendor-Id>com.example</Implementation-Vendor-Id>
                </manifestEntries>
           </archive>
        </configuration>
     </plugin>
 
 JAR plugin will produce ``MANIFEST.MF`` with key/value pair ``Implementation-Vendor-Id: com.example``.
- 
+
 Content check plugin has to be configured to *ignoreVendorArchives* for a given *vendorId*.
 
     <plugins>
@@ -135,17 +135,17 @@ Content check plugin has to be configured to *ignoreVendorArchives* for a given 
         <version>1.0.0</version>
         <configuration>
             <vendorId>com.example</vendorId>
-            <ignoreVendorArchives>true</ignoreVendorArchives>               
+            <ignoreVendorArchives>true</ignoreVendorArchives>
         </configuration>
     </plugin>
 
 You can put to *vendorId* whatever you want. You can also use any other key instead of ``Implementation-Vendor-Id`` for matching. A key name is specified by property *manifestVendorEntry*.
 
-       ... 
+       ...
        <configuration>
           <manifestVendorEntry>Producer</manifestVendorEntry>
           <vendorId>com.example</vendorId>
-          <ignoreVendorArchives>true</ignoreVendorArchives>               
+          <ignoreVendorArchives>true</ignoreVendorArchives>
        </configuration>
        ...
 
@@ -156,7 +156,7 @@ Matches every MANIFEST.MF with key/value pair ``Producer: com.example``.
 * empty lines and lines starting to # are ignored
 * one entry per line
 * path is relation to source root
-* Ant wildcards are support
+* Ant wildcards are supported
 
 WAR's content definition
 
@@ -168,7 +168,7 @@ WAR's content definition
 
 ## Additional license information structure
 
-Not all archive entries have to have license information defined in their POMs. Therefore you may define such additional information in JSON file ( ``src/main/license.mapping``). 
+Not all archive entries have to have license information defined in their POMs. Therefore you may define such additional information in JSON file ( ``src/main/license.mapping``).
 
 The JSON structure is defined as following
 
@@ -183,7 +183,7 @@ The JSON structure is defined as following
            }
        ]
      }
-     
+
 JSON license mapping example
 
      {
