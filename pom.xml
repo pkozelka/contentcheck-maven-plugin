@@ -12,7 +12,7 @@
         <artifactId>buildbox-pom</artifactId>
         <version>1.0.4</version>
     </parent>
-    <url>http://buildbox.sf.net/${project.artifactId}</url>
+    <url>http://buildbox.github.com/${project.artifactId}</url>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -99,6 +99,25 @@
                     </dependency>
                 </dependencies>
             </plugin>
+<!--
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.9</version>
+                <configuration>
+                    <message>Creating site for ${project.version}</message>
+                    &lt;!&ndash;<dryRun>true</dryRun>&ndash;&gt;
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+-->
         </plugins>
     </build>
     <reporting>

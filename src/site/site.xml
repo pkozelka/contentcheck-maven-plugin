@@ -1,33 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="contentcheck-maven-plugin" xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
-  <bannerLeft>
-    <name>contentcheck-maven-plugin</name>
-    <src>http://buildbox.sourceforge.net/logo-wide.png</src>
-    <href>http://buildbox.sourceforge.net/</href>
-  </bannerLeft>
-  <bannerRight>
-    <src>http://sflogo.sourceforge.net/sflogo.php?group_id=198902&amp;type=1</src>
-    <href>http://sourceforge.net/projects/buildbox</href>
-  </bannerRight>
-  <body>
-    <links>
-      <item name="Apache" href="http://www.apache.org/" />
-      <item name="Maven 2" href="http://maven.apache.org/"/>
-    </links>
+<project name="contentcheck-maven-plugin" xmlns="http://maven.apache.org/DECORATION/1.3.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd">
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.3.0</version>
+    </skin>
+    <custom>
+        <fluidoSkin>
+            <topBarEnabled>true</topBarEnabled>
+            <topBarIcon>
+                <name>Buildbox</name>
+                <alt>Buildbox</alt>
+                <src>http://buildbox.sourceforge.net/logo-wide.png</src>
+                <href>/index.html</href>
+            </topBarIcon>
+            <sideBarEnabled>false</sideBarEnabled>
+            <googleSearch>
+                <sitesearch>${project.url}</sitesearch>
+            </googleSearch>
+            <gitHub>
+                <projectId>buildbox/contentcheck-maven-plugin</projectId>
+                <ribbonOrientation>right</ribbonOrientation>
+                <ribbonColor>green</ribbonColor>
+            </gitHub>
+            <leftColumnClass>span2</leftColumnClass>
+            <bodyColumnClass>span10</bodyColumnClass>
+            <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+        </fluidoSkin>
+    </custom>
+    <publishDate position="right"/>
+    <version position="right"/>
 
-    <menu name="Overview">
-      <item name="Introduction" href="index.html"/>
-      <item name="Goals" href="plugin-info.html"/>
-      <item name="Readme @ github" href="https://github.com/buildbox/contentcheck-maven-plugin#readme"/>
-    </menu>
+    <body>
+        <links>
+            <item name="Apache" href="http://www.apache.org/"/>
+            <item name="Maven 2" href="http://maven.apache.org/"/>
+            <item name="Google groups" href="http://groups.google.com/group/buildbox"/>
+        </links>
 
-    <menu name="Buildbox">
-      <item name="GitHub" href="http://github.com/buildbox"/>
-      <item name="SourceForge" href="http://sourceforge.net/projects/buildbox"/>
-      <item name="Google groups" href="http://groups.google.com/group/buildbox"/>
-    </menu>
+        <breadcrumbs>
+            <item name="Buildbox" href="http://github.com/buildbox"/>
+            <item name="ContentCheck Maven Plugin"
+                  href="http://buildbox.github.com/contentcheck-maven-plugin/index.html"/>
+        </breadcrumbs>
 
-    <menu ref="reports"/>
-  </body>
+        <menu name="Overview">
+            <item name="Introduction" href="index.html"/>
+            <item name="Goals" href="plugin-info.html"/>
+            <item name="Readme @ github" href="https://github.com/buildbox/contentcheck-maven-plugin#readme"/>
+        </menu>
+        <menu ref="reports"/>
+    </body>
+    
 </project>

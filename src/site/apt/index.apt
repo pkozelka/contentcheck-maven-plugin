@@ -3,7 +3,7 @@
  ------
  Petr Kozelka
 
-Maven ContentCheck Plugin
+Overview
 
    The ContentCheck plugin is useful to keep control on what your deliverables exactly contain. The reality is, that even simple
    Maven project has quite nontrivial dependency graph, and adding a dependency, or even just switching to another version, may cause
