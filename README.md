@@ -128,8 +128,7 @@ JAR plugin will produce ``MANIFEST.MF`` with key/value pair ``Implementation-Ven
 
 Content check plugin has to be configured to *ignoreVendorArchives* for a given *vendorId*.
 
-    <plugins>
-        <plugin>
+    <plugin>
         <groupId>net.sf.buildbox.maven</groupId>
         <artifactId>contentcheck-maven-plugin</artifactId>
         <version>1.0.0</version>

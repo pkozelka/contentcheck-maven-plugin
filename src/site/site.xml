@@ -16,17 +16,14 @@
                 <src>http://buildbox.sourceforge.net/logo-wide.png</src>
                 <href>/index.html</href>
             </topBarIcon>
-            <sideBarEnabled>false</sideBarEnabled>
-            <googleSearch>
-                <sitesearch>${project.url}</sitesearch>
-            </googleSearch>
+            <sideBarEnabled>true</sideBarEnabled>
             <gitHub>
                 <projectId>buildbox/contentcheck-maven-plugin</projectId>
                 <ribbonOrientation>right</ribbonOrientation>
                 <ribbonColor>green</ribbonColor>
             </gitHub>
-            <leftColumnClass>span2</leftColumnClass>
-            <bodyColumnClass>span10</bodyColumnClass>
+            <leftColumnClass>span3</leftColumnClass>
+            <bodyColumnClass>span9</bodyColumnClass>
             <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
         </fluidoSkin>
     </custom>
@@ -34,24 +31,28 @@
     <version position="right"/>
 
     <body>
-        <links>
-            <item name="Apache" href="http://www.apache.org/"/>
-            <item name="Maven 2" href="http://maven.apache.org/"/>
-            <item name="Google groups" href="http://groups.google.com/group/buildbox"/>
-        </links>
-
         <breadcrumbs>
             <item name="Buildbox" href="http://github.com/buildbox"/>
             <item name="ContentCheck Maven Plugin"
                   href="http://buildbox.github.com/contentcheck-maven-plugin/index.html"/>
         </breadcrumbs>
 
-        <menu name="Overview">
-            <item name="Introduction" href="index.html"/>
+        <menu name="Documentation">
+            <item name="Overview" href="index.html"/>
             <item name="Goals" href="plugin-info.html"/>
-            <item name="Readme @ github" href="https://github.com/buildbox/contentcheck-maven-plugin#readme"/>
+            <item name="Usage" href="usage.html"/>
+            <item name="Configuration" href="configuration.html">
+                <item name="Ignore your own artifacts" href="own-artifacts.html"/>
+                <item name="Content definition file structure" href="content-def.html"/>
+                <item name="Additional license info" href="additional-lic-info.html"/>
+            </item>
         </menu>
-        <menu ref="reports"/>
+        <menu name="Links">
+            <item name="Apache" href="http://www.apache.org/"/>
+            <item name="Maven 2" href="http://maven.apache.org/"/>
+            <item name="Google groups" href="http://groups.google.com/group/buildbox"/>
+        </menu>
+        <menu name="Reports" ref="reports"/>
     </body>
     
 </project>
