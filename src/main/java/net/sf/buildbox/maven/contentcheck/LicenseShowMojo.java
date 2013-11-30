@@ -56,8 +56,7 @@ import org.apache.maven.shared.jar.classes.JarClassesAnalysis;
  * additional mapping between files in a project archive and licenses. This mapping
  * file is <cite>src/main/license.mapping.json</cite> and its structure is JSON.
  * <h4>Additional license information</h4>
- * <pre><code>
- * {
+ * <pre><code>{
  * "licenses": [
  *       {
  *          "name" : "License name",
@@ -67,13 +66,10 @@ import org.apache.maven.shared.jar.classes.JarClassesAnalysis;
  *            ]
  *       }
  *  ]
- * }
- * </code></pre>
+ * }</code></pre>
  * <h4>Example</h4>
- * <pre><code>
- * {
- * "licenses": [
- *
+ * <pre><code>{
+ *    "licenses": [
  *       {
  *           "name"  : "The LGPL license 2.1",
  *           "url"   : "http://www.gnu.org/licenses/lgpl-2.1.html",
@@ -81,7 +77,6 @@ import org.apache.maven.shared.jar.classes.JarClassesAnalysis;
  *                         "aspectwerkz-nodeps-jdk5-2.2.1.jar"
  *           ]
  *       },
- *
  *       {
  *           "name"  : "The public domain",
  *           "url"   : "http://creativecommons.org/licenses/publicdomain/",
@@ -90,9 +85,8 @@ import org.apache.maven.shared.jar.classes.JarClassesAnalysis;
  *               "xyz.jar"
  *           ]
  *       }
- *   ]
- * }
- * </code></pre>
+ *    ]
+ * }</code></pre>
  *
  * @goal show-licenses
  */

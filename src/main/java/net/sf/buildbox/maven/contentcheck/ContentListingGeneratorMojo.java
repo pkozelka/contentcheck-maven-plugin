@@ -12,10 +12,10 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
- * MOJO for content listing generation from a given source file. This MOJO takes {@link #getSourceFile()}
- * and generates its content to {@link #getContentListing()}.The MOJO generates
- * to the output only entities that matches criteria defined by {@link #getCheckFilesPattern()} 
- * and {@link #isIgnoreVendorArchives()}.
+ * Generates content listing for archive specified by {@link #getSourceFile() sourceFile}
+ * and generates its content to file specified into {@link #getContentListing() contentListing}.
+ * Only entities matching criteria defined by {@link #getCheckFilesPattern() checkFilePattern} 
+ * and {@link #isIgnoreVendorArchives() ignoreVendorArchives} are generated.
  *
  * @goal generate
  */

@@ -7,7 +7,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
- * This MOJO checks an archive content according to an authoritative source. This authoritative source
+ * Checks the archive content according to an authoritative source. This authoritative source
  * defines set of allowed files in the archive.
  *
  * @goal check
