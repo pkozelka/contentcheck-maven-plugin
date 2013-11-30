@@ -20,7 +20,7 @@
 
     
             </head>
-        <body class="topBarEnabled">
+        <body class="topBarDisabled">
           
     
     
@@ -35,112 +35,12 @@
   
                 
                     
-                
-
-    <div id="topbar" class="navbar navbar-fixed-top ">
-      <div class="navbar-inner">
-                <div class="container-fluid">
-        <a data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </a>
-                
-                                                                                <a class="brand" href="index.html"  title="Buildbox">
-
-                                
-                                                                                                <img src="http://buildbox.sourceforge.net/logo-wide.png" alt="Buildbox" />
-                
-                </a>
-                    
-                                <ul class="nav">
-                          <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-        
-                      <li>      <a href="index.html"  title="Overview">Overview</a>
-</li>
-                  
-                      <li>      <a href="plugin-info.html"  title="Goals">Goals</a>
-</li>
-                  
-                      <li>      <a href="usage.html"  title="Usage">Usage</a>
-</li>
-                  
-                      <li class="dropdown-submenu">
-                                      <a href="configuration.html"  title="Configuration">Configuration</a>
-              <ul class="dropdown-menu">
-                                  <li>      <a href="own-artifacts.html"  title="Ignore your own artifacts">Ignore your own artifacts</a>
-</li>
-                                  <li>      <a href="content-def.html"  title="Content definition file structure">Content definition file structure</a>
-</li>
-                                  <li>      <a href="additional-lic-info.html"  title="Additional license info">Additional license info</a>
-</li>
-                              </ul>
-            </li>
-                          </ul>
-      </li>
-                <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Links <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-        
-                      <li>      <a href="http://www.apache.org/"  title="Apache">Apache</a>
-</li>
-                  
-                      <li>      <a href="http://maven.apache.org/"  title="Maven 2">Maven 2</a>
-</li>
-                  
-                      <li>      <a href="http://groups.google.com/group/buildbox"  title="Google groups">Google groups</a>
-</li>
-                          </ul>
-      </li>
-                <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-        
-                      <li class="dropdown-submenu">
-                                      <a href="project-info.html"  title="Project Information">Project Information</a>
-              <ul class="dropdown-menu">
-                                  <li>      <a href="dependencies.html"  title="Dependencies">Dependencies</a>
-</li>
-                                  <li>      <a href="team-list.html"  title="Project Team">Project Team</a>
-</li>
-                                  <li>      <a href="issue-tracking.html"  title="Issue Tracking">Issue Tracking</a>
-</li>
-                                  <li>      <a href="license.html"  title="Project License">Project License</a>
-</li>
-                                  <li>      <a href="source-repository.html"  title="Source Repository">Source Repository</a>
-</li>
-                                  <li>      <a href="project-summary.html"  title="Project Summary">Project Summary</a>
-</li>
-                              </ul>
-            </li>
-                  
-                      <li class="dropdown-submenu">
-                                      <a href="project-reports.html"  title="Project Reports">Project Reports</a>
-              <ul class="dropdown-menu">
-                                  <li>      <a href="plugin-info.html"  title="Plugin Documentation">Plugin Documentation</a>
-</li>
-                              </ul>
-            </li>
-                          </ul>
-      </li>
-                  </ul>
-          
-          
-          
-                   
-                      </div>
-          
-        </div>
-      </div>
-    </div>
     
         <div class="container-fluid">
           <div id="banner">
         <div class="pull-left">
                                 <div id="bannerLeft">
-                <h2>Maven Content Check Plugin</h2>
+                <h2></h2>
                 </div>
                       </div>
         <div class="pull-right">  </div>
@@ -194,19 +94,12 @@
           <i class="none"></i>
         Goals</a>
             </li>
-                  
-      <li>
-    
-                          <a href="usage.html" title="Usage">
-          <i class="none"></i>
-        Usage</a>
-            </li>
                                                                                                   
       <li>
     
-                          <a href="configuration.html" title="Configuration">
+                          <a href="usage.html" title="Usage">
           <i class="icon-chevron-down"></i>
-        Configuration</a>
+        Usage</a>
                     <ul class="nav nav-list">
                       
       <li>
@@ -278,10 +171,16 @@
                             <div class="clear"></div>
                             <div class="clear"></div>
                             <div class="clear"></div>
-                             <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
-        <img class="builtBy" alt="Built by Maven" src="./images/logos/maven-feather.png" />
+                                                                                                                   <a href="http://maven.apache.org" title="Apache Maven" class="builtBy">
+        <img class="builtBy"  alt="Apache Maven" src="http://maven.apache.org/images/logos/maven-feather.png"    />
       </a>
-                  </div>
+                                                                                                          <a href="https://travis-ci.org/buildbox/contentcheck-maven-plugin" title="Travis CI" class="builtBy">
+        <img class="builtBy"  alt="Travis CI" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAAA8CAYAAACJmDMtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4NkEwNTRBMTFEQzkxMUUzQkYxQ0JDMUUzMTZDRTlERSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4NkEwNTRBMjFEQzkxMUUzQkYxQ0JDMUUzMTZDRTlERSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjg2QTA1NDlGMURDOTExRTNCRjFDQkMxRTMxNkNFOURFIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjg2QTA1NEEwMURDOTExRTNCRjFDQkMxRTMxNkNFOURFIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+gr6wkwAACqBJREFUeNrsXQtw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"   width="90"  />
+      </a>
+                                                                                                          <a href="http://github.com/buildbox" title="Buildbox" class="builtBy">
+        <img class="builtBy"  alt="Buildbox" src="buildbox-logo-wide.svg"    />
+      </a>
+                      </div>
           </div>
         </div>
         
@@ -333,8 +232,7 @@ JSON.</p>
            ]
       }
  ]
-}
-</tt>
+}</tt>
 </pre></div>
 
 </div>
@@ -345,8 +243,7 @@ JSON.</p>
 <pre>
 <tt>
 {
-&quot;licenses&quot;: [
-
+   &quot;licenses&quot;: [
       {
           &quot;name&quot;  : &quot;The LGPL license 2.1&quot;,
           &quot;url&quot;   : &quot;http://www.gnu.org/licenses/lgpl-2.1.html&quot;,
@@ -354,7 +251,6 @@ JSON.</p>
                         &quot;aspectwerkz-nodeps-jdk5-2.2.1.jar&quot;
           ]
       },
-
       {
           &quot;name&quot;  : &quot;The public domain&quot;,
           &quot;url&quot;   : &quot;http://creativecommons.org/licenses/publicdomain/&quot;,
@@ -363,9 +259,8 @@ JSON.</p>
               &quot;xyz.jar&quot;
           ]
       }
-  ]
-}
-</tt>
+   ]
+}</tt>
 </pre></div></div>
       
 <p><b>Attributes</b>:</p>
