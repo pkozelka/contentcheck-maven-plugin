@@ -1,5 +1,21 @@
 # Usage
 
+Put the following XML fragment to a POM file producing an artifact (e.g. WAR or exploded directory) on which you would like to perform Maven Content Check Plugin's goals.
+
+    <plugins>
+        <plugin>
+        <groupId>net.sf.buildbox.maven</groupId>
+        <artifactId>contentcheck-maven-plugin</artifactId>
+        <version>1.0.0</version>
+            <configuration>
+                <!-- optional configuration see below -->
+            </configuration>
+        </plugin>
+    </plugins>
+
+
+TODO: add sequence of recommended steps here
+
 ## contentcheck-maven-plugin:check
 
 The goal checks a content of specified source file (typically project artifact) and reports unexpected or missing entries.
