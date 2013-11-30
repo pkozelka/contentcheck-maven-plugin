@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="contentcheck-maven-plugin" xmlns="http://maven.apache.org/DECORATION/1.3.0"
+<project name="contentcheck-maven-plugin" xmlns="http://maven.apache.org/DECORATION/1.4.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.3.0 http://maven.apache.org/xsd/decoration-1.3.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 http://maven.apache.org/xsd/decoration-1.4.0.xsd">
+    <bannerLeft>
+        <name></name>
+    </bannerLeft>
+<!--
+    <bannerLeft>
+        <name>Buildbox</name>
+        <alt>Buildbox</alt>
+        <src>buildbox-logo-wide.svg</src>
+        <href>http://github.com/buildbox</href>
+        <title>ContentCheck Maven Plugin</title>
+    </bannerLeft>
+-->
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
@@ -9,11 +21,11 @@
     </skin>
     <custom>
         <fluidoSkin>
-            <topBarEnabled>true</topBarEnabled>
+            <topBarEnabled>false</topBarEnabled>
             <topBarIcon>
                 <name>Buildbox</name>
                 <alt>Buildbox</alt>
-                <src>http://buildbox.sourceforge.net/logo-wide.png</src>
+                <src>buildbox-logo-wide.svg</src>
                 <href>/index.html</href>
             </topBarIcon>
             <sideBarEnabled>true</sideBarEnabled>
@@ -54,5 +66,17 @@
         </menu>
         <menu name="Reports" ref="reports"/>
     </body>
+    <poweredBy>
+        <logo img="http://maven.apache.org/images/logos/maven-feather.png" 
+              href="http://maven.apache.org" 
+              name="Apache Maven" position="left"/>
+        <logo img="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAAA8CAYAAACJmDMtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4NkEwNTRBMTFEQzkxMUUzQkYxQ0JDMUUzMTZDRTlERSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4NkEwNTRBMjFEQzkxMUUzQkYxQ0JDMUUzMTZDRTlERSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjg2QTA1NDlGMURDOTExRTNCRjFDQkMxRTMxNkNFOURFIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjg2QTA1NEEwMURDOTExRTNCRjFDQkMxRTMxNkNFOURFIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+gr6wkwAACqBJREFUeNrsXQtw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"
+              href="https://travis-ci.org/buildbox/contentcheck-maven-plugin"
+              width="90"
+              name="Travis CI"/>
+        <logo img="buildbox-logo-wide.svg"
+              href="http://github.com/buildbox"
+              name="Buildbox"  position="right"/>
+    </poweredBy>
     
 </project>
