@@ -16,6 +16,11 @@ Put the following XML fragment to a POM file producing an artifact (e.g. WAR or 
 
 TODO: add sequence of recommended steps here
 
+* add basic plugin definition
+* generate initial list
+* edit the list - add regexes, review libraries, ...
+* commit first checking version
+
 ## contentcheck-maven-plugin:check
 
 The goal checks a content of specified source file (typically project artifact) and reports unexpected or missing entries.
