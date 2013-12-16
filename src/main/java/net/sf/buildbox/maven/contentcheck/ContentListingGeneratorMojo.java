@@ -2,8 +2,7 @@ package net.sf.buildbox.maven.contentcheck;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 
 import net.sf.buildbox.maven.contentcheck.introspection.DefaultIntrospector;
@@ -34,7 +33,8 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
 
         final DefaultIntrospector introspector = new DefaultIntrospector(getLog(), isIgnoreVendorArchives(), getVendorId(), getManifestVendorEntry(), getCheckFilesPattern());
         final int count = introspector.readEntries(getSourceFile());
-        final Set<String> sourceEntries = introspector.getEntries();
+        final List<String> sourceEntries = new ArrayList<String>(introspector.getEntries());
+        Collections.sort(sourceEntries);
         getLog().info(String.format("The source contains entries %d, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));
 
         getContentListing().getParentFile().mkdirs();
