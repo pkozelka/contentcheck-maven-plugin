@@ -12,7 +12,6 @@ import java.util.UUID;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
 
 /**
  * This class provides archive's content introspection in a template manner. Please
@@ -29,6 +28,7 @@ public abstract class AbstractIntrospector {
     private final String vendorId;
     private final String manifestVendorEntry;
     private final String checkFilesPattern;
+    //TODO: option to ignore snapshots
 
     public AbstractIntrospector(Log log, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
         this.log = log;

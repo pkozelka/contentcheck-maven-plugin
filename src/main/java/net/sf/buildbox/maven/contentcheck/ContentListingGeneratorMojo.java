@@ -35,7 +35,8 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
         final int count = introspector.readEntries(getSourceFile());
         final List<String> sourceEntries = new ArrayList<String>(introspector.getEntries());
         Collections.sort(sourceEntries);
-        getLog().info(String.format("The source contains entries %d, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));
+        getLog().info(String.format("The source contains %d entries, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));
+        //TODO: explain/display the criteria
 
         getContentListing().getParentFile().mkdirs();
         final FileWriter writer = new FileWriter(getContentListing());
