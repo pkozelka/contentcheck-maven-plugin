@@ -37,6 +37,7 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
         final Set<String> sourceEntries = introspector.getEntries();
         getLog().info(String.format("The source contains entries %d, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));
 
+        getContentListing().getParentFile().mkdirs();
         final FileWriter writer = new FileWriter(getContentListing());
         try {
             writer.write("# Content listing generated Maven Content Check Plugin (https://github.com/buildbox/contentcheck-maven-plugin)\n");
