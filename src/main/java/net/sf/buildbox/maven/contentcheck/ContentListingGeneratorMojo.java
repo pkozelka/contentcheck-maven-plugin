@@ -22,7 +22,7 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
 
     /**
      * This parameter allows overwriting existing listing file.
-     * @parameter default-value="false"
+     * @parameter default-value="false" expression="${overwriteExistingListing}"
      */
     private boolean overwriteExistingListing; 
 
