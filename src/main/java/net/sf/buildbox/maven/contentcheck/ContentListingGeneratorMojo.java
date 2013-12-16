@@ -12,8 +12,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
- * Generates content listing for archive specified by {@link #getSourceFile() sourceFile}
- * and generates its content to file specified into {@link #getContentListing() contentListing}.
+ * Scans content listing of archive specified by {@link #getSourceFile() sourceFile}
+ * and writes it to file specified into {@link #getContentListing() contentListing}.
  * Only entities matching criteria defined by {@link #getCheckFilesPattern() checkFilePattern} 
  * and {@link #isIgnoreVendorArchives() ignoreVendorArchives} are generated.
  *
@@ -32,15 +32,13 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
             throw new MojoFailureException(String.format("Content listing file '%s' already exists. Please set overwriteExistingListing property in plugin configuration or delete this listing file.", getContentListing().getPath()));
         }
 
-        DefaultIntrospector introspector = new DefaultIntrospector(getLog(), isIgnoreVendorArchives(), getVendorId(), getManifestVendorEntry(), getCheckFilesPattern());
-        int count = introspector.readEntries(getSourceFile());
-        Set<String> sourceEntries = introspector.getEntries();
+        final DefaultIntrospector introspector = new DefaultIntrospector(getLog(), isIgnoreVendorArchives(), getVendorId(), getManifestVendorEntry(), getCheckFilesPattern());
+        final int count = introspector.readEntries(getSourceFile());
+        final Set<String> sourceEntries = introspector.getEntries();
         getLog().info(String.format("The source contains entries %d, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));
-        
 
-        FileWriter writer = null;
+        final FileWriter writer = new FileWriter(getContentListing());
         try {
-            writer = new FileWriter(getContentListing());
             writer.write("# Content listing generated Maven Content Check Plugin (https://github.com/buildbox/contentcheck-maven-plugin)\n");
             writer.write("#\n");
             writer.write(String.format("# At '%s' \n", new Date().toString()));
@@ -49,18 +47,14 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
             writer.write("#\n");
             writer.write("# Feel free to edit this file\n");
             writer.write("\n");
-            for (String entryName : sourceEntries) {
+            for (final String entryName : sourceEntries) {
                 writer.write(entryName);
                 writer.write("\n");
-        }
-        } finally {
-            try {
-                writer.close();
-            } catch(IOException e) {
-                //close silently
             }
+        } finally {
+            writer.close();
         }
-        getLog().info(String.format("The listing file '%s' has been succesfully generated.", getContentListing()));
+        getLog().info(String.format("The listing file '%s' has been successfully generated.", getContentListing()));
     }
 
 }
