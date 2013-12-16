@@ -59,7 +59,6 @@ public abstract class AbstractIntrospector {
             inputStrategy = new ZipArchiveIntrospectorStrategy();
         }
 
-        log.info("Reading source file:" + sourceFile);
         int totalCnt = 0;
         for (String entry : inputStrategy.readAllEntries(sourceFile)) {
             totalCnt++;
