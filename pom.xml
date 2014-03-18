@@ -8,9 +8,9 @@
     <packaging>maven-plugin</packaging>
     <name>Maven Content Check Plugin</name>
     <parent>
-        <groupId>net.sf.buildbox.maven</groupId>
-        <artifactId>buildbox-pom</artifactId>
-        <version>1.0.4</version>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
     </parent>
     <url>http://buildbox.github.com/${project.artifactId}</url>
     <dependencies>
