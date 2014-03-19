@@ -8,6 +8,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
+ * @todo improve design
+ * @todo write tests
  * @author Petr Kozelka
  */
 public class ClassConflictDetector {
@@ -60,7 +62,6 @@ public class ClassConflictDetector {
 
     public static ClassConflictDetector exploreWar(File war) throws IOException {
         final ClassConflictDetector ccd = new ClassConflictDetector();
-        //TODO: iterate over all inner jars
         final ZipInputStream waris = new ZipInputStream(new FileInputStream(war));
         ZipEntry entry = waris.getNextEntry();
         while (entry != null) {
@@ -75,14 +76,8 @@ public class ClassConflictDetector {
         return ccd;
     }
 
-    public static void main(String[] args) throws IOException {
-        final int previewThreshold = 5;
-        final File war = new File(args[0]);
-
-        System.out.println("Detecting conflict in " + war);
-        System.out.println("Class preview threshold: " + previewThreshold);
-        final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(war);
-        final List<ArchiveInfo> sortedConflictingArchives = new ArrayList<ArchiveInfo>(ccd.getConflictingArchives());
+    public void printResults(int previewThreshold) {
+        final List<ArchiveInfo> sortedConflictingArchives = new ArrayList<ArchiveInfo>(getConflictingArchives());
         Collections.sort(sortedConflictingArchives, new Comparator<ArchiveInfo>() {
             public int compare(ArchiveInfo o1, ArchiveInfo o2) {
                 return o1.getKey().compareTo(o2.getKey());
@@ -111,6 +106,17 @@ public class ClassConflictDetector {
         System.out.println(String.format("Total: %d conflict affects %d of %d archives.",
                 totalConflicts,
                 sortedConflictingArchives.size(),
-                ccd.getExploredArchives().size()));
+                getExploredArchives().size()));
+    }
+
+    //TODO: move this to cli
+    public static void main(String[] args) throws IOException {
+        final int previewThreshold = 5;
+        final File war = new File(args[0]);
+
+        System.out.println("Detecting conflict in " + war);
+        System.out.println("Class preview threshold: " + previewThreshold);
+        final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(war);
+        ccd.printResults(previewThreshold);
     }
 }
