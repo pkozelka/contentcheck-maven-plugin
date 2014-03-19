@@ -164,7 +164,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
     /**
      * Local Repository.
      *
-     * @parameter expression="${localRepository}"
+     * @parameter property="localRepository"
      * @required
      * @readonly
      */
@@ -180,7 +180,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
     /**
      * The current user system settings for use in Maven.
      *
-     * @parameter expression="${settings}"
+     * @parameter property="settings"
      * @required
      * @readonly
      * @since 2.3

@@ -73,7 +73,7 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     /**
      * The Maven Project.
      *
-     * @parameter expression="${project}"
+     * @parameter property="project"
      * @required
      * @readonly
      */
