@@ -22,4 +22,6 @@ Legal issues
 
 Technical issues
 
-* a frequently used dependency must not get into runtime (like `junit.jar`, `servlet.jar` etc.)
+* libraries provided by application server must not get into runtime (`servlet.jar`, `mail.jar` etc.)
+* non-production libraries, used for testing, coverage, debugging and other development-time purpose, must stay away from the production archive
+* libraries with conflicting classes can cause problems, and should be added carefully
