@@ -76,7 +76,7 @@ public class ClassConflictDetector {
         return ccd;
     }
 
-    public void printResults(int previewThreshold) {
+    public void printResults(int previewThreshold, LineOutput output) {
         final List<ArchiveInfo> sortedConflictingArchives = new ArrayList<ArchiveInfo>(getConflictingArchives());
         Collections.sort(sortedConflictingArchives, new Comparator<ArchiveInfo>() {
             public int compare(ArchiveInfo o1, ArchiveInfo o2) {
@@ -85,25 +85,28 @@ public class ClassConflictDetector {
         });
         int totalConflicts = 0;
         for (ArchiveInfo cai : sortedConflictingArchives) {
-            System.out.println(String.format("\nFile '%s' has", cai.getKey()));
+            output.println("");
+            output.println(String.format("File '%s' has", cai.getKey()));
             final List<Conflict> sortedConflicts = new ArrayList<Conflict>(cai.getConflicts());
             Collections.sort(sortedConflicts, new Comparator<Conflict>() {
                 public int compare(Conflict o1, Conflict o2) {
-                    return o1.otherArchive.getKey().compareTo(o2.otherArchive.getKey());
+                    return o1.getOtherArchive().getKey().compareTo(o2.getOtherArchive().getKey());
                 }
             });
             for (Conflict conflict : sortedConflicts) {
-                totalConflicts += conflict.resources.size();
-                System.out.println(String.format("%8d class conflict with '%s'", conflict.resources.size(), conflict.otherArchive.getKey()));
-                if (conflict.resources.size() < previewThreshold) {
-                    for (ResourceInfo resource : conflict.resources) {
-                        System.out.println(String.format("                %s", resource.key));
+                final List<ResourceInfo> conflictResources = conflict.getResources();
+                final int conflictResourceCount = conflictResources.size();
+                totalConflicts += conflictResourceCount;
+                output.println(String.format("%8d class conflicts with '%s'", conflictResourceCount, conflict.getOtherArchive().getKey()));
+                if (conflictResourceCount < previewThreshold) {
+                    for (ResourceInfo resource : conflictResources) {
+                        output.println(String.format("                %s", resource.key));
                     }
                 }
             }
         }
-        System.out.println("-------------------------------------------------");
-        System.out.println(String.format("Total: %d conflict affects %d of %d archives.",
+        output.println("-------------------------------------------------");
+        output.println(String.format("Total: %d conflicts affect %d of %d archives.",
                 totalConflicts,
                 sortedConflictingArchives.size(),
                 getExploredArchives().size()));
@@ -117,6 +120,15 @@ public class ClassConflictDetector {
         System.out.println("Detecting conflict in " + war);
         System.out.println("Class preview threshold: " + previewThreshold);
         final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(war);
-        ccd.printResults(previewThreshold);
+        ccd.printResults(previewThreshold, new LineOutput() {
+            @Override
+            public void println(String line) {
+                System.out.println(line);
+            }
+        });
+    }
+
+    public static interface LineOutput {
+        void println(String line);
     }
 }

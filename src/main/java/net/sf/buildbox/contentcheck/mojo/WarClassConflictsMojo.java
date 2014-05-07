@@ -25,6 +25,11 @@ public class WarClassConflictsMojo extends AbstractMojo {
      */
     private File war;
 
+    /**
+     * @parameter default-value="5"
+     */
+    private int previewThreshold;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
             final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(war);
@@ -32,9 +37,12 @@ public class WarClassConflictsMojo extends AbstractMojo {
             if (!conflictingArchives.isEmpty()) {
                 final String errorMessage = String.format("Found %d conflicting archives in %s", conflictingArchives.size(), war);
                 getLog().error(errorMessage);
-                for (ArchiveInfo conflict : conflictingArchives) {
-                    getLog().error(conflict.getKey());
-                }
+                ccd.printResults(previewThreshold, new ClassConflictDetector.LineOutput() {
+                    @Override
+                    public void println(String line) {
+                        getLog().error(line);
+                    }
+                });
                 throw new MojoFailureException(errorMessage);
             }
         } catch (IOException e) {

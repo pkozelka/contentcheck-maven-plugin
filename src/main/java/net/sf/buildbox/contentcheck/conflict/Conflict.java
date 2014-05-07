@@ -20,4 +20,12 @@ public class Conflict {
     public void addResource(ResourceInfo ri) {
         resources.add(ri);
     }
+
+    public ArchiveInfo getOtherArchive() {
+        return otherArchive;
+    }
+
+    public List<ResourceInfo> getResources() {
+        return resources;
+    }
 }
