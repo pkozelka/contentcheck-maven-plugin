@@ -5,7 +5,9 @@
 <module name="Checker">
     <!--<module name="JavadocPackage"/>-->
     <module name="TreeWalker">
-        <module name="AvoidStarImport"/>
+        <module name="AvoidStarImport">
+            <property name="allowStaticMemberImports" value="true"/>
+        </module>
         <module name="ConstantName"/>
         <module name="EmptyBlock"/>
     </module>

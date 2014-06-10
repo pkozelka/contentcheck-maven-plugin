@@ -2,11 +2,11 @@ package net.sf.buildbox.contentcheck.mojo;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
-
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import net.sf.buildbox.contentcheck.introspection.DefaultIntrospector;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 

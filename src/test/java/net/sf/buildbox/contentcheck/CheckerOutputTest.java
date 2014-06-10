@@ -7,7 +7,6 @@ import static org.junit.Assert.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import net.sf.buildbox.contentcheck.CheckerOutput;
 import org.junit.Before;
 import org.junit.Test;
 
