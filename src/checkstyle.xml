@@ -10,5 +10,7 @@
         </module>
         <module name="ConstantName"/>
         <module name="EmptyBlock"/>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
     </module>
 </module>
