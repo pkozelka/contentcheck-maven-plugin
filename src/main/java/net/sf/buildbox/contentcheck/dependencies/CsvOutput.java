@@ -28,20 +28,20 @@ public class CsvOutput implements LicenseOutput {
      * @see LicenseOutput#output(java.util.Map)
      */
     public void output(final Map<String, List<License>> entries) throws IOException{
-        Set<String> keySet = entries.keySet();
+        final Set<String> keySet = entries.keySet();
         FileWriter csvWriter = null;
         try {
             csvWriter = new FileWriter(outputFile);
             log.info(String.format("Creating license output to CSV file %s", outputFile.getPath()));
             for (String entry : keySet) {
-                List<License> licenses = entries.get(entry);
+                final List<License> licenses = entries.get(entry);
                 if(licenses.size() > 1) {
                     for(License licence : licenses) {
                         csvWriter.write(String.format("%s,%s,%s\n", stripJARNameFromPath(entry), safeString(licence.getName()), safeString(licence.getUrl())));
                     }
 
                 } else if(licenses.size() == 1) {
-                    License licence = licenses.get(0);
+                    final License licence = licenses.get(0);
                     csvWriter.write(String.format("%s,%s,%s\n", stripJARNameFromPath(entry), safeString(licence.getName()), safeString(licence.getUrl())));
                 } else {
                     csvWriter.write(String.format("%s,%s,%s\n", stripJARNameFromPath(entry), "unknown", ""));

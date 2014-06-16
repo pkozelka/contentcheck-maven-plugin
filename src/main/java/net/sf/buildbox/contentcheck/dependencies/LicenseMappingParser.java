@@ -27,8 +27,8 @@ public class LicenseMappingParser {
     }
 
     public Map<String, List<License>> parseLicenseMappingFile() throws IOException, MojoFailureException{
-        String licenseMappingFilePath = licenseMappingFile.getPath();
-        Map<String, Object> json;
+        final String licenseMappingFilePath = licenseMappingFile.getPath();
+        final Map<String, Object> json;
         try {
             log.info(String.format("Reading license mapping file %s", licenseMappingFilePath));
             json= objectMapper.readValue(licenseMappingFile, Map.class);
@@ -37,14 +37,14 @@ public class LicenseMappingParser {
         } catch (JsonMappingException e) {
             throw new MojoFailureException(String.format("Cannot deserialize JSON from file %s", licenseMappingFilePath),e);
         }
-        Map <String, List<License>> fileToLicenseMapping = new HashMap<String, List<License>>();
-        List<Map<String, Object>> jsonLicenses = (List<Map<String, Object>>) json.get("licenses");
+        final Map <String, List<License>> fileToLicenseMapping = new HashMap<String, List<License>>();
+        final List<Map<String, Object>> jsonLicenses = (List<Map<String, Object>>) json.get("licenses");
         //construct model objects from JSON
         for (Map<String, Object> jsonLicense : jsonLicenses) {
-            License license = new License();
+            final License license = new License();
             license.setName((String) jsonLicense.get("name"));
             license.setUrl((String) jsonLicense.get("url"));
-            List<String> fileNames = (List<String>) jsonLicense.get("files");
+            final List<String> fileNames = (List<String>) jsonLicense.get("files");
             for (String fileName : fileNames) {
                 fileToLicenseMapping.put(fileName, Arrays.asList(license));
             }

@@ -45,8 +45,8 @@ public class ContentChecker {
      */
     public CheckerOutput check(final File listingFile, final File sourceFile) throws IOException{
         final Set<String> allowedEntries = readListing(listingFile);
-        DefaultIntrospector introspector = new DefaultIntrospector(log, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-        int count = introspector.readEntries(sourceFile);
+        final DefaultIntrospector introspector = new DefaultIntrospector(log, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+        final int count = introspector.readEntries(sourceFile);
         //XXX dagi: duplicit entries detection https://github.com/buildbox/contentcheck-maven-plugin/issues#issue/4
         final Set<String> entries = introspector.getEntries();
         log.info(String.format("'%s' contains %d checked and %d total files", sourceFile, entries.size(), count));
@@ -63,7 +63,7 @@ public class ContentChecker {
             while ((line = reader.readLine())!= null) {
                 totalCnt ++;
                 line = line.trim();
-                boolean ignoreLine = line.length() == 0 || line.startsWith("#");// we ignore empty and comments lines
+                final boolean ignoreLine = line.length() == 0 || line.startsWith("#");// we ignore empty and comments lines
                 if (!ignoreLine) { 
                     if(expectedPaths.contains(line)) {
                         log.warn("The listing file " + listingFile + "  defines duplicate entry " + line);

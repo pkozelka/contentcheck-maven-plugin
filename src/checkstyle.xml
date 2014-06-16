@@ -12,5 +12,6 @@
         <module name="EmptyBlock"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
+        <module name="FinalLocalVariable"/>
     </module>
 </module>

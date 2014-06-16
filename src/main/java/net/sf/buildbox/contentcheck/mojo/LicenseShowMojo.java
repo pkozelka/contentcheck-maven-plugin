@@ -215,24 +215,24 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
      */
     @Override
     protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
-        File sourceFile = getSourceFile();
+        final File sourceFile = getSourceFile();
         if(!sourceFile.exists()) {
             getLog().warn("Skipping project since there is no archive to being check.");
             return;
         }
 
-        List<MavenProject> mavenProjectForDependencies = getMavenProjectForDependencies();
+        final List<MavenProject> mavenProjectForDependencies = getMavenProjectForDependencies();
 
-        DefaultIntrospector introspector = new DefaultIntrospector(getLog(), isIgnoreVendorArchives(), getVendorId(), getManifestVendorEntry(), getCheckFilesPattern());
+        final DefaultIntrospector introspector = new DefaultIntrospector(getLog(), isIgnoreVendorArchives(), getVendorId(), getManifestVendorEntry(), getCheckFilesPattern());
         introspector.readEntries(sourceFile);
 
-        Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getEntries());
-        Map<String, List<License>> entries = new LinkedHashMap<String, List<License>>();
+        final Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getEntries());
+        final Map<String, List<License>> entries = new LinkedHashMap<String, List<License>>();
 
-        Map<String, List<License>> additionalLicenseInformation = new LinkedHashMap<String, List<License>>();
+        final Map<String, List<License>> additionalLicenseInformation = new LinkedHashMap<String, List<License>>();
         if(licenseMappingFile != null && licenseMappingFile.exists()) {
             //read additional license information
-            LicenseMappingParser licenseMappingParser = new LicenseMappingParser(getLog(), licenseMappingFile);
+            final LicenseMappingParser licenseMappingParser = new LicenseMappingParser(getLog(), licenseMappingFile);
             additionalLicenseInformation.putAll(licenseMappingParser.parseLicenseMappingFile());
         }
 
@@ -242,18 +242,18 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
 
             for (MavenProject mavenProject : mavenProjectForDependencies) {
                 mavenProject.getGroupId();
-                String artifactId = mavenProject.getArtifactId();
-                String version = mavenProject.getVersion();
-                String jarName = artifactId + "-" + version + ".jar"; //guess jar name
+                final String artifactId = mavenProject.getArtifactId();
+                final String version = mavenProject.getVersion();
+                final String jarName = artifactId + "-" + version + ".jar"; //guess jar name
                 if(archiveEntry.endsWith(jarName)) {
                     @SuppressWarnings("unchecked")
-                    List<License> _licenses = mavenProject.getLicenses();
+                    final List<License> _licenses = mavenProject.getLicenses();
                     licenses = _licenses == null || _licenses.size() == 0 ? null : _licenses  ;
                     break;
                 }
             }
 
-            List<License> licensesMappingFile = additionalLicenseInformation.get(stripJARNameFromPath(archiveEntry));
+            final List<License> licensesMappingFile = additionalLicenseInformation.get(stripJARNameFromPath(archiveEntry));
 
             if(licenses == null && licensesMappingFile == null) {//misising license information
                 getLog().debug(String.format("Cannot resolve license information for archive entry %s neither from the POM file nor the file for license mapping", archiveEntry));
@@ -271,29 +271,29 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
             }
         }
 
-        LicenseOutput logOutput = new LogOutput(getLog());
+        final LicenseOutput logOutput = new LogOutput(getLog());
         logOutput.output(entries);
 
         if(csvOutput) {
-            CsvOutput csvOutput = new CsvOutput(getLog(), csvOutputFile);
+            final CsvOutput csvOutput = new CsvOutput(getLog(), csvOutputFile);
             csvOutput.output(entries);
         }
     }
 
     private List<MavenProject> getMavenProjectForDependencies() throws MojoExecutionException, MojoFailureException {
-        DependencyNode dependencyTreeNode = resolveProject();
-        MavenProject project = getMavenProject();
-        Dependencies dependencies = new Dependencies( project, dependencyTreeNode, classesAnalyzer );
-        Log log = getLog();
-        RepositoryUtils repoUtils = new RepositoryUtils( log, wagonManager, settings, mavenProjectBuilder, factory, resolver, project.getRemoteArtifactRepositories(), project.getPluginArtifactRepositories(), localRepository,repositoryMetadataManager );
-        Artifact projectArtifact = project.getArtifact();
+        final DependencyNode dependencyTreeNode = resolveProject();
+        final MavenProject project = getMavenProject();
+        final Dependencies dependencies = new Dependencies( project, dependencyTreeNode, classesAnalyzer );
+        final Log log = getLog();
+        final RepositoryUtils repoUtils = new RepositoryUtils( log, wagonManager, settings, mavenProjectBuilder, factory, resolver, project.getRemoteArtifactRepositories(), project.getPluginArtifactRepositories(), localRepository,repositoryMetadataManager );
+        final Artifact projectArtifact = project.getArtifact();
         log.info(String.format("Resolving project %s:%s:%s dependencies", projectArtifact.getGroupId(), projectArtifact.getArtifactId(), projectArtifact.getVersion()));
-        List<Artifact> allDependencies = dependencies.getAllDependencies();
-        List<MavenProject> mavenProjects = new ArrayList<MavenProject>();
+        final List<Artifact> allDependencies = dependencies.getAllDependencies();
+        final List<MavenProject> mavenProjects = new ArrayList<MavenProject>();
         for (Artifact artifact : allDependencies) {
             log.debug(String.format("Resolving project information for %s:%s:%s", artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion()));
             try {
-                MavenProject mavenProject = repoUtils.getMavenProjectFromRepository(artifact);
+                final MavenProject mavenProject = repoUtils.getMavenProjectFromRepository(artifact);
                 mavenProjects.add(mavenProject);
             } catch (ProjectBuildingException e) {
                 throw new MojoFailureException(String.format("Cannot get project information for artifact %s:%s:%s from repository",artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion()), e);
@@ -309,7 +309,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
     {
         try
         {
-            ArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_TEST );
+            final ArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_TEST );
             return dependencyTreeBuilder.buildDependencyTree( getMavenProject(), localRepository, factory, artifactMetadataSource, artifactFilter, collector );
         }
         catch ( DependencyTreeBuilderException e )

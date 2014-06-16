@@ -20,12 +20,12 @@ public class LogOutput implements LicenseOutput {
      * @see LicenseOutput#output(java.util.Map)
      */
     public void output(final Map<String, List<License>> entries) {
-        Set<String> keySet = entries.keySet();
-        Set<String> knownEntries = new LinkedHashSet<String>();
-        Set<String> unknownEntries = new LinkedHashSet<String>();
+        final Set<String> keySet = entries.keySet();
+        final Set<String> knownEntries = new LinkedHashSet<String>();
+        final Set<String> unknownEntries = new LinkedHashSet<String>();
 
         for (String entry : keySet) {
-            List<License> licenses = entries.get(entry);
+            final List<License> licenses = entries.get(entry);
             if(licenses.size() > 1) {
                 String l = "";
                 for(License licence : licenses) {
@@ -33,7 +33,7 @@ public class LogOutput implements LicenseOutput {
                 }
                 knownEntries.add(String.format("%s has multiple licenses %s", entry, l));
             } else if(licenses.size() == 1) {
-                License licence = licenses.get(0);
+                final License licence = licenses.get(0);
                 knownEntries.add(String.format("%s %s (%s)", entry, licence.getName(), licence.getUrl()));
             } else {
                 unknownEntries.add(entry);

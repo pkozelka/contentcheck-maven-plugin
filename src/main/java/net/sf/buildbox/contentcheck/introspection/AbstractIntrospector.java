@@ -139,7 +139,7 @@ public abstract class AbstractIntrospector {
         try {
             final File tempFile = copyStreamToTemporaryFile(entryName, archiveEntryData);
             tempFile.deleteOnExit();
-            boolean vendorArchive = checkArchiveManifest(entryName, tempFile);
+            final boolean vendorArchive = checkArchiveManifest(entryName, tempFile);
             tempFile.delete();//only for sure if the plugin is used in long live JVM
             return vendorArchive;
         } finally {
@@ -154,11 +154,11 @@ public abstract class AbstractIntrospector {
         JarFile jarFile = null;
         try {
             jarFile = new JarFile(tempJAR);
-            Manifest manifest = jarFile.getManifest();
+            final Manifest manifest = jarFile.getManifest();
             if(manifest != null) {
-                Attributes mainAttributes = manifest.getMainAttributes();
+                final Attributes mainAttributes = manifest.getMainAttributes();
                 if(mainAttributes != null) {
-                    String vendor = mainAttributes.getValue(manifestVendorEntry);
+                    final String vendor = mainAttributes.getValue(manifestVendorEntry);
                     return vendorId.equals(vendor);
                 }
             }
