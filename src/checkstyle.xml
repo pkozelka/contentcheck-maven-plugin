@@ -13,5 +13,7 @@
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
         <module name="FinalLocalVariable"/>
+        <module name="Indentation"/>
+        <module name="InnerAssignment"/>
     </module>
 </module>
