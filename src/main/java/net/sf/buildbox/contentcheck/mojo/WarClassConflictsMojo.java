@@ -9,25 +9,27 @@ import org.apache.maven.plugin.MojoFailureException;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * This mojo looks for conflict within the libraries in given war.
+ * Looks for conflict within the libraries in given war.
  *
  * @author Petr Kozelka
- * @goal warcc
- * @phase test
  */
+@Mojo(name="warcc", defaultPhase = LifecyclePhase.TEST)
 public class WarClassConflictsMojo extends AbstractMojo {
     /**
      * The archive file to be checked
-     *
-     * @parameter default-value="${project.build.directory}/${project.build.finalName}.war" expression="${war}"
      */
+    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.war", property = "war")
     private File war;
 
     /**
-     * @parameter default-value="5"
+     * Conflicts will be listed inplace if there is not too many of them. This number specifies the limit.
      */
+    @Parameter(defaultValue = "5")
     private int previewThreshold;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
