@@ -12,7 +12,7 @@
         <artifactId>oss-parent</artifactId>
         <version>7</version>
     </parent>
-    <url>http://buildbox.github.com/${project.artifactId}</url>
+    <url>http://buildbox.github.io/${project.artifactId}</url>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -127,25 +127,27 @@
                     </dependency>
                 </dependencies>
             </plugin>
-<!--
             <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>0.9</version>
-                <configuration>
-                    <message>Creating site for ${project.version}</message>
-                    <!- -<dryRun>true</dryRun>- s->
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
                 <executions>
                     <execution>
-                        <phase>site</phase>
+                        <id>copy-site-resources</id>
+                        <phase>pre-site</phase>
                         <goals>
-                            <goal>site</goal>
+                            <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <target>
+                                <copy todir="${project.reporting.outputDirectory}">
+                                    <fileset dir="src/site/markdown" excludes="**/*.md"/>
+                                </copy>
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
--->
         </plugins>
     </build>
     <reporting>
