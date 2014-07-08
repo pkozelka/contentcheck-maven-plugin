@@ -9,22 +9,23 @@ import java.util.List;
 import net.sf.buildbox.contentcheck.introspection.DefaultIntrospector;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Scans content listing of archive specified by {@link #getSourceFile() sourceFile}
  * and writes it to file specified into {@link #getContentListing() contentListing}.
  * Only entities matching criteria defined by {@link #getCheckFilesPattern() checkFilePattern} 
  * and {@link #isIgnoreVendorArchives() ignoreVendorArchives} are generated.
- *
- * @goal generate
  */
+@Mojo(name = "generate")
 public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
 
     /**
      * This parameter allows overwriting existing listing file.
-     * @parameter default-value="false" expression="${overwriteExistingListing}"
      */
-    private boolean overwriteExistingListing; 
+    @Parameter(defaultValue = "false", property = "overwriteExistingListing")
+    boolean overwriteExistingListing;
 
     protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
         if(!overwriteExistingListing && getContentListing().exists()) {

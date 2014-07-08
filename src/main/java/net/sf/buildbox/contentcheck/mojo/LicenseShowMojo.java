@@ -32,6 +32,9 @@ import org.apache.maven.model.License;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugins.annotations.Component;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
@@ -87,128 +90,113 @@ import org.apache.maven.shared.jar.classes.JarClassesAnalysis;
  *       }
  *    ]
  * }</code></pre>
- *
- * @goal show-licenses
  */
+@Mojo(name = "show-licenses")
 public class LicenseShowMojo extends AbstractArchiveContentMojo{
 
 
     /**
      * The license mapping file. This file may define additional license information
      * for JARs that are not recognized.
-     *
-     * @parameter default-value="src/main/license.mapping.json" expression="${licenseMappingFile}"
      */
-    private File licenseMappingFile;
+    @Parameter(defaultValue = "true", property = "licenseMappingFile")
+    File licenseMappingFile;
 
 
     /**
      * If true print the result of check to a CSV file in project build directory.
      * See {@link #csvOutputFile}
-     *
-     * @parameter default-value="true"
      */
-    private boolean csvOutput;
+    @Parameter(defaultValue = "true")
+    boolean csvOutput;
 
     /**
      * The CSV output file that is used when {@link #csvOutput} is turned on.
-     *
-     * @parameter default-value="${project.build.directory}/licenses.csv"
      */
-    private File csvOutputFile;
+    @Parameter(defaultValue = "${project.build.directory}/licenses.csv")
+    File csvOutputFile;
 
     /**
      * The archive file to be checked
-     *
-     * @parameter default-value="${project.build.directory}/${project.build.finalName}.zip"
      */
-    private File defaultBundleForPOMPacking;
+    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.zip")
+    File defaultBundleForPOMPacking;
 
     /**
      * Artifact collector component.
-     *
-     * @component
      */
-    private ArtifactCollector collector;
+    @Component
+    ArtifactCollector collector;
 
     /**
      * Artifact Factory component.
-     *
-     * @component
      */
-    private ArtifactFactory factory;
+    @Component
+    ArtifactFactory factory;
 
     /**
      * Dependency tree builder component.
      *
      * @since 2.1
-     * @component
      */
-    private DependencyTreeBuilder dependencyTreeBuilder;
+    @Component
+    DependencyTreeBuilder dependencyTreeBuilder;
 
     /**
      * Artifact metadata source component.
-     *
-     * @component
      */
-    private ArtifactMetadataSource artifactMetadataSource;
+    @Component
+    ArtifactMetadataSource artifactMetadataSource;
 
     /**
      * Jar classes analyzer component.
      *
      * @since 2.1
-     * @component
      */
-    private JarClassesAnalysis classesAnalyzer;
+    @Component
+    JarClassesAnalysis classesAnalyzer;
 
     /**
      * Local Repository.
-     *
-     * @parameter property="localRepository"
-     * @required
-     * @readonly
      */
-    private ArtifactRepository localRepository;
+    @Parameter(property = "localRepository", required = true, readonly = true)
+    ArtifactRepository localRepository;
 
     /**
      * Maven Project Builder component.
-     *
-     * @component
      */
-    private MavenProjectBuilder mavenProjectBuilder;
+    @Component
+    MavenProjectBuilder mavenProjectBuilder;
 
     /**
      * The current user system settings for use in Maven.
      *
-     * @parameter property="settings"
-     * @required
-     * @readonly
      * @since 2.3
      */
+    @Parameter(property = "settings", required = true, readonly = true)
     protected Settings settings;
 
     /**
      * Wagon manager component.
      *
      * @since 2.1
-     * @component
      */
-    private WagonManager wagonManager;
+    @Component
+    WagonManager wagonManager;
 
     /**
      * Artifact Resolver component.
-     *
-     * @component
      */
+    @Component
     protected ArtifactResolver resolver;
 
     /**
      * Repository metadata component.
      *
      * @since 2.1
-     * @component
      */
-    private RepositoryMetadataManager repositoryMetadataManager;
+    @Component
+    RepositoryMetadataManager repositoryMetadataManager;
 
     /**
      * @see AbstractArchiveContentMojo#doExecute()

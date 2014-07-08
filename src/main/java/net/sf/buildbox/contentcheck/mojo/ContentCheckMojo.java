@@ -7,47 +7,46 @@ import net.sf.buildbox.contentcheck.CheckerOutput;
 import net.sf.buildbox.contentcheck.ContentChecker;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 /**
  * Checks the archive content according to an authoritative source. This authoritative source
  * defines set of allowed files in the archive.
- *
- * @goal check
- * @phase verify
- * @threadSafe
  */
+@Mojo(name = "check", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
 public class ContentCheckMojo extends AbstractArchiveContentMojo {
     
     /**
      * Message used to report missing entry - uses the {@link java.util.Formatter} syntax to embed entry name.
-     * @parameter default-value="File is expected but not found: %s"
      */
-    private String msgMissing;
+    @Parameter(defaultValue = "File is expected but not found: %s")
+    String msgMissing;
 
     /**
      * Message used to report unexpected entry - uses the {@link java.util.Formatter} syntax to embed entry name.
-     * @parameter default-value="Found unexpected file: %s"
      */
-    private String msgUnexpected;
+    @Parameter(defaultValue = "Found unexpected file: %s")
+    String msgUnexpected;
     
     /**
      * If true, stops the build when there is any file missing.
-     * @parameter default-value="false"
      */
-    private boolean failOnMissing;
+    @Parameter(defaultValue = "false")
+    boolean failOnMissing;
 
     /**
      * If true, stops the build when there is any unexpected file.
-     * @parameter default-value="true"
      */
-    private boolean failOnUnexpected;
+    @Parameter(defaultValue = "true")
+    boolean failOnUnexpected;
 
     /**
      * If true, modules with POM packaging are skipped (excluded from the content check).
-     * 
-     * @parameter default-value="false"
      */
-    private boolean skipPOMPackaging;
+    @Parameter(defaultValue = "false")
+    boolean skipPOMPackaging;
 
     protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
         
