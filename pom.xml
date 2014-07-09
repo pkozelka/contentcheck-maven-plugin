@@ -140,6 +140,9 @@
                         </goals>
                         <configuration>
                             <target>
+                                <delete includeEmptyDirs="true">
+                                    <fileset dir="${project.reporting.outputDirectory}" excludes=".git/**"/>
+                                </delete>
                                 <copy todir="${project.reporting.outputDirectory}">
                                     <fileset dir="src/site/markdown" excludes="**/*.md"/>
                                 </copy>
