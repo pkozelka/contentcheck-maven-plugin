@@ -1,7 +1,5 @@
 package net.sf.buildbox.contentcheck.mojo;
 
-import static net.sf.buildbox.contentcheck.PathUtils.stripJARNameFromPath;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,13 +9,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import net.sf.buildbox.contentcheck.dependencies.CsvOutput;
 import net.sf.buildbox.contentcheck.dependencies.LicenseMappingParser;
 import net.sf.buildbox.contentcheck.dependencies.LicenseOutput;
 import net.sf.buildbox.contentcheck.dependencies.LogOutput;
 import net.sf.buildbox.contentcheck.introspection.DefaultIntrospector;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.manager.WagonManager;
@@ -45,61 +41,51 @@ import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.apache.maven.shared.jar.classes.JarClassesAnalysis;
+import static net.sf.buildbox.contentcheck.PathUtils.stripJARNameFromPath;
 
 /**
- * This MOJO shows license information for a source entries. Artifact resolving
- * and the rest of Maven repo magic taken from <a href="http://maven.apache.org/plugins/maven-project-info-reports-plugin/index.html">Maven Project Info Reports Plugin</a>.
- * The MOJO shows license information only for entities that matches criteria
- * defined by {@link #getCheckFilesPattern()} and {@link #isIgnoreVendorArchives()}.
- * <p>
- * The MOJO's output is printed by default to console log and also to CSV file
- * <cite>${project.build.directory}/licenses.csv</cite>.
- * <p>
- * License information is gathered from dependency's POM, but a project may define
- * additional mapping between files in a project archive and licenses. This mapping
- * file is <cite>src/main/license.mapping.json</cite> and its structure is JSON.
- * <h4>Additional license information</h4>
- * <pre><code>{
- * "licenses": [
- *       {
- *          "name" : "License name",
- *           "url"  : "License text URL",
- *           "files": [
- *               "file name"
- *            ]
- *       }
- *  ]
- * }</code></pre>
- * <h4>Example</h4>
- * <pre><code>{
- *    "licenses": [
- *       {
- *           "name"  : "The LGPL license 2.1",
- *           "url"   : "http://www.gnu.org/licenses/lgpl-2.1.html",
- *           "files" : [
- *                         "aspectwerkz-nodeps-jdk5-2.2.1.jar"
- *           ]
- *       },
- *       {
- *           "name"  : "The public domain",
- *           "url"   : "http://creativecommons.org/licenses/publicdomain/",
- *           "files" : [
- *               "jsr166x-1.0.jar",
- *               "xyz.jar"
- *           ]
- *       }
- *    ]
- * }</code></pre>
+ * Shows license information for selected source entries. By default, the information is parsed from dependency's POM,
+ * but the project may define additional mapping between files in output archive and licenses.
  */
 @Mojo(name = "show-licenses")
 public class LicenseShowMojo extends AbstractArchiveContentMojo{
-
-
     /**
-     * The license mapping file. This file may define additional license information
-     * for JARs that are not recognized.
+     * The license mapping file, in JSON format.
+     * This file may define additional license information for JARs that are not recognized.
+     * <h4>Additional license information</h4>
+     * <pre><code>{
+     * "licenses": [
+     *       {
+     *          "name" : "License name",
+     *           "url"  : "License text URL",
+     *           "files": [
+     *               "file name"
+     *            ]
+     *       }
+     *  ]
+     * }</code></pre>
+     * <h4>Example</h4>
+     * <pre><code>{
+     *    "licenses": [
+     *       {
+     *           "name"  : "The LGPL license 2.1",
+     *           "url"   : "http://www.gnu.org/licenses/lgpl-2.1.html",
+     *           "files" : [
+     *                         "aspectwerkz-nodeps-jdk5-2.2.1.jar"
+     *           ]
+     *       },
+     *       {
+     *           "name"  : "The public domain",
+     *           "url"   : "http://creativecommons.org/licenses/publicdomain/",
+     *           "files" : [
+     *               "jsr166x-1.0.jar",
+     *               "xyz.jar"
+     *           ]
+     *       }
+     *    ]
+     * }</code></pre>
      */
-    @Parameter(defaultValue = "true", property = "licenseMappingFile")
+    @Parameter(defaultValue = "src/main/license.mapping.json", property = "licenseMappingFile")
     File licenseMappingFile;
 
 
@@ -199,6 +185,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
     RepositoryMetadataManager repositoryMetadataManager;
 
     /**
+     * Artifact resolving and the rest of Maven repo magic taken from <a href="http://maven.apache.org/plugins/maven-project-info-reports-plugin/index.html">Maven Project Info Reports Plugin</a>.
      * @see AbstractArchiveContentMojo#doExecute()
      */
     @Override
