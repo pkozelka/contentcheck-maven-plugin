@@ -4,7 +4,7 @@ Put the following XML fragment to a POM file producing an artifact (e.g. WAR or 
 
     <plugins>
         <plugin>
-        <groupId>net.sf.buildbox.maven</groupId>
+        <groupId>net.kozelka.maven</groupId>
         <artifactId>contentcheck-maven-plugin</artifactId>
         <version>1.0.0</version>
             <configuration>
@@ -29,7 +29,7 @@ Create "content.txt" text file and put this file into "src/main" directory of th
 
 Now you can run the goal by following command, but  ensure that the archive is present in module's target directory.
 
-``mvn net.sf.buildbox.maven:contentcheck-maven-plugin:check``
+``mvn net.kozelka.maven:contentcheck-maven-plugin:check``
 
 
 ## contentcheck-maven-plugin:generate
@@ -38,7 +38,7 @@ The goal generates a content definition from a given source.
 
 You can run the goal by following command
 
-``mvn net.sf.buildbox.maven:contentcheck-maven-plugin:generate``
+``mvn net.kozelka.maven:contentcheck-maven-plugin:generate``
 
 ## contentcheck-maven-plugin:show-licenses
 
@@ -46,5 +46,5 @@ The goal shows license information for a source's entries. License information i
 
 You can run the goal by following command
 
-``mvn net.sf.buildbox.maven:contentcheck-maven-plugin:show-licenses``
+``mvn net.kozelka.maven:contentcheck-maven-plugin:show-licenses``
 
