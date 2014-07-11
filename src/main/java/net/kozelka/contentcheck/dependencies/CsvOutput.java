@@ -12,6 +12,9 @@ import org.apache.maven.model.License;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.IOUtil;
 
+/**
+ * @todo keep maven dependencies in 'mojo' subpackage ... model.License is ok
+ */
 public class CsvOutput implements LicenseOutput {
 
     private final File outputFile;

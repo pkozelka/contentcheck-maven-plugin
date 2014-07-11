@@ -8,7 +8,8 @@ import java.util.Set;
 
 /**
  * This introspector captures all passed entities by their paths.
- * 
+ *
+ * @todo keep maven dependencies in 'mojo' subpackage
  * @see #sourceEntries
  */
 public class DefaultIntrospector extends AbstractIntrospector {

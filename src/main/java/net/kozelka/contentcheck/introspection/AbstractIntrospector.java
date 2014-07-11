@@ -16,7 +16,8 @@ import java.util.jar.Manifest;
 /**
  * This class provides archive's content introspection in a template manner. Please
  * see {@link DefaultIntrospector} that provides archive's content as a set of paths.
- * 
+ *
+ * @todo keep maven dependencies in 'mojo' subpackage
  * @see #readEntries(File)
  * @see DefaultIntrospector
  */

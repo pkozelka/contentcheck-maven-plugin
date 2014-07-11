@@ -14,6 +14,9 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+/**
+ * @todo keep maven dependencies in 'mojo' subpackage ... model.License is ok
+ */
 public class LicenseMappingParser {
 
     private final Log log;

@@ -15,6 +15,7 @@ import org.apache.maven.plugin.logging.Log;
  * The content checker implementation. 
  * <br />
  * Thread safe implementation.
+ * @todo keep maven dependencies in 'mojo' subpackage
  */
 public class ContentChecker {
 

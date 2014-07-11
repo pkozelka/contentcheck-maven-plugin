@@ -8,6 +8,9 @@ import java.util.Set;
 import org.apache.maven.model.License;
 import org.apache.maven.plugin.logging.Log;
 
+/**
+ * @todo keep maven dependencies in 'mojo' subpackage
+ */
 public class LogOutput implements LicenseOutput {
     private final Log log;
 
