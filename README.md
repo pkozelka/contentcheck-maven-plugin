@@ -1,1 +1,1 @@
-Maven Site generated at http://buildbox.github.io/contentcheck-maven-plugin
+Maven Site generated at http://pkozelka.github.io/contentcheck-maven-plugin
