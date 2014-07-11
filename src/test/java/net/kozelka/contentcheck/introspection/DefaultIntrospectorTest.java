@@ -19,7 +19,7 @@ public class DefaultIntrospectorTest {
     @Test
     public void testIntrospection() throws IOException{
         Log log = mock(Log.class);
-        DefaultIntrospector introspector = new DefaultIntrospector(log, false, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        DefaultIntrospector introspector = new DefaultIntrospector(log, false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File sourceArchive = SupportUtils.getFile("test.war");
         introspector.readEntries(sourceArchive);
         Set<String> sourceEntries = introspector.getEntries();
@@ -32,7 +32,7 @@ public class DefaultIntrospectorTest {
     @Test
     public void testIntrospectionWithIgnoringOwnArtifacts() throws IOException{
         Log log = mock(Log.class);
-        DefaultIntrospector introspector = new DefaultIntrospector(log, true, "com.buildbox", SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        DefaultIntrospector introspector = new DefaultIntrospector(log, true, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File archive = SupportUtils.getFile("test.war");
         introspector.readEntries(archive);
         Set<String> sourceEntries = introspector.getEntries();
