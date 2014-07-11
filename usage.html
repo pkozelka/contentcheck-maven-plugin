@@ -141,7 +141,7 @@
                 
                     
                               <li class="">
-                    <a href="http://pkozelka.github.io/index.html" class="externalLink" title="code">
+                    <a href="../index.html" title="code">
         code</a>
                     <span class="divider">/</span>
       </li>
@@ -172,7 +172,7 @@
 <div class="source">
 <pre>&lt;plugins&gt;
     &lt;plugin&gt;
-    &lt;groupId&gt;net.sf.buildbox.maven&lt;/groupId&gt;
+    &lt;groupId&gt;net.kozelka.maven&lt;/groupId&gt;
     &lt;artifactId&gt;contentcheck-maven-plugin&lt;/artifactId&gt;
     &lt;version&gt;1.0.0&lt;/version&gt;
         &lt;configuration&gt;
@@ -198,17 +198,17 @@
 <p>The goal checks a content of specified source file (typically project artifact) and reports unexpected or missing entries.</p>
 <p>Create &#x201c;content.txt&#x201d; text file and put this file into &#x201c;src/main&#x201d; directory of the some module. This file contains allowed and also expected entries that the source file should contain. You can also let the goal &#x2018;generate&#x2019; create initial version of this file.</p>
 <p>Now you can run the goal by following command, but ensure that the archive is present in module&#x2019;s target directory.</p>
-<p><tt>mvn net.sf.buildbox.maven:contentcheck-maven-plugin:check</tt></p></div>
+<p><tt>mvn net.kozelka.maven:contentcheck-maven-plugin:check</tt></p></div>
 <div class="section">
 <h2>contentcheck-maven-plugin:generate<a name="contentcheck-maven-plugin:generate"></a></h2>
 <p>The goal generates a content definition from a given source.</p>
 <p>You can run the goal by following command</p>
-<p><tt>mvn net.sf.buildbox.maven:contentcheck-maven-plugin:generate</tt></p></div>
+<p><tt>mvn net.kozelka.maven:contentcheck-maven-plugin:generate</tt></p></div>
 <div class="section">
 <h2>contentcheck-maven-plugin:show-licenses<a name="contentcheck-maven-plugin:show-licenses"></a></h2>
 <p>The goal shows license information for a source&#x2019;s entries. License information is gathered from dependency&#x2019;s POM, but a project may define additional mapping between files in a project archive and licenses. Please see section Additional license information structure.</p>
 <p>You can run the goal by following command</p>
-<p><tt>mvn net.sf.buildbox.maven:contentcheck-maven-plugin:show-licenses</tt></p></div>
+<p><tt>mvn net.kozelka.maven:contentcheck-maven-plugin:show-licenses</tt></p></div>
                   </div>
           </div>
 
@@ -218,7 +218,7 @@
             <div class="container">
                       <div class="row">
                               <p >Copyright &copy;                    2014
-                        <a href="https://github.com/buildbox">Buildbox</a>.
+                        <a href="https://pkozelka.github.io">Petr Kozelka</a>.
             All rights reserved.      
                     
       </p>
