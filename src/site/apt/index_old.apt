@@ -16,13 +16,13 @@ Overview
    * detect dependencies that are "provided" by appserver
 
 
- You can find more details at {{{https://github.com/buildbox/contentcheck-maven-plugin#readme}github readme}}.
+ You can find more details at {{{https://github.com/pkozelka/contentcheck-maven-plugin#readme}github readme}}.
 
 * Contributing
 
    Any contribution is welcome. If you have any idea about extending or improving functionality of this plugin, you can
 
-   * {{{https://github.com/buildbox/contentcheck-maven-plugin/issues}report issue}} at github project
+   * {{{https://github.com/pkozelka/contentcheck-maven-plugin/issues}report issue}} at github project
 
-   * fork the {{{https://github.com/buildbox/contentcheck-maven-plugin}github project}}
+   * fork the {{{https://github.com/pkozelka/contentcheck-maven-plugin}github project}}
 

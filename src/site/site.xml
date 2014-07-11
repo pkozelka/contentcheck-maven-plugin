@@ -5,15 +5,6 @@
     <bannerLeft>
         <name></name>
     </bannerLeft>
-<!--
-    <bannerLeft>
-        <name>Buildbox</name>
-        <alt>Buildbox</alt>
-        <src>buildbox-logo-wide.svg</src>
-        <href>http://github.com/buildbox</href>
-        <title>ContentCheck Maven Plugin</title>
-    </bannerLeft>
--->
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
@@ -24,14 +15,13 @@
             <topBarEnabled>true</topBarEnabled>
             <navBarStyle>navbar-inverse</navBarStyle>
             <topBarIcon>
-                <name>Buildbox</name>
-                <alt>Buildbox</alt>
-                <src>buildbox-logo-wide.svg</src>
-                <href>http://github.com/buildbox</href>
+                <name>CONTENTCHECK</name>
+                <alt>contentcheck-maven-plugin</alt>
+                <href>index.html</href>
             </topBarIcon>
             <sideBarEnabled>false</sideBarEnabled>
             <gitHub>
-                <projectId>buildbox/contentcheck-maven-plugin</projectId>
+                <projectId>pkozelka/contentcheck-maven-plugin</projectId>
                 <ribbonOrientation>right</ribbonOrientation>
                 <ribbonColor>green</ribbonColor>
             </gitHub>
@@ -45,9 +35,8 @@
 
     <body>
         <breadcrumbs>
-            <item name="Buildbox" href="http://github.com/buildbox"/>
-            <item name="ContentCheck Maven Plugin"
-                  href="http://buildbox.github.com/contentcheck-maven-plugin/index.html"/>
+            <item name="code" href="http://pkozelka.github.io/index.html"/>
+            <item name="contentcheck-maven-plugin" href="index.html"/>
         </breadcrumbs>
 
         <menu name="Documentation">
@@ -62,7 +51,9 @@
         <menu name="Links">
             <item name="Apache" href="http://www.apache.org/"/>
             <item name="Maven 2" href="http://maven.apache.org/"/>
+<!-- TODO
             <item name="Google groups" href="http://groups.google.com/group/buildbox"/>
+-->
         </menu>
         <menu name="Reports" ref="reports"/>
     </body>
@@ -71,5 +62,4 @@
               href="http://maven.apache.org"
               name="Apache Maven" position="left"/>
     </poweredBy>
-    
 </project>
