@@ -1,8 +1,8 @@
 # Maven Content Check Plugin
 
-[![Build Status](https://travis-ci.org/buildbox/contentcheck-maven-plugin.png?branch=master)](https://travis-ci.org/buildbox/contentcheck-maven-plugin)
+[![Build Status](https://travis-ci.org/pkozelka/contentcheck-maven-plugin.png?branch=master)](https://travis-ci.org/pkozelka/contentcheck-maven-plugin)
 
-See the [project website](http://buildbox.github.io/contentcheck-maven-plugin/index.html) hosted by Github Pages.
+See the [project website](http://pkozelka.github.io/contentcheck-maven-plugin/index.html) hosted by Github Pages.
 
 -----
 

@@ -12,7 +12,7 @@
         <artifactId>oss-parent</artifactId>
         <version>7</version>
     </parent>
-    <url>http://buildbox.github.io/${project.artifactId}</url>
+    <url>http://pkozelka.github.io/${project.artifactId}</url>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -180,13 +180,6 @@
             </plugin>
         </plugins>
     </reporting>
-    <distributionManagement>
-        <downloadUrl>http://buildbox.sourceforge.net/${project.artifactId}</downloadUrl>
-        <site>
-            <id>buildbox.sf.net</id>
-            <url>sftp://web.sourceforge.net/home/groups/b/bu/buildbox/htdocs/${project.artifactId}</url>
-        </site>
-    </distributionManagement>
     <developers>
         <developer>
             <name>Petr Kozelka</name>
@@ -200,26 +193,17 @@
             <url>http://www.dagblog.cz</url>
         </developer>
     </developers>
-    <mailingLists>
-        <mailingList>
-            <archive>http://groups.google.com/group/buildbox</archive>
-            <name>buildbox</name>
-            <post>buildbox@googlegroups.com</post>
-            <subscribe>http://groups.google.com/group/buildbox</subscribe>
-            <unsubscribe>buildbox+unsubscribe@googlegroups.com</unsubscribe>
-        </mailingList>
-    </mailingLists>
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/buildbox/contentcheck-maven-plugin/issues</url>
+        <url>https://github.com/pkozelka/contentcheck-maven-plugin/issues</url>
     </issueManagement>
     <organization>
-        <name>Buildbox</name>
-        <url>https://github.com/buildbox</url>
+        <name>Petr Kozelka</name>
+        <url>https://pkozelka.github.io</url>
     </organization>
     <scm>
-        <connection>scm:git:http://github.com/buildbox/contentcheck-maven-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:buildbox/contentcheck-maven-plugin.git</developerConnection>
-        <url>http://github.com/buildbox/contentcheck-maven-plugin</url>
+        <connection>scm:git:http://github.com/pkozelka/contentcheck-maven-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:pkozelka/contentcheck-maven-plugin.git</developerConnection>
+        <url>http://github.com/pkozelka/contentcheck-maven-plugin</url>
     </scm>
 </project>

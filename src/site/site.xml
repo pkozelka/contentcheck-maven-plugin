@@ -51,9 +51,6 @@
         <menu name="Links">
             <item name="Apache" href="http://www.apache.org/"/>
             <item name="Maven 2" href="http://maven.apache.org/"/>
-<!-- TODO
-            <item name="Google groups" href="http://groups.google.com/group/buildbox"/>
--->
         </menu>
         <menu name="Reports" ref="reports"/>
     </body>
