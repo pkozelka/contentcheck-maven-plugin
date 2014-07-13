@@ -1,3 +1,6 @@
+Title: Overview
+
+
 # ContentCheck Maven plugin
 
  is useful for checking content of project's output artifacts, like WAR or EAR files.

@@ -12,7 +12,7 @@
         <artifactId>oss-parent</artifactId>
         <version>9</version>
     </parent>
-    <url>http://pkozelka.github.io/${project.artifactId}</url>
+    <url>http://code.kozelka.net/${project.artifactId}</url>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -140,6 +140,7 @@
                         </goals>
                         <configuration>
                             <target>
+                                <mkdir dir="${project.reporting.outputDirectory}"/>
                                 <delete includeEmptyDirs="true">
                                     <fileset dir="${project.reporting.outputDirectory}" excludes=".git/**"/>
                                 </delete>
@@ -199,7 +200,7 @@
     </issueManagement>
     <organization>
         <name>Petr Kozelka</name>
-        <url>https://pkozelka.github.io</url>
+        <url>http://kozelka.net</url>
     </organization>
     <scm>
         <connection>scm:git:http://github.com/pkozelka/contentcheck-maven-plugin.git</connection>

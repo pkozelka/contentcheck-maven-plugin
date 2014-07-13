@@ -15,9 +15,9 @@
             <topBarEnabled>true</topBarEnabled>
             <navBarStyle>navbar-inverse</navBarStyle>
             <topBarIcon>
-                <name>CONTENTCHECK</name>
-                <alt>contentcheck-maven-plugin</alt>
-                <href>index.html</href>
+                <name>code</name>
+                <alt>code.kozelka.net</alt>
+                <href>http://code.kozelka.net/index.html</href>
             </topBarIcon>
             <sideBarEnabled>false</sideBarEnabled>
             <gitHub>
@@ -35,7 +35,6 @@
 
     <body>
         <breadcrumbs>
-            <item name="code" href="http://pkozelka.github.io/index.html"/>
             <item name="contentcheck-maven-plugin" href="index.html"/>
         </breadcrumbs>
 
