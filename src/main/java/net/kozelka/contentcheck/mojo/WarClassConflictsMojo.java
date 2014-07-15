@@ -14,11 +14,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Looks for conflict within the libraries in given war.
+ * Looks for conflicts within the libraries in given war.
  *
  * @author Petr Kozelka
  */
-@Mojo(name="warcc", defaultPhase = LifecyclePhase.TEST)
+@Mojo(name="warcc", defaultPhase = LifecyclePhase.PACKAGE)
 public class WarClassConflictsMojo extends AbstractMojo {
     /**
      * The archive file to be checked
