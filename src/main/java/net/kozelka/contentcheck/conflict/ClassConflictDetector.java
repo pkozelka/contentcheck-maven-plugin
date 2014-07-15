@@ -105,10 +105,17 @@ public class ClassConflictDetector {
                 final int conflictResourceCount = conflictResources.size();
                 totalConflicts += conflictResourceCount;
                 output.println(String.format("%8d class conflicts with '%s'", conflictResourceCount, conflict.getOtherArchive().getKey()));
-                if (conflictResourceCount < previewThreshold) {
-                    for (ResourceInfo resource : conflictResources) {
-                        output.println(String.format("                %s", resource.key));
+                if (previewThreshold == 0) continue;
+                int cnt = 0;
+                for (ResourceInfo resource : conflictResources) {
+                    cnt ++;
+                    if (previewThreshold >= 0) {
+                        if (cnt > previewThreshold) {
+                            output.println("                ...");
+                            break;
+                        }
                     }
+                    output.println(String.format("                %s", resource.key));
                 }
             }
         }

@@ -24,13 +24,13 @@ public class WarClassConflictsMojo extends AbstractMojo {
      * The archive file to be checked
      */
     @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.war", property = "war")
-    private File war;
+    File war;
 
     /**
-     * Conflicts will be listed inplace if there is not too many of them. This number specifies the limit.
+     * How many class conflicts to list directly. Use <code>-1</code> to list all.
      */
     @Parameter(defaultValue = "5")
-    private int previewThreshold;
+    int previewThreshold;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
