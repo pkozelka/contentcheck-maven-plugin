@@ -33,26 +33,31 @@ public class WarClassConflictsMojo extends AbstractMojo {
     int previewThreshold;
 
     /**
-     * Stop the build when conflicts are detected.
+     * How many conflicts are we tolerating.
+     * Useful to ensure that the number is not growing, when you cannot fix everything.
+     * @todo replace this with include/exclude lists
      */
-    @Parameter(defaultValue = "true")
-    boolean failOnError;
+    @Parameter(defaultValue = "0")
+    int toleratedConflictCount;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
             final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(war);
             final List<ArchiveInfo> conflictingArchives = ccd.getConflictingArchives();
             if (!conflictingArchives.isEmpty()) {
-                final String errorMessage = String.format("Found %d conflicting archives in %s", conflictingArchives.size(), war);
-                getLog().error(errorMessage);
-                ccd.printResults(previewThreshold, new ClassConflictDetector.LineOutput() {
+                final int totalConflicts = ccd.printResults(previewThreshold, new ClassConflictDetector.LineOutput() {
                     @Override
                     public void println(String line) {
                         getLog().error(line);
                     }
                 });
-                if (failOnError) {
+                final String errorMessage = String.format("Found %d conflicts in %d archives in %s", totalConflicts, conflictingArchives.size(), war);
+                getLog().error(errorMessage);
+                if (totalConflicts > toleratedConflictCount) {
                     throw new MojoFailureException(errorMessage);
+                }
+                if (totalConflicts > 0 && toleratedConflictCount > 0) {
+                    getLog().warn(String.format("We currently tolerate %d conflicts", toleratedConflictCount));
                 }
             }
         } catch (IOException e) {

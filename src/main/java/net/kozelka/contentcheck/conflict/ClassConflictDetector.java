@@ -86,7 +86,7 @@ public class ClassConflictDetector {
         return ccd;
     }
 
-    public void printResults(int previewThreshold, LineOutput output) {
+    public int printResults(int previewThreshold, LineOutput output) {
         final List<ArchiveInfo> sortedConflictingArchives = new ArrayList<ArchiveInfo>(getConflictingArchives());
         Collections.sort(sortedConflictingArchives, new Comparator<ArchiveInfo>() {
             public int compare(ArchiveInfo o1, ArchiveInfo o2) {
@@ -127,6 +127,7 @@ public class ClassConflictDetector {
                 totalConflicts,
                 sortedConflictingArchives.size(),
                 getExploredArchives().size()));
+        return totalConflicts;
     }
 
     //TODO: move this to cli
