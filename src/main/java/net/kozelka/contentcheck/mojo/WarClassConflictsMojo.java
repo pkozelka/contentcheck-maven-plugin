@@ -32,6 +32,12 @@ public class WarClassConflictsMojo extends AbstractMojo {
     @Parameter(defaultValue = "5")
     int previewThreshold;
 
+    /**
+     * Stop the build when conflicts are detected.
+     */
+    @Parameter(defaultValue = "true")
+    boolean failOnError;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
             final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(war);
@@ -45,7 +51,9 @@ public class WarClassConflictsMojo extends AbstractMojo {
                         getLog().error(line);
                     }
                 });
-                throw new MojoFailureException(errorMessage);
+                if (failOnError) {
+                    throw new MojoFailureException(errorMessage);
+                }
             }
         } catch (IOException e) {
             throw new MojoExecutionException(war.getAbsolutePath(), e);
