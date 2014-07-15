@@ -5,10 +5,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * Representation of an explored archive
  * @author Petr Kozelka
  */
 public class ArchiveInfo {
     private String key;
+    private int classCount;
     private Map<String, Conflict> conflicts = new LinkedHashMap<String, Conflict>();
 
     public void addConflict(ArchiveInfo otherArchive, ResourceInfo conflictingResource) {
@@ -26,6 +28,17 @@ public class ArchiveInfo {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public void setClassCount(int classCount) {
+        this.classCount = classCount;
+    }
+
+    /**
+     * @return number of <code>.class</code> resources
+     */
+    public int getClassCount() {
+        return classCount;
     }
 
     public Collection<Conflict> getConflicts() {

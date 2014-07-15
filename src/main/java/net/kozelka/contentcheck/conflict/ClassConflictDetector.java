@@ -29,15 +29,18 @@ public class ClassConflictDetector {
         archiveInfo.setKey(archiveName);
         exploredArchives.add(archiveInfo);
         ZipEntry entry = zis.getNextEntry();
+        int classCount = 0;
         while (entry != null) {
             final String entryName = entry.getName();
             if (entryName.endsWith(".class")) {
                 processClassResource(archiveInfo, entry);
+                classCount ++;
             }
             //
             zis.closeEntry();
             entry = zis.getNextEntry();
         }
+        archiveInfo.setClassCount(classCount);
         return archiveInfo;
     }
 
@@ -93,7 +96,7 @@ public class ClassConflictDetector {
         int totalConflicts = 0;
         for (ArchiveInfo cai : sortedConflictingArchives) {
             output.println("");
-            output.println(String.format("File '%s' has", cai.getKey()));
+            output.println(String.format("File '%s' (%d classes):", cai.getKey(), cai.getClassCount()));
             final List<Conflict> sortedConflicts = new ArrayList<Conflict>(cai.getConflicts());
             Collections.sort(sortedConflicts, new Comparator<Conflict>() {
                 public int compare(Conflict o1, Conflict o2) {
