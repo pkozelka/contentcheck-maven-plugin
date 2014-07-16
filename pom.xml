@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.kozelka.maven</groupId>
     <artifactId>contentcheck-maven-plugin</artifactId>
-    <version>1-SNAPSHOT</version>
+    <version>1.0.3</version>
     <packaging>maven-plugin</packaging>
     <name>Maven Content Check Plugin</name>
     <parent>
@@ -140,12 +139,12 @@
                         </goals>
                         <configuration>
                             <target>
-                                <mkdir dir="${project.reporting.outputDirectory}"/>
+                                <mkdir dir="${project.reporting.outputDirectory}" />
                                 <delete includeEmptyDirs="true">
-                                    <fileset dir="${project.reporting.outputDirectory}" excludes=".git/**"/>
+                                    <fileset dir="${project.reporting.outputDirectory}" excludes=".git/**" />
                                 </delete>
                                 <copy todir="${project.reporting.outputDirectory}">
-                                    <fileset dir="src/site/markdown" excludes="**/*.md"/>
+                                    <fileset dir="src/site/markdown" excludes="**/*.md" />
                                 </copy>
                             </target>
                         </configuration>
