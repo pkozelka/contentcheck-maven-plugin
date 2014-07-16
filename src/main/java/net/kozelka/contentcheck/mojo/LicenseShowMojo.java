@@ -122,8 +122,6 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
 
     /**
      * Dependency tree builder component.
-     *
-     * @since 2.1
      */
     @Component
     DependencyTreeBuilder dependencyTreeBuilder;
@@ -136,8 +134,6 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
 
     /**
      * Jar classes analyzer component.
-     *
-     * @since 2.1
      */
     @Component
     JarClassesAnalysis classesAnalyzer;
@@ -156,16 +152,12 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
 
     /**
      * The current user system settings for use in Maven.
-     *
-     * @since 2.3
      */
     @Parameter(property = "settings", required = true, readonly = true)
     protected Settings settings;
 
     /**
      * Wagon manager component.
-     *
-     * @since 2.1
      */
     @Component
     WagonManager wagonManager;
@@ -178,8 +170,6 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
 
     /**
      * Repository metadata component.
-     *
-     * @since 2.1
      */
     @Component
     RepositoryMetadataManager repositoryMetadataManager;
