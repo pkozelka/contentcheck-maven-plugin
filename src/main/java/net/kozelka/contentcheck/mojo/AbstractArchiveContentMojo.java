@@ -28,11 +28,11 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     File directory;
 
     /**
-     * The file with list of expected files.
-     * Each line in that file represents one pathname entry.
+     * The file with list of approved files.
+     * Each line in represents one pathname entry.
      * Empty lines and comments (starting with '#') are ignored.
      */
-    @Parameter
+    @Parameter(defaultValue = "${basedir}/approved-content.txt")
     File contentListing;
 
     
