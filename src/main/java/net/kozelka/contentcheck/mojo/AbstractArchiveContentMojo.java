@@ -12,23 +12,25 @@ import org.apache.maven.project.MavenProject;
 public abstract class AbstractArchiveContentMojo extends AbstractMojo {
 
     /**
-     * The archive file to be checked.
-     * You should specify either <i>archive</i> or {@link #directory}.
-     * Directory takes a precedence before archive.
+     * The archive file or directory to be checked.
      */
     @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.${project.packaging}")
-    File archive;
+    File sourceFile;
 
     /**
-     * The directory to be checked.
-     * You should specify either {@link #archive} or <i>directory</i>.
-     * Directory parameter has no default value therefore it takes a precedence before {@link #archive}.
+     * @deprecated use {@link #sourceFile} instead
      */
-    @Parameter
-    File directory;
+    @Deprecated @Parameter
+    private File archive;
 
     /**
-     * The file with list of approved files.
+     * @deprecated use {@link #sourceFile} instead
+     */
+    @Deprecated @Parameter
+    private File directory;
+
+    /**
+     * The file with list of approved files. If such file does not exist, the check is skipped. This enables multimodule use.
      * Each line in represents one pathname entry.
      * Empty lines and comments (starting with '#') are ignored.
      */
@@ -78,25 +80,29 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     }
     
     protected void validateMojoArguments() throws MojoExecutionException{
-        if (directory != null &&  ! directory.exists()) {
-            throw new MojoExecutionException("Directory " + directory.getPath() + " you are trying to check doesn't exist.");
-        } else if(!archive.exists()) {
-            throw new MojoExecutionException("Archive file " + archive.getPath() + " you are trying to check doesn't exist.");
-        }
-        
         if(ignoreVendorArchives && (vendorId == null || vendorId.length() == 0)) {
             throw new MojoExecutionException("ignoreVendorArchives is turned on, but 'vendorId' configuration property is missing. Please specify vendorId property in the plugin configuration.");
         }
     }
-    
-    protected abstract void doExecute() throws IOException, MojoExecutionException, MojoFailureException;
 
-    /**
-     * Returns correct source file, directory takes a precedence before archive file.
-     * @return directory if not null, archive file otherwise
-     * @todo consider if we really need two plugin parameters (directory and archive) when both have same type. I guess one named sourceFile would be enough.
-     */
-    protected File getSourceFile() {
-        return directory != null ? directory : archive;
+    protected void assertSourceFileExists() throws MojoExecutionException {
+        if (directory != null) {
+            getLog().warn("Parameter 'directory' is deprecated, please use 'sourceFile' instead.");
+            if (!directory.exists()) {
+                throw new MojoExecutionException("Directory " + directory.getAbsolutePath() + " you are trying to check doesn't exist.");
+            }
+            sourceFile = directory;
+        } else if (archive != null) {
+            getLog().warn("Parameter 'archive' is deprecated, please use 'sourceFile' instead.");
+            if (!archive.exists()) {
+                throw new MojoExecutionException("Archive file " + archive.getAbsolutePath() + " you are trying to check doesn't exist.");
+            }
+            sourceFile = archive;
+        }
+        if (!sourceFile.exists()) {
+            throw new MojoExecutionException("Archive file or directory " + archive.getAbsolutePath() + " you are trying to check doesn't exist.");
+        }
     }
+
+    protected abstract void doExecute() throws IOException, MojoExecutionException, MojoFailureException;
 }

@@ -50,17 +50,14 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
 
     protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
         
-        if(skipPOMPackaging && "POM".equalsIgnoreCase(project.getPackaging())) {
-            log(false, "Skipping content check for project with POM packaging");
-            return;
-        }
-        
         if(!contentListing.exists()) {
-            throw new MojoExecutionException("Content listing file  " + contentListing.getPath() + " doesn't exist.");
+            getLog().info("Skipping - file does not exist: " + contentListing);
         }
-        
+
+        assertSourceFileExists();
+
         final ContentChecker contentChecker = new ContentChecker(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-        final CheckerOutput output = contentChecker.check(contentListing, getSourceFile());
+        final CheckerOutput output = contentChecker.check(contentListing, sourceFile);
 
         // report missing entries
         final Set<String> missingEntries = output.diffMissingEntries();
@@ -81,14 +78,14 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
         }
         // fail as neccessary, after reporting all detected problems
         if (failOnMissing && ! missingEntries.isEmpty()) {
-            throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + getSourceFile());
+            throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + sourceFile);
         }
 
         if (failOnUnexpected && ! unexpectedEntries.isEmpty()) {
-            throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + getSourceFile());
+            throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + sourceFile);
         }
 
-        getLog().info("Source " + getSourceFile().getPath() + " has valid content according to " + contentListing.getPath());
+        getLog().info("Source " + sourceFile.getAbsolutePath() + " has valid content according to " + contentListing.getAbsolutePath());
     }
 
     private void log(boolean error, String message) {

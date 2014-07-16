@@ -180,16 +180,16 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
      */
     @Override
     protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
-        final File sourceFile = getSourceFile();
-        if(!sourceFile.exists()) {
-            getLog().warn("Skipping project since there is no archive to being check.");
+        final File src = sourceFile.exists() ? sourceFile : defaultBundleForPOMPacking;
+        if(!src.exists()) {
+            getLog().warn("Skipping project since there is no archive to check.");
             return;
         }
 
         final List<MavenProject> mavenProjectForDependencies = getMavenProjectForDependencies();
 
         final DefaultIntrospector introspector = new DefaultIntrospector(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-        introspector.readEntries(sourceFile);
+        introspector.readEntries(src);
 
         final Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getEntries());
         final Map<String, List<License>> entries = new LinkedHashMap<String, List<License>>();
@@ -293,13 +293,5 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
             return Collections.EMPTY_LIST;
         }
 
-    }
-
-    @Override
-    protected File getSourceFile() {
-        if(super.getSourceFile().exists()) {
-            return super.getSourceFile();
-        }
-        return defaultBundleForPOMPacking;
     }
 }
