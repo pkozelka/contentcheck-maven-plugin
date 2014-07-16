@@ -58,10 +58,9 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     boolean ignoreVendorArchives;
 
     /**
-     * An Ant like file pattern. If this roperty is present only files matching 
-     * that pattern are checked. Otherwise all JAR files are checked.
+     * Ant like file pattern selecting archive entries (files) to include in the check.
      */
-    @Parameter(defaultValue = "**\\/*.jar")
+    @Parameter(defaultValue = "**/*.jar")
     String checkFilesPattern;
 
     /**
