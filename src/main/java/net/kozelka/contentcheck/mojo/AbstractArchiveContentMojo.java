@@ -94,32 +94,9 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     /**
      * Returns correct source file, directory takes a precedence before archive file.
      * @return directory if not null, archive file otherwise
+     * @todo consider if we really need two plugin parameters (directory and archive) when both have same type. I guess one named sourceFile would be enough.
      */
     protected File getSourceFile() {
         return directory != null ? directory : archive;
-    }
-
-    protected File getContentListing() {
-        return contentListing;
-    }
-
-    protected String getVendorId() {
-        return vendorId;
-    }
-
-    protected String getManifestVendorEntry() {
-        return manifestVendorEntry;
-    }
-
-    protected boolean isIgnoreVendorArchives() {
-        return ignoreVendorArchives;
-    }
-
-    protected String getCheckFilesPattern() {
-        return checkFilesPattern;
-    }
-
-    public MavenProject getMavenProject() {
-        return project;
     }
 }

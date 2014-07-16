@@ -50,17 +50,17 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
 
     protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
         
-        if(skipPOMPackaging && "POM".equalsIgnoreCase(getMavenProject().getPackaging())) {
+        if(skipPOMPackaging && "POM".equalsIgnoreCase(project.getPackaging())) {
             log(false, "Skipping content check for project with POM packaging");
             return;
         }
         
-        if(!getContentListing().exists()) {
-            throw new MojoExecutionException("Content listing file  " + getContentListing().getPath() + " doesn't exist.");
+        if(!contentListing.exists()) {
+            throw new MojoExecutionException("Content listing file  " + contentListing.getPath() + " doesn't exist.");
         }
         
-        final ContentChecker contentChecker = new ContentChecker(getLog(), isIgnoreVendorArchives(), getVendorId(), getManifestVendorEntry(), getCheckFilesPattern());
-        final CheckerOutput output = contentChecker.check(getContentListing(), getSourceFile());
+        final ContentChecker contentChecker = new ContentChecker(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+        final CheckerOutput output = contentChecker.check(contentListing, getSourceFile());
 
         // report missing entries
         final Set<String> missingEntries = output.diffMissingEntries();
@@ -88,7 +88,7 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
             throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + getSourceFile());
         }
 
-        getLog().info("Source " + getSourceFile().getPath() + " has valid content according to " + getContentListing().getPath());
+        getLog().info("Source " + getSourceFile().getPath() + " has valid content according to " + contentListing.getPath());
     }
 
     private void log(boolean error, String message) {

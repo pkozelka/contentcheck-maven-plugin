@@ -198,7 +198,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
 
         final List<MavenProject> mavenProjectForDependencies = getMavenProjectForDependencies();
 
-        final DefaultIntrospector introspector = new DefaultIntrospector(getLog(), isIgnoreVendorArchives(), getVendorId(), getManifestVendorEntry(), getCheckFilesPattern());
+        final DefaultIntrospector introspector = new DefaultIntrospector(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
         introspector.readEntries(sourceFile);
 
         final Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getEntries());
@@ -257,7 +257,6 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
 
     private List<MavenProject> getMavenProjectForDependencies() throws MojoExecutionException, MojoFailureException {
         final DependencyNode dependencyTreeNode = resolveProject();
-        final MavenProject project = getMavenProject();
         final Dependencies dependencies = new Dependencies( project, dependencyTreeNode, classesAnalyzer );
         final Log log = getLog();
         final RepositoryUtils repoUtils = new RepositoryUtils( log, wagonManager, settings, mavenProjectBuilder, factory, resolver, project.getRemoteArtifactRepositories(), project.getPluginArtifactRepositories(), localRepository,repositoryMetadataManager );
@@ -285,7 +284,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         try
         {
             final ArtifactFilter artifactFilter = new ScopeArtifactFilter( Artifact.SCOPE_TEST );
-            return dependencyTreeBuilder.buildDependencyTree( getMavenProject(), localRepository, factory, artifactMetadataSource, artifactFilter, collector );
+            return dependencyTreeBuilder.buildDependencyTree( project, localRepository, factory, artifactMetadataSource, artifactFilter, collector );
         }
         catch ( DependencyTreeBuilderException e )
         {
