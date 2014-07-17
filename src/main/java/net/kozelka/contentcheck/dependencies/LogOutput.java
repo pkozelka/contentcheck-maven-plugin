@@ -30,11 +30,11 @@ public class LogOutput implements LicenseOutput {
         for (String entry : keySet) {
             final List<License> licenses = entries.get(entry);
             if(licenses.size() > 1) {
-                String l = "";
+                final StringBuilder sb = new StringBuilder("");
                 for(License licence : licenses) {
-                    l+= licence.getName() + "(" +  licence.getUrl() + ") ";
+                    sb.append(String.format("%s(%s) ", licence.getName(), licence.getUrl()));
                 }
-                knownEntries.add(String.format("%s has multiple licenses %s", entry, l));
+                knownEntries.add(String.format("%s has multiple licenses: %s", entry, sb));
             } else if(licenses.size() == 1) {
                 final License licence = licenses.get(0);
                 knownEntries.add(String.format("%s %s (%s)", entry, licence.getName(), licence.getUrl()));
