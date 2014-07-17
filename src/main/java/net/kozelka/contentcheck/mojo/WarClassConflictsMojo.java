@@ -56,8 +56,8 @@ public class WarClassConflictsMojo extends AbstractMojo {
                 if (totalConflicts > toleratedConflictCount) {
                     throw new MojoFailureException(errorMessage);
                 }
-                if (totalConflicts > 0 && toleratedConflictCount > 0) {
-                    getLog().warn(String.format("We currently tolerate %d conflicts", toleratedConflictCount));
+                if (totalConflicts > 0 && toleratedConflictCount > totalConflicts) {
+                    getLog().warn(String.format("We currently tolerate %d conflicts; please reduce the tolerance to prevent growing conflicts", toleratedConflictCount));
                 }
             }
         } catch (IOException e) {
