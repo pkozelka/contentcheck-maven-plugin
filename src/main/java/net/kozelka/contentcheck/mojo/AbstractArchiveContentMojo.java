@@ -41,9 +41,10 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     /**
      * The vendor identification. This value is used for JAR's manifest checking
      * when {@link #ignoreVendorArchives} is turned on.
+     * Using the same groupId for all modules in your project can be beneficial for proper verdor archive detection.
      * @see #manifestVendorEntry
      */
-    @Parameter
+    @Parameter(defaultValue = "${project.groupId}")
     String vendorId;
 
     /**
@@ -76,12 +77,6 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
             doExecute();
         }catch (IOException e) {
             throw new MojoFailureException(e.getMessage(), e);
-        }
-    }
-    
-    protected void validateMojoArguments() throws MojoExecutionException{
-        if(ignoreVendorArchives && (vendorId == null || vendorId.length() == 0)) {
-            throw new MojoExecutionException("ignoreVendorArchives is turned on, but 'vendorId' configuration property is missing. Please specify vendorId property in the plugin configuration.");
         }
     }
 
