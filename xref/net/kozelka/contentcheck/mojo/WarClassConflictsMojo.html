@@ -24,17 +24,17 @@
 <a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.Parameter;
 <a class="jxr_linenumber" name="15" href="#15">15</a>  
 <a class="jxr_linenumber" name="16" href="#16">16</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment"> * Looks for conflicts within the libraries in given archive.</em>
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <em class="jxr_javadoccomment"> * Looks for conflicts within the libraries in given sourceFile.</em>
 <a class="jxr_linenumber" name="18" href="#18">18</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="19" href="#19">19</a>  <em class="jxr_javadoccomment"> * @author Petr Kozelka</em>
 <a class="jxr_linenumber" name="20" href="#20">20</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="21" href="#21">21</a>  @Mojo(name=<span class="jxr_string">"warcc"</span>, defaultPhase = LifecyclePhase.PACKAGE)
+<a class="jxr_linenumber" name="21" href="#21">21</a>  @Mojo(name=<span class="jxr_string">"warcc"</span>, defaultPhase = LifecyclePhase.VERIFY)
 <a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../net/kozelka/contentcheck/mojo/WarClassConflictsMojo.html">WarClassConflictsMojo</a> <strong class="jxr_keyword">extends</strong> AbstractMojo {
 <a class="jxr_linenumber" name="23" href="#23">23</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="24" href="#24">24</a>  <em class="jxr_javadoccomment">     * The archive file to be checked</em>
 <a class="jxr_linenumber" name="25" href="#25">25</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="26" href="#26">26</a>      @Parameter(defaultValue = <span class="jxr_string">"${project.build.directory}/${project.build.finalName}.war"</span>, property = <span class="jxr_string">"archive"</span>)
-<a class="jxr_linenumber" name="27" href="#27">27</a>      File archive;
+<a class="jxr_linenumber" name="26" href="#26">26</a>      @Parameter(defaultValue = <span class="jxr_string">"${project.build.directory}/${project.build.finalName}.w  ar"</span>, property = <span class="jxr_string">"sourceFile"</span>)
+<a class="jxr_linenumber" name="27" href="#27">27</a>      File sourceFile;
 <a class="jxr_linenumber" name="28" href="#28">28</a>  
 <a class="jxr_linenumber" name="29" href="#29">29</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="30" href="#30">30</a>  <em class="jxr_javadoccomment">     * How many class conflicts to list directly. Use &lt;code&gt;-1&lt;/code&gt; to list all.</em>
@@ -52,7 +52,7 @@
 <a class="jxr_linenumber" name="42" href="#42">42</a>  
 <a class="jxr_linenumber" name="43" href="#43">43</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> execute() <strong class="jxr_keyword">throws</strong> MojoExecutionException, MojoFailureException {
 <a class="jxr_linenumber" name="44" href="#44">44</a>          <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="45" href="#45">45</a>              <strong class="jxr_keyword">final</strong> <a href="../../../../net/kozelka/contentcheck/conflict/ClassConflictDetector.html">ClassConflictDetector</a> ccd = ClassConflictDetector.exploreWar(archive);
+<a class="jxr_linenumber" name="45" href="#45">45</a>              <strong class="jxr_keyword">final</strong> <a href="../../../../net/kozelka/contentcheck/conflict/ClassConflictDetector.html">ClassConflictDetector</a> ccd = ClassConflictDetector.exploreWar(sourceFile);
 <a class="jxr_linenumber" name="46" href="#46">46</a>              <strong class="jxr_keyword">final</strong> List&lt;ArchiveInfo&gt; conflictingArchives = ccd.getConflictingArchives();
 <a class="jxr_linenumber" name="47" href="#47">47</a>              <strong class="jxr_keyword">if</strong> (!conflictingArchives.isEmpty()) {
 <a class="jxr_linenumber" name="48" href="#48">48</a>                  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> totalConflicts = ccd.printResults(previewThreshold, <strong class="jxr_keyword">new</strong> ClassConflictDetector.LineOutput() {
@@ -61,7 +61,7 @@
 <a class="jxr_linenumber" name="51" href="#51">51</a>                          getLog().error(line);
 <a class="jxr_linenumber" name="52" href="#52">52</a>                      }
 <a class="jxr_linenumber" name="53" href="#53">53</a>                  });
-<a class="jxr_linenumber" name="54" href="#54">54</a>                  <strong class="jxr_keyword">final</strong> String errorMessage = String.format(<span class="jxr_string">"Found %d conflicts in %d archives in %s"</span>, totalConflicts, conflictingArchives.size(), archive);
+<a class="jxr_linenumber" name="54" href="#54">54</a>                  <strong class="jxr_keyword">final</strong> String errorMessage = String.format(<span class="jxr_string">"Found %d conflicts in %d archives in %s"</span>, totalConflicts, conflictingArchives.size(), sourceFile);
 <a class="jxr_linenumber" name="55" href="#55">55</a>                  getLog().error(errorMessage);
 <a class="jxr_linenumber" name="56" href="#56">56</a>                  <strong class="jxr_keyword">if</strong> (totalConflicts &gt; toleratedConflictCount) {
 <a class="jxr_linenumber" name="57" href="#57">57</a>                      <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(errorMessage);
@@ -71,7 +71,7 @@
 <a class="jxr_linenumber" name="61" href="#61">61</a>                  }
 <a class="jxr_linenumber" name="62" href="#62">62</a>              }
 <a class="jxr_linenumber" name="63" href="#63">63</a>          } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="64" href="#64">64</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoExecutionException(archive.getAbsolutePath(), e);
+<a class="jxr_linenumber" name="64" href="#64">64</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoExecutionException(sourceFile.getAbsolutePath(), e);
 <a class="jxr_linenumber" name="65" href="#65">65</a>          }
 <a class="jxr_linenumber" name="66" href="#66">66</a>      }
 <a class="jxr_linenumber" name="67" href="#67">67</a>  }
