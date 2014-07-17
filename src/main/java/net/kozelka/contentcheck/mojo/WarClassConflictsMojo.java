@@ -14,7 +14,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Looks for conflicts within the libraries in given war.
+ * Looks for conflicts within the libraries in given sourceFile.
  *
  * @author Petr Kozelka
  */
@@ -23,8 +23,8 @@ public class WarClassConflictsMojo extends AbstractMojo {
     /**
      * The archive file to be checked
      */
-    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.war", property = "war")
-    File war;
+    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.w  ar", property = "sourceFile")
+    File sourceFile;
 
     /**
      * How many class conflicts to list directly. Use <code>-1</code> to list all.
@@ -42,7 +42,7 @@ public class WarClassConflictsMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
-            final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(war);
+            final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(sourceFile);
             final List<ArchiveInfo> conflictingArchives = ccd.getConflictingArchives();
             if (!conflictingArchives.isEmpty()) {
                 final int totalConflicts = ccd.printResults(previewThreshold, new ClassConflictDetector.LineOutput() {
@@ -51,7 +51,7 @@ public class WarClassConflictsMojo extends AbstractMojo {
                         getLog().error(line);
                     }
                 });
-                final String errorMessage = String.format("Found %d conflicts in %d archives in %s", totalConflicts, conflictingArchives.size(), war);
+                final String errorMessage = String.format("Found %d conflicts in %d archives in %s", totalConflicts, conflictingArchives.size(), sourceFile);
                 getLog().error(errorMessage);
                 if (totalConflicts > toleratedConflictCount) {
                     throw new MojoFailureException(errorMessage);
@@ -61,7 +61,7 @@ public class WarClassConflictsMojo extends AbstractMojo {
                 }
             }
         } catch (IOException e) {
-            throw new MojoExecutionException(war.getAbsolutePath(), e);
+            throw new MojoExecutionException(sourceFile.getAbsolutePath(), e);
         }
     }
 }
