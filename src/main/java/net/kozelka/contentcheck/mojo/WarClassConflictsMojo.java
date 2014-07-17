@@ -18,7 +18,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  *
  * @author Petr Kozelka
  */
-@Mojo(name="warcc", defaultPhase = LifecyclePhase.PACKAGE)
+@Mojo(name="warcc", defaultPhase = LifecyclePhase.VERIFY)
 public class WarClassConflictsMojo extends AbstractMojo {
     /**
      * The archive file to be checked
