@@ -39,14 +39,14 @@ public class CsvOutput implements LicenseOutput {
                 final List<License> licenses = entries.get(entry);
                 if(licenses.size() > 1) {
                     for(License licence : licenses) {
-                        csvWriter.write(String.format("%s,%s,%s\n", PathUtils.stripJARNameFromPath(entry), safeString(licence.getName()), safeString(licence.getUrl())));
+                        csvWriter.write(String.format("%s,%s,%s%n", PathUtils.stripJARNameFromPath(entry), safeString(licence.getName()), safeString(licence.getUrl())));
                     }
 
                 } else if(licenses.size() == 1) {
                     final License licence = licenses.get(0);
-                    csvWriter.write(String.format("%s,%s,%s\n", PathUtils.stripJARNameFromPath(entry), safeString(licence.getName()), safeString(licence.getUrl())));
+                    csvWriter.write(String.format("%s,%s,%s%n", PathUtils.stripJARNameFromPath(entry), safeString(licence.getName()), safeString(licence.getUrl())));
                 } else {
-                    csvWriter.write(String.format("%s,%s,%s\n", PathUtils.stripJARNameFromPath(entry), "unknown", ""));
+                    csvWriter.write(String.format("%s,%s,%s%n", PathUtils.stripJARNameFromPath(entry), "unknown", ""));
                 }
             }
             csvWriter.flush();
