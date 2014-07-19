@@ -8,6 +8,6 @@ import org.apache.maven.model.License;
 
 public interface LicenseOutput {
 
-    public abstract void output(final Map<String, List<License>> entries) throws IOException;
+    abstract void output(final Map<String, List<License>> entries) throws IOException;
 
 }

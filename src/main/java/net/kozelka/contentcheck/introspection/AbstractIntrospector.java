@@ -69,6 +69,7 @@ public abstract class AbstractIntrospector {
             }
 
             if(isJarFileExtension(entry) && ignoreVendorArchives) {
+                //
                 if(isVendorArchive(entry, inputStrategy.readEntryData(sourceFile, entry))) {
                     log.debug(String.format("Skipping entry '%s' it's a vendor archive", entry));
                     continue;

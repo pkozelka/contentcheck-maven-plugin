@@ -112,11 +112,9 @@ public class ClassConflictDetector {
                 int cnt = 0;
                 for (ResourceInfo resource : conflictResources) {
                     cnt ++;
-                    if (previewThreshold >= 0) {
-                        if (cnt > previewThreshold) {
-                            output.println("                ...");
-                            break;
-                        }
+                    if (cnt > previewThreshold && previewThreshold >= 0) {
+                        output.println("                ...");
+                        break;
                     }
                     output.println(String.format("                %s", resource.key));
                 }
@@ -146,7 +144,7 @@ public class ClassConflictDetector {
         });
     }
 
-    public static interface LineOutput {
+    static interface LineOutput {
         void println(String line);
     }
 }
