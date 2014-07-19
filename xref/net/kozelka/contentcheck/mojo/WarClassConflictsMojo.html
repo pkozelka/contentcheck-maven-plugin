@@ -66,8 +66,8 @@
 <a class="jxr_linenumber" name="56" href="#56">56</a>                  <strong class="jxr_keyword">if</strong> (totalConflicts &gt; toleratedConflictCount) {
 <a class="jxr_linenumber" name="57" href="#57">57</a>                      <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(errorMessage);
 <a class="jxr_linenumber" name="58" href="#58">58</a>                  }
-<a class="jxr_linenumber" name="59" href="#59">59</a>                  <strong class="jxr_keyword">if</strong> (totalConflicts &gt; 0 &amp;&amp; toleratedConflictCount &gt; 0) {
-<a class="jxr_linenumber" name="60" href="#60">60</a>                      getLog().warn(String.format(<span class="jxr_string">"We currently tolerate %d conflicts"</span>, toleratedConflictCount));
+<a class="jxr_linenumber" name="59" href="#59">59</a>                  <strong class="jxr_keyword">if</strong> (totalConflicts &gt; 0 &amp;&amp; toleratedConflictCount &gt; totalConflicts) {
+<a class="jxr_linenumber" name="60" href="#60">60</a>                      getLog().warn(String.format(<span class="jxr_string">"We currently tolerate %d conflicts; please reduce the tolerance to prevent growing conflicts"</span>, toleratedConflictCount));
 <a class="jxr_linenumber" name="61" href="#61">61</a>                  }
 <a class="jxr_linenumber" name="62" href="#62">62</a>              }
 <a class="jxr_linenumber" name="63" href="#63">63</a>          } <strong class="jxr_keyword">catch</strong> (IOException e) {
