@@ -2,7 +2,12 @@
 
 [![Build Status](https://travis-ci.org/pkozelka/contentcheck-maven-plugin.png?branch=master)](https://travis-ci.org/pkozelka/contentcheck-maven-plugin)
 
-See the [project website](http://pkozelka.github.io/contentcheck-maven-plugin/index.html) hosted by Github Pages.
+Protects your WAR against
+
+* uncontrolled arrival of new jars into WEB-INF/lib
+* class conflicts between contained jars
+
+For more info, see the [project website](http://pkozelka.github.io/contentcheck-maven-plugin/index.html) hosted by Github Pages.
 
 -----
 
