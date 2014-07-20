@@ -144,7 +144,7 @@ public class ClassConflictDetector {
         });
     }
 
-    static interface LineOutput {
+    public static interface LineOutput {
         void println(String line);
     }
 }
