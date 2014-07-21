@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import net.kozelka.contentcheck.introspection.DefaultIntrospector;
+import net.kozelka.contentcheck.introspection.ContentIntrospector;
 
 import org.apache.maven.plugin.logging.Log;
 
@@ -46,7 +46,7 @@ public class ContentChecker {
      */
     public CheckerOutput check(final File listingFile, final File sourceFile) throws IOException{
         final Set<String> allowedEntries = readListing(listingFile);
-        final DefaultIntrospector introspector = new DefaultIntrospector(log, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+        final ContentIntrospector introspector = new ContentIntrospector(log, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
         final int count = introspector.readEntries(sourceFile);
         //XXX dagi: duplicit entries detection https://github.com/pkozelka/contentcheck-maven-plugin/issues#issue/4
         final Set<String> entries = introspector.getEntries();

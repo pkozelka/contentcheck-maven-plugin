@@ -1,37 +1,36 @@
 package net.kozelka.contentcheck.introspection;
 
-import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.SelectorUtils;
-
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import org.apache.maven.plugin.logging.Log;
+
+import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.SelectorUtils;
 
 /**
- * This class provides archive's content introspection in a template manner. Please
- * see {@link DefaultIntrospector} that provides archive's content as a set of paths.
+ * This introspector captures all passed entities by their paths.
  *
  * @todo keep maven dependencies in 'mojo' subpackage
- * @see #readEntries(File)
- * @see DefaultIntrospector
+ * @see #sourceEntries
  */
-abstract class AbstractIntrospector {
+public class ContentIntrospector {
     private static final String JAR_FILE_EXTENSION = "**/*.jar";
-
+    private final Set<String> sourceEntries = new LinkedHashSet<String>();
     private final Log log;
     private final boolean ignoreVendorArchives;
     private final String vendorId;
     private final String manifestVendorEntry;
     private final String checkFilesPattern;
-    //TODO: option to ignore snapshots
 
-    public AbstractIntrospector(Log log, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
+    public ContentIntrospector(Log log, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
         this.log = log;
         this.ignoreVendorArchives = ignoreVendorArchives;
         this.vendorId = vendorId;
@@ -39,16 +38,27 @@ abstract class AbstractIntrospector {
         this.checkFilesPattern = checkFilesPattern;
     }
 
+    public void processEntry(String entry) throws IOException {
+        sourceEntries.add(entry);
+    }
+
+    /**
+     * @return the entries found in source
+     */
+    public Set<String> getEntries() {
+        return sourceEntries;
+    }
+
     /**
      * Starts reading {@code sourceFile}'s content entry by entry. If an entry matches {@link #checkFilesPattern}
      * and is not a vendor archive (in case of {@link #ignoreVendorArchives} is <code>true</code>)
      * the entry will be delegated to the method {@link #processEntry(String)}
      * for further processing.
-     * 
+     *
      * @param sourceFile a source file to be read, typically an archive or directory
-     * 
+     *
      * @return the number of read entities.
-     * 
+     *
      * @see #processEntry(String)
      */
     public final int readEntries(final File sourceFile) throws IOException {
@@ -81,13 +91,6 @@ abstract class AbstractIntrospector {
 
         return totalCnt;
     }
-
-    /**
-     * Process a given entry. This method is intended to be implemented by subclasses.
-     * 
-     * @param entry an entry to be processed
-     */
-    public abstract void processEntry(String entry) throws IOException;
 
     /**
      * Checks whether a path point to a JAR file or not.

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import net.kozelka.contentcheck.introspection.DefaultIntrospector;
+import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -43,7 +43,7 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
         }
 
         try {
-            final DefaultIntrospector introspector = new DefaultIntrospector(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final ContentIntrospector introspector = new ContentIntrospector(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             final int count = introspector.readEntries(sourceFile);
             final List<String> sourceEntries = new ArrayList<String>(introspector.getEntries());
             Collections.sort(sourceEntries);

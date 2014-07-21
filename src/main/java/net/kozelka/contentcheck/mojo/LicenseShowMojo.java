@@ -12,7 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.kozelka.contentcheck.introspection.DefaultIntrospector;
+import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.manager.WagonManager;
@@ -197,7 +197,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         final List<MavenProject> mavenProjectForDependencies = getMavenProjectForDependencies();
 
         try {
-            final DefaultIntrospector introspector = new DefaultIntrospector(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final ContentIntrospector introspector = new ContentIntrospector(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             introspector.readEntries(src);
 
             final Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getEntries());
