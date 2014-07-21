@@ -1,6 +1,7 @@
 package net.kozelka.contentcheck.mojo;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,8 +12,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.kozelka.contentcheck.dependencies.CsvOutput;
-import net.kozelka.contentcheck.dependencies.LicenseOutput;
 import net.kozelka.contentcheck.introspection.DefaultIntrospector;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -335,5 +334,105 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
             return Collections.EMPTY_LIST;
         }
 
+    }
+
+    public static class CsvOutput implements LicenseOutput {
+
+        private final File outputFile;
+
+        public CsvOutput(final File outputFile) {
+            super();
+            this.outputFile = outputFile;
+        }
+
+        public void output(final Map<String, List<License>> licensesPerFile) throws IOException {
+            final Set<String> keySet = licensesPerFile.keySet();
+            final FileWriter csvWriter = new FileWriter(outputFile);
+            try {
+                for (String entry : keySet) {
+                    final List<License> licenses = licensesPerFile.get(entry);
+                    final String jarName = stripJARNameFromPath(entry);
+                    for(License licence : licenses) {
+                        writeRecord(csvWriter, jarName, licence.getName(), licence.getUrl());
+                    }
+                    if(licenses.isEmpty()) {
+                        writeRecord(csvWriter, jarName, "unknown", "");
+                    }
+                }
+            } finally {
+                csvWriter.close();
+            }
+        }
+
+        private void writeRecord(FileWriter csvWriter, String jarName, String licenseName, String licenseUrl) throws IOException {
+            csvWriter.write(String.format("%s,%s,%s%n", jarName, safeString(licenseName), safeString(licenseUrl)));
+        }
+
+        public String safeString(final String s) {
+            if(s == null) {
+                return "";
+            }
+            return s.replaceAll("\\,", " ");
+        }
+    }
+
+    private static interface LicenseOutput {
+
+        abstract void output(final Map<String, List<License>> licensesPerFile) throws IOException;
+
+    }
+
+    static class MavenLogOutput implements LicenseOutput {
+        private final Log log;
+
+        public MavenLogOutput(final Log log) {
+            super();
+            this.log = log;
+        }
+
+        /**
+         * @see net.kozelka.contentcheck.mojo.LicenseShowMojo.LicenseOutput#output(java.util.Map)
+         */
+        public void output(final Map<String, List<License>> licensesPerFile) {
+            final Set<String> keySet = licensesPerFile.keySet();
+            final Set<String> knownEntries = new LinkedHashSet<String>();
+            final Set<String> unknownEntries = new LinkedHashSet<String>();
+
+            for (String entry : keySet) {
+                final List<License> licenses = licensesPerFile.get(entry);
+                if(licenses.size() > 1) {
+                    final StringBuilder sb = new StringBuilder("");
+                    for(License licence : licenses) {
+                        sb.append(String.format("%s(%s) ", licence.getName(), licence.getUrl()));
+                    }
+                    knownEntries.add(String.format("%s has multiple licenses: %s", entry, sb));
+                } else if(licenses.size() == 1) {
+                    final License licence = licenses.get(0);
+                    knownEntries.add(String.format("%s %s (%s)", entry, licence.getName(), licence.getUrl()));
+                } else {
+                    unknownEntries.add(entry);
+                }
+            }
+
+            if(unknownEntries.size() == 0) {
+                log.info("All artifact entries have associated license information.");
+            } else {
+                log.warn("Some of the entries have no associated license information or the plugin wasn't able to determine them. Please check them manually.");
+            }
+
+            log.info("");
+            log.info("The archive contains following entries with known license information:");
+            for (String entryDesc : knownEntries) {
+                log.info(entryDesc);
+            }
+
+            if(unknownEntries.size() > 0) {
+                log.info("");
+                log.warn("The archive contains following entries with uknown license inforamtion:");
+                for (String archiveName : unknownEntries) {
+                    log.warn(archiveName);
+                }
+            }
+        }
     }
 }
