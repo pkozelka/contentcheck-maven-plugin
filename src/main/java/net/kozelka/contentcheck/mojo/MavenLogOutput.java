@@ -20,13 +20,13 @@ class MavenLogOutput implements LicenseOutput {
     /**
      * @see LicenseOutput#output(java.util.Map)
      */
-    public void output(final Map<String, List<License>> entries) {
-        final Set<String> keySet = entries.keySet();
+    public void output(final Map<String, List<License>> licensesPerFile) {
+        final Set<String> keySet = licensesPerFile.keySet();
         final Set<String> knownEntries = new LinkedHashSet<String>();
         final Set<String> unknownEntries = new LinkedHashSet<String>();
 
         for (String entry : keySet) {
-            final List<License> licenses = entries.get(entry);
+            final List<License> licenses = licensesPerFile.get(entry);
             if(licenses.size() > 1) {
                 final StringBuilder sb = new StringBuilder("");
                 for(License licence : licenses) {
