@@ -1,5 +1,6 @@
 package net.kozelka.contentcheck.mojo;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
@@ -23,7 +24,15 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
      */
     @Parameter(defaultValue = "false", property = "contentcheck.skip")
     boolean skip;
-    
+
+    /**
+     * The file with list of approved files. If such file does not exist, the check is skipped. This enables multimodule use.
+     * Each line in represents one pathname entry.
+     * Empty lines and comments (starting with '#') are ignored.
+     */
+    @Parameter(defaultValue = "${basedir}/approved-content.txt")
+    File contentListing;
+
     /**
      * Message used to report missing entry - uses the {@link java.util.Formatter} syntax to embed entry name.
      */

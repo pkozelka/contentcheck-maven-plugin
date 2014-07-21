@@ -156,6 +156,12 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
     protected Settings settings;
 
     /**
+     * The Maven Project.
+     */
+    @Parameter(property = "project", required = true, readonly = true)
+    MavenProject project;
+
+    /**
      * Wagon manager component.
      */
     @Component

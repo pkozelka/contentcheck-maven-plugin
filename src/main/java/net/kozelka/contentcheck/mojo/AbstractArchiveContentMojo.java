@@ -2,12 +2,10 @@ package net.kozelka.contentcheck.mojo;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 public abstract class AbstractArchiveContentMojo extends AbstractMojo {
 
@@ -29,15 +27,6 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     @Deprecated @Parameter
     private File directory;
 
-    /**
-     * The file with list of approved files. If such file does not exist, the check is skipped. This enables multimodule use.
-     * Each line in represents one pathname entry.
-     * Empty lines and comments (starting with '#') are ignored.
-     */
-    @Parameter(defaultValue = "${basedir}/approved-content.txt")
-    File contentListing;
-
-    
     /**
      * The vendor identification. This value is used for JAR's manifest checking
      * when {@link #ignoreVendorArchives} is turned on.
@@ -65,12 +54,6 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "**/*.jar")
     String checkFilesPattern;
-
-    /**
-     * The Maven Project.
-     */
-    @Parameter(property = "project", required = true, readonly = true)
-    MavenProject project;
 
     public final void execute() throws MojoExecutionException, MojoFailureException {
         try {

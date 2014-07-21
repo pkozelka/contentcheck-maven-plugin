@@ -1,5 +1,6 @@
 package net.kozelka.contentcheck.mojo;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +21,14 @@ import org.apache.maven.plugins.annotations.Parameter;
  */
 @Mojo(name = "generate")
 public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
+
+    /**
+     * The file with list of approved files. If such file does not exist, the check is skipped. This enables multimodule use.
+     * Each line in represents one pathname entry.
+     * Empty lines and comments (starting with '#') are ignored.
+     */
+    @Parameter(defaultValue = "${basedir}/approved-content.txt")
+    File contentListing;
 
     /**
      * This parameter allows overwriting existing listing file.
