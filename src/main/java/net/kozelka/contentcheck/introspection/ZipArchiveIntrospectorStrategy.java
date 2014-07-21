@@ -13,7 +13,7 @@ import java.util.zip.ZipInputStream;
 /**
  * Implementation of {@link IntrospectorInputStrategy} which can read the content of ZIP file.
  */
-public class ZipArchiveIntrospectorStrategy implements IntrospectorInputStrategy {
+class ZipArchiveIntrospectorStrategy implements IntrospectorInputStrategy {
     public Set<String> readAllEntries(File containerFile) throws IOException {
         final ZipFile zipFile = new ZipFile(containerFile);
         final ZipInputStream zis = new ZipInputStream(new FileInputStream(containerFile));

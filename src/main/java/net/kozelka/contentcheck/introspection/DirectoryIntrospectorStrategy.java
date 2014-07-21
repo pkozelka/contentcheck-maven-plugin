@@ -14,7 +14,7 @@ import java.util.Set;
 /**
  * Implementation of {@link IntrospectorInputStrategy} which can read the content of ordinary directory.
  */
-public class DirectoryIntrospectorStrategy implements IntrospectorInputStrategy {
+class DirectoryIntrospectorStrategy implements IntrospectorInputStrategy {
 
     public Set<String> readAllEntries(File baseDirectory) throws IOException {
         Validate.notNull(baseDirectory, "containerFile cannot be null!");

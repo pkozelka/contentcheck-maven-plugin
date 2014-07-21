@@ -13,7 +13,7 @@ import java.util.Set;
  *     <li>directory</li>
  * </ul>
  */
-public interface IntrospectorInputStrategy {
+interface IntrospectorInputStrategy {
     /**
      * Reads all file entries from specified container file.
      * Entries should be represented by theirs paths.

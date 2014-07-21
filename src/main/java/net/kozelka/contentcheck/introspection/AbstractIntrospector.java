@@ -21,7 +21,7 @@ import java.util.jar.Manifest;
  * @see #readEntries(File)
  * @see DefaultIntrospector
  */
-public abstract class AbstractIntrospector {
+abstract class AbstractIntrospector {
     private static final String JAR_FILE_EXTENSION = "**/*.jar";
 
     private final Log log;
