@@ -46,7 +46,7 @@ public class ContentChecker {
      */
     public CheckerOutput check(final File listingFile, final File sourceFile) throws IOException{
         final Set<String> allowedEntries = readListing(listingFile);
-        final ContentIntrospector introspector = new ContentIntrospector(log, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+        final ContentIntrospector introspector = ContentIntrospector.create(log, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
         final int count = introspector.readEntries(sourceFile);
         //XXX dagi: duplicit entries detection https://github.com/pkozelka/contentcheck-maven-plugin/issues#issue/4
         final Set<String> entries = introspector.getEntries();

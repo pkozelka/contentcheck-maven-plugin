@@ -43,7 +43,7 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
         }
 
         try {
-            final ContentIntrospector introspector = new ContentIntrospector(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final ContentIntrospector introspector = ContentIntrospector.create(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             final int count = introspector.readEntries(sourceFile);
             final List<String> sourceEntries = new ArrayList<String>(introspector.getEntries());
             Collections.sort(sourceEntries);

@@ -30,7 +30,7 @@ public class ContentIntrospector {
     private final String manifestVendorEntry;
     private final String checkFilesPattern;
 
-    public ContentIntrospector(Log log, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
+    private ContentIntrospector(Log log, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
         this.log = log;
         this.ignoreVendorArchives = ignoreVendorArchives;
         this.vendorId = vendorId;
@@ -38,7 +38,11 @@ public class ContentIntrospector {
         this.checkFilesPattern = checkFilesPattern;
     }
 
-    public void processEntry(String entry) throws IOException {
+    public static ContentIntrospector create(Log log, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
+        return new ContentIntrospector(log, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+    }
+
+    private void processEntry(String entry) throws IOException {
         sourceEntries.add(entry);
     }
 
@@ -99,34 +103,6 @@ public class ContentIntrospector {
      */
     protected boolean isJarFileExtension(String path) {
         return SelectorUtils.matchPath(JAR_FILE_EXTENSION, path);
-    }
-
-    /**
-     * @return the ignoreVendorArchives
-     */
-    protected boolean isIgnoreVendorArchives() {
-        return ignoreVendorArchives;
-    }
-
-    /**
-     * @return the vendorId
-     */
-    protected String getVendorId() {
-        return vendorId;
-    }
-
-    /**
-     * @return the manifestVendorEntry
-     */
-    protected String getManifestVendorEntry() {
-        return manifestVendorEntry;
-    }
-
-    /**
-     * @return the checkFilesPattern
-     */
-    protected String getCheckFilesPattern() {
-        return checkFilesPattern;
     }
 
     private boolean shouldBeChecked(String path) {
