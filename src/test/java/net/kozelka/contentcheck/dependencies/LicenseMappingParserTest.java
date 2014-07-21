@@ -21,7 +21,7 @@ public class LicenseMappingParserTest {
     public void testParseLicenseMappingFile()  throws Exception{
         File licenseMappingFile = SupportUtils.getFile("license.mapping.json");
         Log log = mock(Log.class);
-        LicenseMappingParser parser = new LicenseMappingParser(log, licenseMappingFile);
+        LicenseMappingParser parser = new LicenseMappingParser(licenseMappingFile);
         Map<String, List<License>> mapping = parser.parseLicenseMappingFile();
         assertThat("Mapping parser didn't return any result object", mapping, notNullValue());
         assertThat("Mapping parser returned wrong number of entities", mapping.size(), is(2));
