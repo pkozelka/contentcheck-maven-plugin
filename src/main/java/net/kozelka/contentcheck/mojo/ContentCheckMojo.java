@@ -17,6 +17,12 @@ import org.apache.maven.plugins.annotations.Parameter;
  */
 @Mojo(name = "check", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
 public class ContentCheckMojo extends AbstractArchiveContentMojo {
+
+    /**
+     * If true, no check is performed.
+     */
+    @Parameter(defaultValue = "false", property = "contentcheck.skip")
+    boolean skip;
     
     /**
      * Message used to report missing entry - uses the {@link java.util.Formatter} syntax to embed entry name.
@@ -49,9 +55,15 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
     boolean skipPOMPackaging;
 
     protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
-        
+
+        if (skip) {
+            getLog().info("Content checking is skipped.");
+            return;
+        }
+
         if(!contentListing.exists()) {
             getLog().info("Skipping - file does not exist: " + contentListing);
+            return;
         }
 
         assertSourceFileExists();

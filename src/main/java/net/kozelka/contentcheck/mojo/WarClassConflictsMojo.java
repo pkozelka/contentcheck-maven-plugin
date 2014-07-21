@@ -21,9 +21,15 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name="warcc", defaultPhase = LifecyclePhase.VERIFY)
 public class WarClassConflictsMojo extends AbstractMojo {
     /**
+     * If true, no check is performed.
+     */
+    @Parameter(defaultValue = "false", property = "contentcheck.skip")
+    boolean skip;
+
+    /**
      * The archive file to be checked
      */
-    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.w  ar", property = "sourceFile")
+    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.war", property = "sourceFile")
     File sourceFile;
 
     /**
@@ -41,6 +47,11 @@ public class WarClassConflictsMojo extends AbstractMojo {
     int toleratedConflictCount;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            getLog().info("Content checking is skipped.");
+            return;
+        }
+
         try {
             final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(sourceFile);
             final List<ArchiveInfo> conflictingArchives = ccd.getConflictingArchives();
