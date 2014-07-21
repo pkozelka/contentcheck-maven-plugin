@@ -1,10 +1,8 @@
 package net.kozelka.contentcheck.mojo;
 
 import java.io.File;
-import java.io.IOException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
 
 public abstract class AbstractArchiveContentMojo extends AbstractMojo {
@@ -55,14 +53,6 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     @Parameter(defaultValue = "**/*.jar")
     String checkFilesPattern;
 
-    public final void execute() throws MojoExecutionException, MojoFailureException {
-        try {
-            doExecute();
-        }catch (IOException e) {
-            throw new MojoFailureException(e.getMessage(), e);
-        }
-    }
-
     protected void assertSourceFileExists() throws MojoExecutionException {
         if (directory != null) {
             getLog().warn("Parameter 'directory' is deprecated, please use 'sourceFile' instead.");
@@ -81,6 +71,4 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
             throw new MojoExecutionException("Archive file or directory " + archive.getAbsolutePath() + " you are trying to check doesn't exist.");
         }
     }
-
-    protected abstract void doExecute() throws IOException, MojoExecutionException, MojoFailureException;
 }

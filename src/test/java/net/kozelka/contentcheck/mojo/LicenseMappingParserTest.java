@@ -1,19 +1,16 @@
-package net.kozelka.contentcheck.dependencies;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
+package net.kozelka.contentcheck.mojo;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-
 import net.kozelka.contentcheck.SupportUtils;
-
 import org.apache.maven.model.License;
 import org.apache.maven.plugin.logging.Log;
 import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class LicenseMappingParserTest {
 
@@ -21,8 +18,7 @@ public class LicenseMappingParserTest {
     public void testParseLicenseMappingFile()  throws Exception{
         File licenseMappingFile = SupportUtils.getFile("license.mapping.json");
         Log log = mock(Log.class);
-        LicenseMappingParser parser = new LicenseMappingParser(licenseMappingFile);
-        Map<String, List<License>> mapping = parser.parseLicenseMappingFile();
+        Map<String, List<License>> mapping = LicenseShowMojo.parseLicenseMappingFile(licenseMappingFile);
         assertThat("Mapping parser didn't return any result object", mapping, notNullValue());
         assertThat("Mapping parser returned wrong number of entities", mapping.size(), is(2));
         List<License> list = mapping.get("spring-beans-3.0.4.RELEASE.jar");

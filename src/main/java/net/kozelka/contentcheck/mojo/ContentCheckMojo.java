@@ -63,7 +63,8 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
     @Parameter(defaultValue = "false")
     boolean skipPOMPackaging;
 
-    protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
         if (skip) {
             getLog().info("Content checking is skipped.");
@@ -77,36 +78,40 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
 
         assertSourceFileExists();
 
-        final ContentChecker contentChecker = new ContentChecker(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-        final CheckerOutput output = contentChecker.check(contentListing, sourceFile);
+        try {
+            final ContentChecker contentChecker = new ContentChecker(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final CheckerOutput output = contentChecker.check(contentListing, sourceFile);
 
-        // report missing entries
-        final Set<String> missingEntries = output.diffMissingEntries();
-        for (String entry : missingEntries) {
-            log(failOnMissing, String.format(msgMissing, entry));
-        }
-        // report unexpected entries
-        final Set<String> unexpectedEntries = output.diffUnexpectedEntries();
-        for (String entry : unexpectedEntries) {
-            log(failOnUnexpected, String.format(msgUnexpected, entry));
-        }
-        // error summary
-        if (missingEntries.size() > 0) {
-            log(failOnMissing, "Missing: " + missingEntries.size() + " entries");
-        }
-        if (unexpectedEntries.size() > 0) {
-            log(failOnUnexpected, "Unexpected: " + unexpectedEntries.size() + " entries");
-        }
-        // fail as neccessary, after reporting all detected problems
-        if (failOnMissing && ! missingEntries.isEmpty()) {
-            throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + sourceFile);
-        }
+            // report missing entries
+            final Set<String> missingEntries = output.diffMissingEntries();
+            for (String entry : missingEntries) {
+                log(failOnMissing, String.format(msgMissing, entry));
+            }
+            // report unexpected entries
+            final Set<String> unexpectedEntries = output.diffUnexpectedEntries();
+            for (String entry : unexpectedEntries) {
+                log(failOnUnexpected, String.format(msgUnexpected, entry));
+            }
+            // error summary
+            if (missingEntries.size() > 0) {
+                log(failOnMissing, "Missing: " + missingEntries.size() + " entries");
+            }
+            if (unexpectedEntries.size() > 0) {
+                log(failOnUnexpected, "Unexpected: " + unexpectedEntries.size() + " entries");
+            }
+            // fail as neccessary, after reporting all detected problems
+            if (failOnMissing && ! missingEntries.isEmpty()) {
+                throw new MojoFailureException(missingEntries.size() + " expected entries are missing in " + sourceFile);
+            }
 
-        if (failOnUnexpected && ! unexpectedEntries.isEmpty()) {
-            throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + sourceFile);
-        }
+            if (failOnUnexpected && ! unexpectedEntries.isEmpty()) {
+                throw new MojoFailureException(unexpectedEntries.size() + " unexpected entries appear in " + sourceFile);
+            }
 
-        getLog().info("Source " + sourceFile.getAbsolutePath() + " has valid content according to " + contentListing.getAbsolutePath());
+            getLog().info("Source " + sourceFile.getAbsolutePath() + " has valid content according to " + contentListing.getAbsolutePath());
+        } catch (IOException e) {
+            throw new MojoFailureException(e.getMessage(), e);
+        }
     }
 
     private void log(boolean error, String message) {

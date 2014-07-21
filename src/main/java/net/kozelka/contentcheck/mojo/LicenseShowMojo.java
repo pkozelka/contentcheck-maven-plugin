@@ -3,14 +3,15 @@ package net.kozelka.contentcheck.mojo;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.kozelka.contentcheck.dependencies.CsvOutput;
-import net.kozelka.contentcheck.dependencies.LicenseMappingParser;
 import net.kozelka.contentcheck.dependencies.LicenseOutput;
 import net.kozelka.contentcheck.introspection.DefaultIntrospector;
 import org.apache.maven.artifact.Artifact;
@@ -40,6 +41,9 @@ import org.apache.maven.shared.dependency.tree.DependencyNode;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
 import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.apache.maven.shared.jar.classes.JarClassesAnalysis;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import static net.kozelka.contentcheck.PathUtils.stripJARNameFromPath;
 
 /**
@@ -184,7 +188,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
      * @see AbstractArchiveContentMojo#doExecute()
      */
     @Override
-    protected void doExecute() throws IOException, MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoExecutionException, MojoFailureException {
         final File src = sourceFile.exists() ? sourceFile : defaultBundleForPOMPacking;
         if(!src.exists()) {
             getLog().warn("Skipping project since there is no archive to check.");
@@ -193,63 +197,94 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
 
         final List<MavenProject> mavenProjectForDependencies = getMavenProjectForDependencies();
 
-        final DefaultIntrospector introspector = new DefaultIntrospector(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-        introspector.readEntries(src);
+        try {
+            final DefaultIntrospector introspector = new DefaultIntrospector(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            introspector.readEntries(src);
 
-        final Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getEntries());
-        final Map<String, List<License>> entries = new LinkedHashMap<String, List<License>>();
+            final Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getEntries());
+            final Map<String, List<License>> entries = new LinkedHashMap<String, List<License>>();
 
-        final Map<String, List<License>> additionalLicenseInformation = new LinkedHashMap<String, List<License>>();
-        if(licenseMappingFile != null && licenseMappingFile.exists()) {
-            //read additional license information
-            getLog().info(String.format("Reading license mapping file %s", licenseMappingFile.getAbsolutePath()));
-            final LicenseMappingParser licenseMappingParser = new LicenseMappingParser(licenseMappingFile);
-            additionalLicenseInformation.putAll(licenseMappingParser.parseLicenseMappingFile());
-        }
+            final Map<String, List<License>> additionalLicenseInformation = new LinkedHashMap<String, List<License>>();
+            if(licenseMappingFile != null && licenseMappingFile.exists()) {
+                //read additional license information
+                getLog().info(String.format("Reading license mapping file %s", licenseMappingFile.getAbsolutePath()));
+                additionalLicenseInformation.putAll(parseLicenseMappingFile(licenseMappingFile));
+            }
 
-        getLog().info("Comparing the archive content with Maven project artifacts");
-        for(String archiveEntry : archiveEntries) {
-            List<License> licenses = null; //these licenses will be associated with the given archive entry
+            getLog().info("Comparing the archive content with Maven project artifacts");
+            for(String archiveEntry : archiveEntries) {
+                List<License> licenses = null; //these licenses will be associated with the given archive entry
 
-            for (MavenProject mavenProject : mavenProjectForDependencies) {
-                mavenProject.getGroupId();
-                final String artifactId = mavenProject.getArtifactId();
-                final String version = mavenProject.getVersion();
-                final String jarName = artifactId + "-" + version + ".jar"; //guess jar name
-                if(archiveEntry.endsWith(jarName)) {
-                    @SuppressWarnings("unchecked")
-                    final List<License> _licenses = mavenProject.getLicenses();
-                    licenses = _licenses == null || _licenses.size() == 0 ? null : _licenses  ;
-                    break;
+                for (MavenProject mavenProject : mavenProjectForDependencies) {
+                    mavenProject.getGroupId();
+                    final String artifactId = mavenProject.getArtifactId();
+                    final String version = mavenProject.getVersion();
+                    final String jarName = artifactId + "-" + version + ".jar"; //guess jar name
+                    if(archiveEntry.endsWith(jarName)) {
+                        @SuppressWarnings("unchecked")
+                        final List<License> _licenses = mavenProject.getLicenses();
+                        licenses = _licenses == null || _licenses.size() == 0 ? null : _licenses  ;
+                        break;
+                    }
+                }
+
+                final List<License> licensesMappingFile = additionalLicenseInformation.get(stripJARNameFromPath(archiveEntry));
+
+                if(licenses == null && licensesMappingFile == null) {//misising license information
+                    getLog().debug(String.format("Cannot resolve license information for archive entry %s neither from the POM file nor the file for license mapping", archiveEntry));
+                    //archive entry must be present even if there is no a matching Maven Project
+                    entries.put(archiveEntry, Collections.<License>emptyList());
+                } else if(licenses != null && licensesMappingFile != null) {//licenses specified in both - POM and license mapping file
+                    getLog().warn(String.format("The license information for file %s are defined in the POM file and also in the file for license mapping. Using license information from the the file for license mapping.", archiveEntry));
+                    entries.put(archiveEntry, licensesMappingFile); //mapping manually specified licenses precedes licenses from POM
+                } else if (licenses != null) {//license information in POM
+                    entries.put(archiveEntry, licenses);//license
+                } else {
+                    //license information in mapping file
+                    //put additional license information to the object that holds this information
+                    entries.put(archiveEntry, licensesMappingFile);
                 }
             }
 
-            final List<License> licensesMappingFile = additionalLicenseInformation.get(stripJARNameFromPath(archiveEntry));
+            final LicenseOutput logOutput = new MavenLogOutput(getLog());
+            logOutput.output(entries);
 
-            if(licenses == null && licensesMappingFile == null) {//misising license information
-                getLog().debug(String.format("Cannot resolve license information for archive entry %s neither from the POM file nor the file for license mapping", archiveEntry));
-                //archive entry must be present even if there is no a matching Maven Project
-                entries.put(archiveEntry, Collections.<License>emptyList());
-            } else if(licenses != null && licensesMappingFile != null) {//licenses specified in both - POM and license mapping file
-                getLog().warn(String.format("The license information for file %s are defined in the POM file and also in the file for license mapping. Using license information from the the file for license mapping.", archiveEntry));
-                entries.put(archiveEntry, licensesMappingFile); //mapping manually specified licenses precedes licenses from POM
-            } else if (licenses != null) {//license information in POM
-                entries.put(archiveEntry, licenses);//license
-            } else {
-                //license information in mapping file
-                //put additional license information to the object that holds this information
-                entries.put(archiveEntry, licensesMappingFile);
+            if(csvOutput) {
+                final CsvOutput csvOutput = new CsvOutput(csvOutputFile);
+                getLog().info(String.format("Creating license output to CSV file %s", csvOutputFile.getPath()));
+                csvOutput.output(entries);
+            }
+        } catch (IOException e) {
+            throw new MojoFailureException(e.getMessage(), e);
+        }
+    }
+
+    static Map<String, List<License>> parseLicenseMappingFile(File licenseMappingFile) throws MojoFailureException{
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final String licenseMappingFilePath = licenseMappingFile.getPath();
+        final Map<String, Object> json;
+        try {
+            json= objectMapper.readValue(licenseMappingFile, Map.class);
+        } catch (JsonParseException e) {
+            throw new MojoFailureException(String.format("Cannot parse JSON from file %s the content of the file is not well formed JSON.", licenseMappingFilePath),e);
+        } catch (JsonMappingException e) {
+            throw new MojoFailureException(String.format("Cannot deserialize JSON from file %s", licenseMappingFilePath),e);
+        } catch (IOException e) {
+            throw new MojoFailureException(e.getMessage(), e);
+        }
+        final Map <String, List<License>> fileToLicenseMapping = new HashMap<String, List<License>>();
+        final List<Map<String, Object>> jsonLicenses = (List<Map<String, Object>>) json.get("licenses");
+        //construct model objects from JSON
+        for (Map<String, Object> jsonLicense : jsonLicenses) {
+            final License license = new License();
+            license.setName((String) jsonLicense.get("name"));
+            license.setUrl((String) jsonLicense.get("url"));
+            final List<String> fileNames = (List<String>) jsonLicense.get("files");
+            for (String fileName : fileNames) {
+                fileToLicenseMapping.put(fileName, Arrays.asList(license));
             }
         }
-
-        final LicenseOutput logOutput = new MavenLogOutput(getLog());
-        logOutput.output(entries);
-
-        if(csvOutput) {
-            final CsvOutput csvOutput = new CsvOutput(csvOutputFile);
-            getLog().info(String.format("Creating license output to CSV file %s", csvOutputFile.getPath()));
-            csvOutput.output(entries);
-        }
+        return fileToLicenseMapping;
     }
 
     private List<MavenProject> getMavenProjectForDependencies() throws MojoExecutionException, MojoFailureException {
