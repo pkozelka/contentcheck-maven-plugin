@@ -99,13 +99,6 @@ abstract class AbstractIntrospector {
     }
 
     /**
-     * @return the log
-     */
-    protected Log getLog() {
-        return log;
-    }
-
-    /**
      * @return the ignoreVendorArchives
      */
     protected boolean isIgnoreVendorArchives() {

@@ -9,7 +9,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.kozelka.contentcheck.dependencies.LogOutput;
 import net.kozelka.contentcheck.dependencies.CsvOutput;
 import net.kozelka.contentcheck.dependencies.LicenseMappingParser;
 import net.kozelka.contentcheck.dependencies.LicenseOutput;
@@ -197,7 +196,8 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         final Map<String, List<License>> additionalLicenseInformation = new LinkedHashMap<String, List<License>>();
         if(licenseMappingFile != null && licenseMappingFile.exists()) {
             //read additional license information
-            final LicenseMappingParser licenseMappingParser = new LicenseMappingParser(getLog(), licenseMappingFile);
+            getLog().info(String.format("Reading license mapping file %s", licenseMappingFile.getAbsolutePath()));
+            final LicenseMappingParser licenseMappingParser = new LicenseMappingParser(licenseMappingFile);
             additionalLicenseInformation.putAll(licenseMappingParser.parseLicenseMappingFile());
         }
 
@@ -236,11 +236,12 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
             }
         }
 
-        final LicenseOutput logOutput = new LogOutput(getLog());
+        final LicenseOutput logOutput = new MavenLogOutput(getLog());
         logOutput.output(entries);
 
         if(csvOutput) {
-            final CsvOutput csvOutput = new CsvOutput(getLog(), csvOutputFile);
+            final CsvOutput csvOutput = new CsvOutput(csvOutputFile);
+            getLog().info(String.format("Creating license output to CSV file %s", csvOutputFile.getPath()));
             csvOutput.output(entries);
         }
     }

@@ -6,26 +6,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.maven.model.License;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-/**
- * @todo keep maven dependencies in 'mojo' subpackage ... model.License is ok
- */
 public class LicenseMappingParser {
 
-    private final Log log;
     private final File licenseMappingFile;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public LicenseMappingParser(final Log log, final File licenseMappingFile) {
+    public LicenseMappingParser(final File licenseMappingFile) {
         super();
-        this.log = log;
         this.licenseMappingFile = licenseMappingFile;
     }
 
@@ -33,7 +26,6 @@ public class LicenseMappingParser {
         final String licenseMappingFilePath = licenseMappingFile.getPath();
         final Map<String, Object> json;
         try {
-            log.info(String.format("Reading license mapping file %s", licenseMappingFilePath));
             json= objectMapper.readValue(licenseMappingFile, Map.class);
         } catch (JsonParseException e) {
             throw new MojoFailureException(String.format("Cannot parse JSON from file %s the content of the file is not well formed JSON.", licenseMappingFilePath),e);

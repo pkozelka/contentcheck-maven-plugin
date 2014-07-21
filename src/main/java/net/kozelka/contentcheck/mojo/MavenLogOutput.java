@@ -1,20 +1,18 @@
-package net.kozelka.contentcheck.dependencies;
+package net.kozelka.contentcheck.mojo;
 
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.kozelka.contentcheck.dependencies.LicenseOutput;
 import org.apache.maven.model.License;
 import org.apache.maven.plugin.logging.Log;
 
-/**
- * @todo keep maven dependencies in 'mojo' subpackage
- */
-public class LogOutput implements LicenseOutput {
+class MavenLogOutput implements LicenseOutput {
     private final Log log;
 
-    public LogOutput(final Log log) {
+    public MavenLogOutput(final Log log) {
         super();
         this.log = log;
     }

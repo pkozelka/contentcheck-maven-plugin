@@ -9,32 +9,22 @@ import java.util.Set;
 
 import net.kozelka.contentcheck.PathUtils;
 import org.apache.maven.model.License;
-import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.IOUtil;
 
-/**
- * @todo keep maven dependencies in 'mojo' subpackage ... model.License is ok
- */
 public class CsvOutput implements LicenseOutput {
 
     private final File outputFile;
-    private final Log log;
 
-    public CsvOutput(final Log log, final File outputFile) {
+    public CsvOutput(final File outputFile) {
         super();
         this.outputFile = outputFile;
-        this.log = log;
     }
 
-    /**
-     * @see LicenseOutput#output(java.util.Map)
-     */
     public void output(final Map<String, List<License>> entries) throws IOException{
         final Set<String> keySet = entries.keySet();
         FileWriter csvWriter = null;
         try {
             csvWriter = new FileWriter(outputFile);
-            log.info(String.format("Creating license output to CSV file %s", outputFile.getPath()));
             for (String entry : keySet) {
                 final List<License> licenses = entries.get(entry);
                 if(licenses.size() > 1) {
