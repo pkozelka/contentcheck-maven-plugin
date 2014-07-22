@@ -22,7 +22,6 @@ import org.codehaus.plexus.util.SelectorUtils;
  * @see #sourceEntries
  */
 public class ContentIntrospector {
-    private static final String JAR_FILE_EXTENSION = "**/*.jar";
     private final Set<String> sourceEntries = new LinkedHashSet<String>();
     private final Log log;
     private final boolean ignoreVendorArchives;
@@ -82,7 +81,8 @@ public class ContentIntrospector {
                 continue;
             }
 
-            if(isJarFileExtension(entry) && ignoreVendorArchives) {
+            final boolean isJar = entry.endsWith(".jar");
+            if(isJar && ignoreVendorArchives) {
                 //
                 if(isVendorArchive(entry, inputStrategy.getInputStream(sourceFile, entry))) {
                     log.debug(String.format("Skipping entry '%s' it's a vendor archive", entry));
@@ -94,15 +94,6 @@ public class ContentIntrospector {
         }
 
         return totalCnt;
-    }
-
-    /**
-     * Checks whether a path points to a JAR file or not.
-     * @param path the path to be checked
-     * @return <code>true</code> - path to JAR otherwise <code>false</code>
-     */
-    protected boolean isJarFileExtension(String path) {
-        return SelectorUtils.matchPath(JAR_FILE_EXTENSION, path);
     }
 
     private boolean shouldBeChecked(String path) {
