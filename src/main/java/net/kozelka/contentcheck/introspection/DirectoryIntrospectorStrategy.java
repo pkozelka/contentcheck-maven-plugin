@@ -16,7 +16,7 @@ import java.util.Set;
  */
 class DirectoryIntrospectorStrategy implements IntrospectorInputStrategy {
 
-    public Set<String> readAllEntries(File baseDirectory) throws IOException {
+    public Set<String> list(File baseDirectory) throws IOException {
         Validate.notNull(baseDirectory, "containerFile cannot be null!");
         Validate.isTrue(baseDirectory.isDirectory(), baseDirectory.getAbsolutePath() + " is not a directory!");
         final Set<String> entries = new HashSet<String>();
@@ -31,7 +31,7 @@ class DirectoryIntrospectorStrategy implements IntrospectorInputStrategy {
         return entries;
     }
 
-    public InputStream readEntryData(File containerFile, String entry) throws IOException {
+    public InputStream getInputStream(File containerFile, String entry) throws IOException {
         return new FileInputStream(new File(containerFile, entry));
     }
 

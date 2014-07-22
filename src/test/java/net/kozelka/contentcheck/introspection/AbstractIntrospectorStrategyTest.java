@@ -4,7 +4,6 @@ import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-import net.kozelka.contentcheck.introspection.IntrospectorInputStrategy;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -27,7 +26,7 @@ public abstract class AbstractIntrospectorStrategyTest {
 
     @Test
     public void testReadAllEntries() throws Exception {
-        final Collection<String> entries = directoryStrategy.readAllEntries(containerFileToBeChecked);
+        final Collection<String> entries = directoryStrategy.list(containerFileToBeChecked);
         assertNotNull("entries cannot be null", entries);
         assertThat("Unexpected entries",
                 entries,
@@ -37,7 +36,7 @@ public abstract class AbstractIntrospectorStrategyTest {
 
     @Test
     public void testReadEntryData() throws Exception {
-        final InputStream data = directoryStrategy.readEntryData(containerFileToBeChecked, "WEB-INF/testfile.txt");
+        final InputStream data = directoryStrategy.getInputStream(containerFileToBeChecked, "WEB-INF/testfile.txt");
         Assert.assertNotNull("content of WEB-INF/testfile.txt should not be empty!", data);
         assertThat((String) IOUtils.readLines(data).get(0), is("Lorem ipsumLorem ipsumLorem ipsumLorem ipsum"));
     }

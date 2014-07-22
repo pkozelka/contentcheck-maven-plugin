@@ -75,7 +75,7 @@ public class ContentIntrospector {
         }
 
         int totalCnt = 0;
-        for (String entry : inputStrategy.readAllEntries(sourceFile)) {
+        for (String entry : inputStrategy.list(sourceFile)) {
             totalCnt++;
             if (!shouldBeChecked(entry)) {
                 log.debug(String.format("Skipping entry '%s' doesn't match with pattern '%s'", entry, checkFilesPattern));
@@ -84,7 +84,7 @@ public class ContentIntrospector {
 
             if(isJarFileExtension(entry) && ignoreVendorArchives) {
                 //
-                if(isVendorArchive(entry, inputStrategy.readEntryData(sourceFile, entry))) {
+                if(isVendorArchive(entry, inputStrategy.getInputStream(sourceFile, entry))) {
                     log.debug(String.format("Skipping entry '%s' it's a vendor archive", entry));
                     continue;
                 }
@@ -97,7 +97,7 @@ public class ContentIntrospector {
     }
 
     /**
-     * Checks whether a path point to a JAR file or not.
+     * Checks whether a path points to a JAR file or not.
      * @param path the path to be checked
      * @return <code>true</code> - path to JAR otherwise <code>false</code>
      */

@@ -15,7 +15,7 @@ import java.util.Set;
  */
 interface IntrospectorInputStrategy {
     /**
-     * Reads all file entries from specified container file.
+     * Lists all file entries in specified container.
      * Entries should be represented by theirs paths.
      * <p>
      *     Example: <br />
@@ -39,14 +39,14 @@ interface IntrospectorInputStrategy {
      * @return list of all entries names
      * @throws IOException
      */
-    Set<String> readAllEntries(final File containerFile) throws IOException;
+    Set<String> list(final File containerFile) throws IOException;
 
     /**
-     * Reads content of specified entry.
+     * Returns specified entry as an {@link java.io.InputStream inputstream}.
      *
      * @param containerFile base file containing the entry
-     * @param entry entry path within specified {@code containerFile}
+     * @param entryPath entry path within specified {@code containerFile}
      * @return entry data as input stream
      */
-    InputStream readEntryData(File containerFile, String entry) throws IOException;
+    InputStream getInputStream(File containerFile, String entryPath) throws IOException;
 }

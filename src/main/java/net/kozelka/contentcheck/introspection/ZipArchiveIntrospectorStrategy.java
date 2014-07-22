@@ -14,7 +14,7 @@ import java.util.zip.ZipInputStream;
  * Implementation of {@link IntrospectorInputStrategy} which can read the content of ZIP file.
  */
 class ZipArchiveIntrospectorStrategy implements IntrospectorInputStrategy {
-    public Set<String> readAllEntries(File containerFile) throws IOException {
+    public Set<String> list(File containerFile) throws IOException {
         final ZipFile zipFile = new ZipFile(containerFile);
         final ZipInputStream zis = new ZipInputStream(new FileInputStream(containerFile));
         final Set<String> entries = new HashSet<String>();
@@ -35,7 +35,7 @@ class ZipArchiveIntrospectorStrategy implements IntrospectorInputStrategy {
         return entries;
     }
 
-    public InputStream readEntryData(File containerFile, String entry) throws IOException {
+    public InputStream getInputStream(File containerFile, String entry) throws IOException {
         return new ZipFile(containerFile).getInputStream(new ZipEntry(entry));
     }
 }
