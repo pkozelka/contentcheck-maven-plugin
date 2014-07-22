@@ -1,25 +1,21 @@
 package net.kozelka.contentcheck.introspection;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
-
 import net.kozelka.contentcheck.SupportUtils;
-
-import org.apache.maven.plugin.logging.Log;
 import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
 
 
 public class ContentIntrospectorTest {
 
     @Test
     public void testIntrospection() throws IOException{
-        Log log = mock(Log.class);
-        final ContentIntrospector introspector = ContentIntrospector.create(log, false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final IntrospectionListener listener = mock(IntrospectionListener.class);
+        final ContentIntrospector introspector = ContentIntrospector.create(listener, false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File sourceArchive = SupportUtils.getFile("test.war");
         introspector.readEntries(sourceArchive);
         Set<String> sourceEntries = introspector.getEntries();
@@ -31,8 +27,8 @@ public class ContentIntrospectorTest {
     
     @Test
     public void testIntrospectionWithIgnoringOwnArtifacts() throws IOException{
-        Log log = mock(Log.class);
-        ContentIntrospector introspector = ContentIntrospector.create(log, true, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final IntrospectionListener listener = mock(IntrospectionListener.class);
+        ContentIntrospector introspector = ContentIntrospector.create(listener, true, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File archive = SupportUtils.getFile("test.war");
         introspector.readEntries(archive);
         Set<String> sourceEntries = introspector.getEntries();

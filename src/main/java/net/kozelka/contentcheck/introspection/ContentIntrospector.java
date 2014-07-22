@@ -7,7 +7,6 @@ import java.util.UUID;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import org.apache.maven.plugin.logging.Log;
 
 import java.io.IOException;
 import java.util.LinkedHashSet;
@@ -18,27 +17,26 @@ import org.codehaus.plexus.util.SelectorUtils;
 /**
  * This introspector captures all passed entities by their paths.
  *
- * @todo keep maven dependencies in 'mojo' subpackage
  * @see #sourceEntries
  */
 public class ContentIntrospector {
     private final Set<String> sourceEntries = new LinkedHashSet<String>();
-    private final Log log;
+    private final IntrospectionListener listener;
     private final boolean ignoreVendorArchives;
     private final String vendorId;
     private final String manifestVendorEntry;
     private final String checkFilesPattern;
 
-    private ContentIntrospector(Log log, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
-        this.log = log;
+    private ContentIntrospector(IntrospectionListener listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
+        this.listener = listener;
         this.ignoreVendorArchives = ignoreVendorArchives;
         this.vendorId = vendorId;
         this.manifestVendorEntry = manifestVendorEntry;
         this.checkFilesPattern = checkFilesPattern;
     }
 
-    public static ContentIntrospector create(Log log, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
-        return new ContentIntrospector(log, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+    public static ContentIntrospector create(IntrospectionListener listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
+        return new ContentIntrospector(listener, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
     }
 
     private void processEntry(String entry) throws IOException {
@@ -65,7 +63,7 @@ public class ContentIntrospector {
      * @see #processEntry(String)
      */
     public final int readEntries(final File sourceFile) throws IOException {
-        log.info("Reading source file: " + sourceFile);
+        listener.readingSourceFile(sourceFile);
         final IntrospectorInputStrategy inputStrategy;
         if (sourceFile.isDirectory()) {
             inputStrategy = new DirectoryIntrospectorStrategy();
@@ -77,7 +75,7 @@ public class ContentIntrospector {
         for (String entry : inputStrategy.list(sourceFile)) {
             totalCnt++;
             if (!shouldBeChecked(entry)) {
-                log.debug(String.format("Skipping entry '%s' doesn't match with pattern '%s'", entry, checkFilesPattern));
+                listener.skippingEntry(entry);
                 continue;
             }
 
@@ -85,7 +83,7 @@ public class ContentIntrospector {
             if(isJar && ignoreVendorArchives) {
                 //
                 if(isVendorArchive(entry, inputStrategy.getInputStream(sourceFile, entry))) {
-                    log.debug(String.format("Skipping entry '%s' it's a vendor archive", entry));
+                    listener.skippingEntryOwnModule(entry);
                     continue;
                 }
             }
@@ -129,13 +127,13 @@ public class ContentIntrospector {
             }
 
         } catch (IOException e) {
-            log.warn("Cannot check MANIFEST.MF file in JAR archive " + jarPath, e);
+            listener.cannotCheckManifest(jarPath, e);
         } finally {
             if(jarFile != null) {
                 try {
                     jarFile.close();
                 } catch (IOException e) {
-                    log.warn("Cannot close temporary JAR file " + jarPath,e);
+                    listener.cannotClose(jarPath, e);
                 }
             }
         }
@@ -146,7 +144,7 @@ public class ContentIntrospector {
         final File tempFile = File.createTempFile(UUID.randomUUID().toString(), "jar");
         final FileOutputStream fos = new  FileOutputStream(tempFile);
         try {
-            log.debug("Checking " + jarPath + " to be a vendor archive, using tempfile " + tempFile);
+            listener.checkingInTmpfile(jarPath, tempFile);
             IOUtil.copy(archiveInputStream, fos);
             return tempFile;
         } finally {

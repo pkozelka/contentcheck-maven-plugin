@@ -197,7 +197,8 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         final List<MavenProject> mavenProjectForDependencies = getMavenProjectForDependencies();
 
         try {
-            final ContentIntrospector introspector = ContentIntrospector.create(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final ContentIntrospector introspector = ContentIntrospector.create(new MyIntrospectionListener(getLog()),
+                    ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             introspector.readEntries(src);
 
             final Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getEntries());
