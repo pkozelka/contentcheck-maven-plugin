@@ -7,23 +7,29 @@ import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
-import net.kozelka.contentcheck.introspection.IntrospectionListener;
 
 /**
  * The content checker implementation. 
- * <br />
- * Thread safe implementation.
  */
 public class ContentChecker {
 
-    private final ContentCheckerListener listener;
-    private final ContentIntrospector introspector;
+    private ContentCheckerListener listener;
+    private ContentIntrospector introspector;
 
-    public ContentChecker(ContentCheckerListener contentCheckerListener, IntrospectionListener introspectionListener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
-        super();
-        this.listener = contentCheckerListener;
-        this.introspector = ContentIntrospector.create(introspectionListener,
-                ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+    public ContentCheckerListener getListener() {
+        return listener;
+    }
+
+    public void setListener(ContentCheckerListener listener) {
+        this.listener = listener;
+    }
+
+    public ContentIntrospector getIntrospector() {
+        return introspector;
+    }
+
+    public void setIntrospector(ContentIntrospector introspector) {
+        this.introspector = introspector;
     }
 
     /**

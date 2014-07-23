@@ -6,6 +6,7 @@ import java.util.Set;
 
 import net.kozelka.contentcheck.ContentChecker;
 import net.kozelka.contentcheck.CheckerOutput;
+import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -79,9 +80,13 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
         assertSourceFileExists();
 
         try {
-            final MyContentCheckerListener contentCheckerListener = new MyContentCheckerListener(getLog());
             final MyIntrospectionListener introspectionListener = new MyIntrospectionListener(getLog());
-            final ContentChecker contentChecker = new ContentChecker(contentCheckerListener, introspectionListener, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final ContentIntrospector introspector = ContentIntrospector.create(introspectionListener, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final ContentChecker contentChecker = new ContentChecker();
+            final MyContentCheckerListener contentCheckerListener = new MyContentCheckerListener(getLog());
+            contentChecker.setListener(contentCheckerListener);
+            contentChecker.setIntrospector(introspector);
+            //
             getLog().info("Reading listing: " + contentListing);
             final CheckerOutput output = contentChecker.check(contentListing, sourceFile);
 

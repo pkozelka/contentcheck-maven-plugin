@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.mojo.MyContentCheckerListener;
 import net.kozelka.contentcheck.mojo.MyIntrospectionListener;
 import org.apache.maven.plugin.logging.Log;
@@ -22,7 +23,7 @@ public class ContentCheckerTest {
 
     @Test
     public void testUnexpectedEntries() throws Exception {
-        final ContentChecker checker = new MockContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content.txt");
         File archiveFile = SupportUtils.getFile("test.war");
         CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
@@ -33,7 +34,7 @@ public class ContentCheckerTest {
 
     @Test
     public void testUnexpectedEntriesInDirectory() throws Exception {
-        final ContentChecker checker = new MockContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content.txt");
         File directoryToBeChecked = SupportUtils.getFile("test");
         CheckerOutput checkerOutput = checker.check(listingFile, directoryToBeChecked);
@@ -46,7 +47,7 @@ public class ContentCheckerTest {
     @Test
     public void testUnexpectedEntriesIgnoreVendorArchives() throws Exception {
         Log log = mock(Log.class);
-        final ContentChecker checker = new MockContentChecker(true, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = createContentChecker(true, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content.txt");
         File archiveFile = SupportUtils.getFile("test.war");
         CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
@@ -58,7 +59,7 @@ public class ContentCheckerTest {
     @Test
     public void testCheckFilePatternScan() throws Exception {
         Log log = mock(Log.class);
-        final ContentChecker checker = new MockContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, "WEB-INF/**/*");
+        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, "WEB-INF/**/*");
         File listingFile = SupportUtils.getFile("content.txt");
         File archiveFile = SupportUtils.getFile("test.war");
         CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
@@ -73,7 +74,7 @@ public class ContentCheckerTest {
     @Test
     public void testUnexpectedEntriesIgnoreVendorArchivesCustomVendorHeader() throws Exception {
         Log log = mock(Log.class);
-        final ContentChecker checker = new MockContentChecker(true, SupportUtils.VENDOR1, "Producer", SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = createContentChecker(true, SupportUtils.VENDOR1, "Producer", SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content.txt");
         File archiveFile = SupportUtils.getFile("test.war");
         CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
@@ -83,7 +84,7 @@ public class ContentCheckerTest {
 
     @Test
     public void testMissingEntries() throws Exception {
-        final ContentChecker checker = new MockContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content-missing-entries.txt");
         File archiveFile = SupportUtils.getFile("test.war");
         CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
@@ -93,7 +94,7 @@ public class ContentCheckerTest {
 
     @Test
     public void testReadListingFile() throws Exception{
-        final ContentChecker checker = new MockContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content-read-listing-test.txt");
         Set<String> content = checker.readListing(listingFile);
         assertThat(content.size(), is(5));
@@ -101,15 +102,15 @@ public class ContentCheckerTest {
 
     @Test
     public void testReadListinFileWithDuplicitEntries() throws Exception{
-        final MockContentChecker checker = new MockContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content-duplicit-entries-test.txt");
         checker.readListing(listingFile);
-        verify(checker.contentCheckerListener, times(1)).duplicate(any(File.class), anyString());
+        verify(checker.getListener(), times(1)).duplicate(any(File.class), anyString());
     }
 
     @Test
     public void testReadListingFileEmptyLines() throws Exception{
-        final ContentChecker checker = new MockContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content-empty-lines-test.txt");
         Set<String> entries = checker.readListing(listingFile);
         assertThat("Unexpecting count of entries. Whitespaces and empty lines must be ignored.", entries.size(), is(0));
@@ -117,7 +118,7 @@ public class ContentCheckerTest {
 
     @Test
     public void testTopLevelJARS() throws IOException {
-        final ContentChecker checker = new MockContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content-toplevel-jars.txt");
         File archiveFile = SupportUtils.getFile("test.ear");
         CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
@@ -125,16 +126,19 @@ public class ContentCheckerTest {
         assertThat("Default file matching pattern (All JARs) is broken, there are reported unexpected entries but shouldn't.",checkerOutput.diffUnexpectedEntries().isEmpty(), is(true));
     }
 
-    static class MockContentChecker extends ContentChecker {
+    private ContentChecker createContentChecker(boolean ignoreVendorArchives, String vendor, String vendorManifestEntryName, String checkFilesPattern) {
         final MyContentCheckerListener contentCheckerListener = mock(MyContentCheckerListener.class);
         final MyIntrospectionListener introspectionListener = mock(MyIntrospectionListener.class);
-        private MockContentChecker(boolean ignoreVendorArchives, String vendor, String vendorManifestEntryName, String checkFilesPattern) {
-            super(contentCheckerListener, introspectionListener,
-                    ignoreVendorArchives,
-                    vendor,
-                    vendorManifestEntryName,
-                    checkFilesPattern);
-        }
+
+        final ContentChecker contentChecker = new ContentChecker();
+        contentChecker.setListener(contentCheckerListener);
+        final ContentIntrospector introspector = ContentIntrospector.create(introspectionListener,
+                ignoreVendorArchives,
+                vendor,
+                vendorManifestEntryName,
+                checkFilesPattern);
+        contentChecker.setIntrospector(introspector);
+        return contentChecker;
     }
 
 }
