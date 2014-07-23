@@ -7,24 +7,22 @@ import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
-import net.kozelka.contentcheck.mojo.MyIntrospectionListener;
-import org.apache.maven.plugin.logging.Log;
+import net.kozelka.contentcheck.introspection.IntrospectionListener;
 
 /**
  * The content checker implementation. 
  * <br />
  * Thread safe implementation.
- * @todo keep maven dependencies in 'mojo' subpackage
  */
 public class ContentChecker {
 
-    private final Log log;
+    private final ContentCheckerListener listener;
     private final ContentIntrospector introspector;
 
-    public ContentChecker(Log log, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
+    public ContentChecker(ContentCheckerListener contentCheckerListener, IntrospectionListener introspectionListener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
         super();
-        this.log = log;
-        this.introspector = ContentIntrospector.create(new MyIntrospectionListener(log),
+        this.listener = contentCheckerListener;
+        this.introspector = ContentIntrospector.create(introspectionListener,
                 ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
     }
 
@@ -43,12 +41,11 @@ public class ContentChecker {
         final int count = introspector.readEntries(sourceFile);
         //XXX dagi: duplicit entries detection https://github.com/pkozelka/contentcheck-maven-plugin/issues#issue/4
         final Set<String> entries = introspector.getEntries();
-        log.info(String.format("'%s' contains %d checked and %d total files", sourceFile, entries.size(), count));
+        listener.summary(sourceFile, entries.size(), count);
         return new CheckerOutput(allowedEntries, entries);
     }
 
     protected Set<String> readListing(final File listingFile) throws IOException {
-        log.info("Reading listing: " + listingFile);
         final Set<String> expectedPaths = new LinkedHashSet<String>();
         final BufferedReader reader = new BufferedReader(new FileReader(listingFile));
         try {
@@ -60,12 +57,12 @@ public class ContentChecker {
                 final boolean ignoreLine = line.length() == 0 || line.startsWith("#");// we ignore empty and comments lines
                 if (!ignoreLine) { 
                     if(expectedPaths.contains(line)) {
-                        log.warn("The listing file " + listingFile + "  defines duplicate entry " + line);
+                        listener.duplicate(listingFile, line);
                     }
                     expectedPaths.add(line);
                 } 
             }
-            log.info(String.format("Content listing file '%s' contains %d paths on %d total lines", listingFile, expectedPaths.size(), totalCnt));
+            listener.contentListingSummary(listingFile, expectedPaths.size(), totalCnt);
             return expectedPaths;
         } finally {
             reader.close();

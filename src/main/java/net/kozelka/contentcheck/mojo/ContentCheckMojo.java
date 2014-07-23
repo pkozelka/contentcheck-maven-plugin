@@ -79,7 +79,10 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
         assertSourceFileExists();
 
         try {
-            final ContentChecker contentChecker = new ContentChecker(getLog(), ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final MyContentCheckerListener contentCheckerListener = new MyContentCheckerListener(getLog());
+            final MyIntrospectionListener introspectionListener = new MyIntrospectionListener(getLog());
+            final ContentChecker contentChecker = new ContentChecker(contentCheckerListener, introspectionListener, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            getLog().info("Reading listing: " + contentListing);
             final CheckerOutput output = contentChecker.check(contentListing, sourceFile);
 
             // report missing entries
