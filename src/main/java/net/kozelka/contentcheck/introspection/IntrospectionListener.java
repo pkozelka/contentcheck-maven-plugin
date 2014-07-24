@@ -9,7 +9,7 @@ import java.io.IOException;
 public interface IntrospectionListener {
     void readingSourceFile(File sourceFile);
 
-    void skippingEntry(String entry);
+    void skippingEntryNotMatching(String entry);
 
     void skippingEntryOwnModule(String entry);
 

@@ -43,6 +43,9 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
         }
 
         try {
+            if (ignoreVendorArchives) {
+                getLog().warn(String.format("Archives of vendor '%s', indicated by manifest entry '%s', will not be added to the list", vendorId, manifestVendorEntry));
+            }
             final ContentIntrospector introspector = ContentIntrospector.create(new MyIntrospectionListener(getLog()),
                     ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             final int count = introspector.readEntries(sourceFile);

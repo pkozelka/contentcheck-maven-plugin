@@ -20,12 +20,12 @@ public class MyIntrospectionListener implements IntrospectionListener {
         log.info("Reading source file: " + sourceFile);
     }
 
-    @Override public void skippingEntry(String entry) {
-        log.debug(String.format("Skipping entry '%s' - doesn't match the required pattern", entry));
+    @Override public void skippingEntryNotMatching(String entry) {
+        log.debug(String.format("Skipping '%s' (not matching)", entry));
     }
 
     @Override public void skippingEntryOwnModule(String entry) {
-        log.debug(String.format("Skipping entry '%s' it's a vendor archive", entry));
+        log.info(String.format("Skipping '%s' (vendor archive)", entry));
     }
 
     @Override public void cannotCheckManifest(String jarPath, Exception e) {

@@ -44,7 +44,7 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
      * If true, doesn't check vendor JAR files. A vendor JAR file is determined by 
      * a value ({@link #vendorId}) in its manifest key ({@link #manifestVendorEntry}).
      */
-    @Parameter(defaultValue = "false")
+    @Parameter(defaultValue = "false", property = "ignoreVendorArchives")
     boolean ignoreVendorArchives;
 
     /**

@@ -75,7 +75,7 @@ public class ContentIntrospector {
         for (String entry : inputStrategy.list(sourceFile)) {
             totalCnt++;
             if (!shouldBeChecked(entry)) {
-                listener.skippingEntry(entry);
+                listener.skippingEntryNotMatching(entry);
                 continue;
             }
 
