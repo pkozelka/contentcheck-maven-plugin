@@ -54,21 +54,22 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     String checkFilesPattern;
 
     protected void assertSourceFileExists() throws MojoExecutionException {
-        if (directory != null) {
-            getLog().warn("Parameter 'directory' is deprecated, please use 'sourceFile' instead.");
-            if (!directory.exists()) {
-                throw new MojoExecutionException("Directory " + directory.getAbsolutePath() + " you are trying to check doesn't exist.");
-            }
+        if (sourceFile == null) {
             sourceFile = directory;
-        } else if (archive != null) {
-            getLog().warn("Parameter 'archive' is deprecated, please use 'sourceFile' instead.");
-            if (!archive.exists()) {
-                throw new MojoExecutionException("Archive file " + archive.getAbsolutePath() + " you are trying to check doesn't exist.");
+            if (sourceFile != null) {
+                getLog().warn("Parameter 'directory' is deprecated, please use 'sourceFile' instead.");
+            } else {
+                sourceFile = archive;
+                if (sourceFile != null) {
+                    getLog().warn("Parameter 'archive' is deprecated, please use 'sourceFile' instead.");
+                }
             }
-            sourceFile = archive;
+        }
+        if (sourceFile == null) {
+            throw new MojoExecutionException("Parameter 'sourceFile' is required.");
         }
         if (!sourceFile.exists()) {
-            throw new MojoExecutionException("Archive file or directory " + archive.getAbsolutePath() + " you are trying to check doesn't exist.");
+            throw new MojoExecutionException("Archive file or directory " + sourceFile.getAbsolutePath() + " you are trying to check doesn't exist.");
         }
     }
 }
