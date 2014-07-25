@@ -9,6 +9,7 @@ Protects your WAR against
 
 For more info, see the [project website](http://pkozelka.github.io/contentcheck-maven-plugin/index.html) hosted by Github Pages.
 
+
 -----
 
 (following content will be moved there soon)
