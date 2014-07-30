@@ -1,14 +1,11 @@
 package net.kozelka.contentcheck.introspection;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.UUID;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
-import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.codehaus.plexus.util.IOUtil;
@@ -20,22 +17,26 @@ import org.codehaus.plexus.util.SelectorUtils;
  * @see #sourceEntries
  */
 public class ContentIntrospector {
+    public static final FilenameFilter ISJAR_FILTER = new FilenameFilter() {
+        public boolean accept(File dir, String name) {
+            return name.endsWith(".jar");
+        }
+    };
     private final Set<String> sourceEntries = new LinkedHashSet<String>();
     private IntrospectionListener listener;
     private boolean ignoreVendorArchives = false;
     private String vendorId = "com.example";
     private String manifestVendorEntry = "Implementation-Vendor-Id";
-    private String checkFilesPattern = "**/*.jar";
+    private FilenameFilter entrynameFilter = ISJAR_FILTER;
 
     public static ContentIntrospector create(IntrospectionListener listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
         final ContentIntrospector contentIntrospector = new ContentIntrospector();
         contentIntrospector.setListener(listener);
+        contentIntrospector.setCheckFilesPattern(checkFilesPattern);
         // todo think about vendor detector
         contentIntrospector.setIgnoreVendorArchives(ignoreVendorArchives);
         contentIntrospector.setVendorId(vendorId);
         contentIntrospector.setManifestVendorEntry(manifestVendorEntry);
-        // todo use FilenameFilter?
-        contentIntrospector.setCheckFilesPattern(checkFilesPattern);
         return contentIntrospector;
     }
 
@@ -55,8 +56,16 @@ public class ContentIntrospector {
         this.manifestVendorEntry = manifestVendorEntry;
     }
 
-    public void setCheckFilesPattern(String checkFilesPattern) {
-        this.checkFilesPattern = checkFilesPattern;
+    public void setCheckFilesPattern(final String checkFilesPattern) {
+        setEntrynameFilter(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return SelectorUtils.matchPath("/" + checkFilesPattern, "/" + name);
+            }
+        });
+    }
+
+    public void setEntrynameFilter(FilenameFilter entrynameFilter) {
+        this.entrynameFilter = entrynameFilter;
     }
 
     private void processEntry(String entry) throws IOException {
@@ -71,7 +80,7 @@ public class ContentIntrospector {
     }
 
     /**
-     * Starts reading {@code sourceFile}'s content entry by entry. If an entry matches {@link #checkFilesPattern}
+     * Starts reading {@code sourceFile}'s content entry by entry. If an entry passes {@link #setEntrynameFilter entryNameFilter}
      * and is not a vendor archive (in case of {@link #ignoreVendorArchives} is <code>true</code>)
      * the entry will be delegated to the method {@link #processEntry(String)}
      * for further processing.
@@ -94,7 +103,7 @@ public class ContentIntrospector {
         int totalCnt = 0;
         for (String entry : inputStrategy.list(sourceFile)) {
             totalCnt++;
-            if (!shouldBeChecked(entry)) {
+            if (!entrynameFilter.accept(sourceFile, entry)) {
                 listener.skippingEntryNotMatching(entry);
                 continue;
             }
@@ -112,10 +121,6 @@ public class ContentIntrospector {
         }
 
         return totalCnt;
-    }
-
-    private boolean shouldBeChecked(String path) {
-        return SelectorUtils.matchPath("/" + checkFilesPattern, "/" + path);
     }
 
     private boolean isVendorArchive(final String entryName, final InputStream archiveEntryData) throws IOException {
