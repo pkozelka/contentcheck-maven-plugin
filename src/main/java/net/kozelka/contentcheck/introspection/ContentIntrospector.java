@@ -21,22 +21,42 @@ import org.codehaus.plexus.util.SelectorUtils;
  */
 public class ContentIntrospector {
     private final Set<String> sourceEntries = new LinkedHashSet<String>();
-    private final IntrospectionListener listener;
-    private final boolean ignoreVendorArchives;
-    private final String vendorId;
-    private final String manifestVendorEntry;
-    private final String checkFilesPattern;
-
-    private ContentIntrospector(IntrospectionListener listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
-        this.listener = listener;
-        this.ignoreVendorArchives = ignoreVendorArchives;
-        this.vendorId = vendorId;
-        this.manifestVendorEntry = manifestVendorEntry;
-        this.checkFilesPattern = checkFilesPattern;
-    }
+    private IntrospectionListener listener;
+    private boolean ignoreVendorArchives = false;
+    private String vendorId = "com.example";
+    private String manifestVendorEntry = "Implementation-Vendor-Id";
+    private String checkFilesPattern = "**/*.jar";
 
     public static ContentIntrospector create(IntrospectionListener listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
-        return new ContentIntrospector(listener, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+        final ContentIntrospector contentIntrospector = new ContentIntrospector();
+        contentIntrospector.setListener(listener);
+        // todo think about vendor detector
+        contentIntrospector.setIgnoreVendorArchives(ignoreVendorArchives);
+        contentIntrospector.setVendorId(vendorId);
+        contentIntrospector.setManifestVendorEntry(manifestVendorEntry);
+        // todo use FilenameFilter?
+        contentIntrospector.setCheckFilesPattern(checkFilesPattern);
+        return contentIntrospector;
+    }
+
+    public void setListener(IntrospectionListener listener) {
+        this.listener = listener;
+    }
+
+    public void setIgnoreVendorArchives(boolean ignoreVendorArchives) {
+        this.ignoreVendorArchives = ignoreVendorArchives;
+    }
+
+    public void setVendorId(String vendorId) {
+        this.vendorId = vendorId;
+    }
+
+    public void setManifestVendorEntry(String manifestVendorEntry) {
+        this.manifestVendorEntry = manifestVendorEntry;
+    }
+
+    public void setCheckFilesPattern(String checkFilesPattern) {
+        this.checkFilesPattern = checkFilesPattern;
     }
 
     private void processEntry(String entry) throws IOException {
