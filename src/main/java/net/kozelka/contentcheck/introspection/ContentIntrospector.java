@@ -1,6 +1,10 @@
 package net.kozelka.contentcheck.introspection;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
