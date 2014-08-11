@@ -43,7 +43,7 @@ import org.apache.maven.shared.jar.classes.JarClassesAnalysis;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import static net.kozelka.contentcheck.PathUtils.stripJARNameFromPath;
+import org.codehaus.plexus.util.FileUtils;
 
 /**
  * Shows license information for selected source entries. By default, the information is parsed from dependency's POM,
@@ -228,7 +228,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
                     }
                 }
 
-                final List<License> licensesMappingFile = additionalLicenseInformation.get(stripJARNameFromPath(archiveEntry));
+                final List<License> licensesMappingFile = additionalLicenseInformation.get(FileUtils.filename(archiveEntry));
 
                 if(licenses == null && licensesMappingFile == null) {//misising license information
                     getLog().debug(String.format("Cannot resolve license information for archive entry %s neither from the POM file nor the file for license mapping", archiveEntry));
@@ -352,7 +352,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
             try {
                 for (String entry : keySet) {
                     final List<License> licenses = licensesPerFile.get(entry);
-                    final String jarName = stripJARNameFromPath(entry);
+                    final String jarName = FileUtils.filename(entry);
                     for(License licence : licenses) {
                         writeRecord(csvWriter, jarName, licence.getName(), licence.getUrl());
                     }
