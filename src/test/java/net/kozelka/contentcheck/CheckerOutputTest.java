@@ -7,7 +7,6 @@ import static org.junit.Assert.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import net.kozelka.contentcheck.CheckerOutput;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,14 +38,14 @@ public class CheckerOutputTest {
 
     @Test
     public void testGetAllowedEntries() {
-        assertThat(output.getAllowedEntries(), notNullValue());
-        assertThat(output.getAllowedEntries().size(), is(4));
+        assertThat(output.getApprovedEntries(), notNullValue());
+        assertThat(output.getApprovedEntries().size(), is(4));
 	}
 
     @Test
     public void testGetSourceEntries() {
-        assertThat(output.getSourceEntries(), notNullValue());
-        assertThat(output.getSourceEntries().size(), is(3));
+        assertThat(output.getActualEntries(), notNullValue());
+        assertThat(output.getActualEntries().size(), is(3));
     }
 
     @Test

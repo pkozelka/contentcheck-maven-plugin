@@ -73,7 +73,7 @@ public class ContentIntrospector {
      *
      * @param sourceFile a source file to be read, typically an archive or directory
      *
-     * @return the number of read entities.
+     * @return the total number of processed entries, including skipped ones.
      *
      * @see #processEntry(String)
      */

@@ -43,12 +43,12 @@ public class ContentChecker {
      * @throws IOException if something very bad happen
      */
     public CheckerOutput check(final File listingFile, final File sourceFile) throws IOException{
-        final Set<String> allowedEntries = readListing(listingFile);
-        final int count = introspector.readEntries(sourceFile);
+        final Set<String> approvedEntries = readListing(listingFile);
+        final int totalCount = introspector.readEntries(sourceFile);
         //XXX dagi: duplicit entries detection https://github.com/pkozelka/contentcheck-maven-plugin/issues#issue/4
-        final Set<String> entries = introspector.getEntries();
-        listener.summary(sourceFile, entries.size(), count);
-        return new CheckerOutput(allowedEntries, entries);
+        final Set<String> actualEntries = introspector.getEntries();
+        listener.summary(sourceFile, actualEntries.size(), totalCount);
+        return new CheckerOutput(approvedEntries, actualEntries);
     }
 
     protected Set<String> readListing(final File listingFile) throws IOException {
