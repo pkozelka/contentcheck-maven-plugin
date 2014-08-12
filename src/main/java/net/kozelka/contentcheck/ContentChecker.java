@@ -7,25 +7,18 @@ import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
+import net.kozelka.contentcheck.util.EventSink;
 
 /**
  * The content checker implementation. 
  */
 public class ContentChecker {
 
-    private ContentCheckerListener listener;
+    private final EventSink<Events> events = EventSink.create(Events.class);
     private ContentIntrospector introspector;
 
-    public ContentCheckerListener getListener() {
-        return listener;
-    }
-
-    public void setListener(ContentCheckerListener listener) {
-        this.listener = listener;
-    }
-
-    public ContentIntrospector getIntrospector() {
-        return introspector;
+    public EventSink<Events> getEvents() {
+        return events;
     }
 
     public void setIntrospector(ContentIntrospector introspector) {
@@ -47,7 +40,7 @@ public class ContentChecker {
         final int totalCount = introspector.readEntries(sourceFile);
         //XXX dagi: duplicit entries detection https://github.com/pkozelka/contentcheck-maven-plugin/issues#issue/4
         final Set<String> actualEntries = introspector.getEntries();
-        listener.summary(sourceFile, actualEntries.size(), totalCount);
+        events.fire.summary(sourceFile, actualEntries.size(), totalCount);
         return new CheckerOutput(approvedEntries, actualEntries);
     }
 
@@ -63,15 +56,23 @@ public class ContentChecker {
                 final boolean ignoreLine = line.length() == 0 || line.startsWith("#");// we ignore empty and comments lines
                 if (!ignoreLine) { 
                     if(expectedPaths.contains(line)) {
-                        listener.duplicate(listingFile, line);
+                        events.fire.duplicate(listingFile, line);
                     }
                     expectedPaths.add(line);
                 } 
             }
-            listener.contentListingSummary(listingFile, expectedPaths.size(), totalCnt);
+            events.fire.contentListingSummary(listingFile, expectedPaths.size(), totalCnt);
             return expectedPaths;
         } finally {
             reader.close();
         }
+    }
+
+    public static interface Events {
+        void summary(File sourceFile, int checkedCount, int totalCount);
+
+        void duplicate(File listingFile, String line);
+
+        void contentListingSummary(File listingFile, int pathCount, int totalCount);
     }
 }

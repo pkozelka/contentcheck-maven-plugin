@@ -1,13 +1,13 @@
 package net.kozelka.contentcheck.mojo;
 
-import net.kozelka.contentcheck.ContentCheckerListener;
+import net.kozelka.contentcheck.ContentChecker;
 import org.apache.maven.plugin.logging.Log;
 import java.io.File;
 
 /**
  * @author Petr Kozelka
  */
-public class MyContentCheckerListener implements ContentCheckerListener {
+public class MyContentCheckerListener implements ContentChecker.Events {
     private final Log log;
 
     public MyContentCheckerListener(Log log) {

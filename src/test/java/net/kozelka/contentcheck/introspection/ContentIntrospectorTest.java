@@ -14,7 +14,7 @@ public class ContentIntrospectorTest {
 
     @Test
     public void testIntrospection() throws IOException{
-        final IntrospectionListener listener = mock(IntrospectionListener.class);
+        final ContentIntrospector.IntrospectionListener listener = mock(ContentIntrospector.IntrospectionListener.class);
         final ContentIntrospector introspector = ContentIntrospector.create(listener, false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File sourceArchive = SupportUtils.getFile("test.war");
         introspector.readEntries(sourceArchive);
@@ -27,7 +27,7 @@ public class ContentIntrospectorTest {
     
     @Test
     public void testIntrospectionWithIgnoringOwnArtifacts() throws IOException{
-        final IntrospectionListener listener = mock(IntrospectionListener.class);
+        final ContentIntrospector.IntrospectionListener listener = mock(ContentIntrospector.IntrospectionListener.class);
         ContentIntrospector introspector = ContentIntrospector.create(listener, true, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File archive = SupportUtils.getFile("test.war");
         introspector.readEntries(archive);

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.kozelka.contentcheck.util.EventSink;
 import org.codehaus.plexus.util.SelectorUtils;
 
 /**
@@ -20,13 +21,13 @@ public class ContentIntrospector {
         }
     };
     private final Set<String> sourceEntries = new LinkedHashSet<String>();
-    private IntrospectionListener listener;
+    private EventSink<IntrospectionListener> events = EventSink.create(IntrospectionListener.class);
     private FilenameFilter entryNameFilter = ISJAR_FILTER;
     private EntryContentFilter entryContentFilter;
 
     public static ContentIntrospector create(IntrospectionListener listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
         final ContentIntrospector contentIntrospector = new ContentIntrospector();
-        contentIntrospector.setListener(listener);
+        contentIntrospector.getEvents().addListener(listener);
         contentIntrospector.setCheckFilesPattern(checkFilesPattern);
         if (ignoreVendorArchives) {
             contentIntrospector.setEntryContentFilter(new VendorFilter(vendorId, manifestVendorEntry, listener));
@@ -34,8 +35,8 @@ public class ContentIntrospector {
         return contentIntrospector;
     }
 
-    public void setListener(IntrospectionListener listener) {
-        this.listener = listener;
+    public EventSink<IntrospectionListener> getEvents() {
+        return events;
     }
 
     public void setCheckFilesPattern(final String checkFilesPattern) {
@@ -67,7 +68,7 @@ public class ContentIntrospector {
 
     /**
      * Starts reading {@code sourceFile}'s content entry by entry. If an entry passes {@link #setEntryNameFilter entryNameFilter}
-     * and is not a vendor archive (in case of {@link #ignoreVendorArchives} is <code>true</code>)
+     * and is not a vendor archive (in case we care)
      * the entry will be delegated to the method {@link #processEntry(String)}
      * for further processing.
      *
@@ -78,7 +79,7 @@ public class ContentIntrospector {
      * @see #processEntry(String)
      */
     public final int readEntries(final File sourceFile) throws IOException {
-        listener.readingSourceFile(sourceFile);
+        events.fire.readingSourceFile(sourceFile);
         final IntrospectorInputStrategy inputStrategy;
         if (sourceFile.isDirectory()) {
             inputStrategy = new DirectoryIntrospectorStrategy();
@@ -92,7 +93,7 @@ public class ContentIntrospector {
 
             // filter by entry name
             if (!entryNameFilter.accept(sourceFile, entryName)) {
-                listener.skippingEntryNotMatching(entryName);
+                events.fire.skippingEntryNotMatching(entryName);
                 continue;
             }
 
@@ -101,7 +102,7 @@ public class ContentIntrospector {
                 final InputStream entryContentStream = inputStrategy.getInputStream(sourceFile, entryName);
                 try {
                     if(!entryContentFilter.accept(entryName, entryContentStream)) {
-                        listener.skippingEntryOwnModule(entryName);
+                        events.fire.skippingEntryOwnModule(entryName);
                         continue;
                     }
                 } finally {
@@ -118,7 +119,7 @@ public class ContentIntrospector {
     public static interface EntryContentFilter {
         /**
          * Decides if given entry can be accepted, based on its name and content.
-         * @param entryName
+         * @param entryName -
          * @param entryContentStream  the content stream; caller will handle both opening and closing it
          * @return false if the entry should be skipped
          * @throws IOException when content processing has troubles
@@ -126,4 +127,17 @@ public class ContentIntrospector {
         boolean accept(String entryName, InputStream entryContentStream) throws IOException;
     }
 
+    public static interface IntrospectionListener {
+        void readingSourceFile(File sourceFile);
+
+        void skippingEntryNotMatching(String entry);
+
+        void skippingEntryOwnModule(String entry);
+
+        void cannotCheckManifest(String jarPath, Exception e);
+
+        void cannotClose(String jarPath, IOException e);
+
+        void checkingInTmpfile(String jarPath, File tempFile);
+    }
 }

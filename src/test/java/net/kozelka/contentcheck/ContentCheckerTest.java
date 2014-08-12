@@ -16,10 +16,18 @@ import java.util.Set;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.mojo.MyContentCheckerListener;
 import net.kozelka.contentcheck.mojo.MyIntrospectionListener;
-import org.apache.maven.plugin.logging.Log;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ContentCheckerTest {
+    private MyContentCheckerListener contentCheckerListener;
+    private MyIntrospectionListener introspectionListener;
+
+    @Before
+    public void setup() {
+        contentCheckerListener = mock(MyContentCheckerListener.class);
+        introspectionListener = mock(MyIntrospectionListener.class);
+    }
 
     @Test
     public void testUnexpectedEntries() throws Exception {
@@ -46,7 +54,6 @@ public class ContentCheckerTest {
 
     @Test
     public void testUnexpectedEntriesIgnoreVendorArchives() throws Exception {
-        Log log = mock(Log.class);
         final ContentChecker checker = createContentChecker(true, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content.txt");
         File archiveFile = SupportUtils.getFile("test.war");
@@ -58,7 +65,6 @@ public class ContentCheckerTest {
 
     @Test
     public void testCheckFilePatternScan() throws Exception {
-        Log log = mock(Log.class);
         final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, "WEB-INF/**/*");
         File listingFile = SupportUtils.getFile("content.txt");
         File archiveFile = SupportUtils.getFile("test.war");
@@ -73,7 +79,6 @@ public class ContentCheckerTest {
 
     @Test
     public void testUnexpectedEntriesIgnoreVendorArchivesCustomVendorHeader() throws Exception {
-        Log log = mock(Log.class);
         final ContentChecker checker = createContentChecker(true, SupportUtils.VENDOR1, "Producer", SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content.txt");
         File archiveFile = SupportUtils.getFile("test.war");
@@ -105,7 +110,7 @@ public class ContentCheckerTest {
         final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content-duplicit-entries-test.txt");
         checker.readListing(listingFile);
-        verify(checker.getListener(), times(1)).duplicate(any(File.class), anyString());
+        verify(contentCheckerListener, times(1)).duplicate(any(File.class), anyString());
     }
 
     @Test
@@ -127,11 +132,9 @@ public class ContentCheckerTest {
     }
 
     private ContentChecker createContentChecker(boolean ignoreVendorArchives, String vendor, String vendorManifestEntryName, String checkFilesPattern) {
-        final MyContentCheckerListener contentCheckerListener = mock(MyContentCheckerListener.class);
-        final MyIntrospectionListener introspectionListener = mock(MyIntrospectionListener.class);
 
         final ContentChecker contentChecker = new ContentChecker();
-        contentChecker.setListener(contentCheckerListener);
+        contentChecker.getEvents().addListener(contentCheckerListener);
         final ContentIntrospector introspector = ContentIntrospector.create(introspectionListener,
                 ignoreVendorArchives,
                 vendor,

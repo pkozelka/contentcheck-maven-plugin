@@ -19,9 +19,9 @@ public class VendorFilter implements ContentIntrospector.EntryContentFilter {
 
     private final String vendorId;
     private final String manifestVendorEntry;
-    private final IntrospectionListener listener;
+    private final ContentIntrospector.IntrospectionListener listener;
 
-    VendorFilter(String vendorId, String manifestVendorEntry, IntrospectionListener listener) {
+    VendorFilter(String vendorId, String manifestVendorEntry, ContentIntrospector.IntrospectionListener listener) {
         this.vendorId = vendorId;
         this.manifestVendorEntry = manifestVendorEntry;
         this.listener = listener;

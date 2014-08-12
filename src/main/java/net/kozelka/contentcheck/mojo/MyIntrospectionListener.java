@@ -2,13 +2,13 @@ package net.kozelka.contentcheck.mojo;
 
 import java.io.File;
 import java.io.IOException;
-import net.kozelka.contentcheck.introspection.IntrospectionListener;
+import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.plugin.logging.Log;
 
 /**
 * @author Petr Kozelka
 */
-public class MyIntrospectionListener implements IntrospectionListener {
+public class MyIntrospectionListener implements ContentIntrospector.IntrospectionListener {
     private final Log log;
 
     public //TODO: just for now (#10)
