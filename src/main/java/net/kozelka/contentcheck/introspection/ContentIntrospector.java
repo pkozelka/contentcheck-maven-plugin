@@ -112,8 +112,7 @@ public class ContentIntrospector {
                 continue;
             }
 
-            final boolean isJar = entry.endsWith(".jar");
-            if(isJar && ignoreVendorArchives) {
+            if(ignoreVendorArchives) {
                 //
                 if(isVendorArchive(entry, inputStrategy.getInputStream(sourceFile, entry))) {
                     listener.skippingEntryOwnModule(entry);
@@ -128,7 +127,9 @@ public class ContentIntrospector {
     }
 
     private boolean isVendorArchive(final String entryName, final InputStream archiveEntryData) throws IOException {
+
         try {
+            if (!entryName.endsWith(".jar")) return false; // not sure, suppose no
             final File tempFile = copyStreamToTemporaryFile(entryName, archiveEntryData);
             tempFile.deleteOnExit();
             final boolean vendorArchive = checkArchiveManifest(entryName, tempFile);
