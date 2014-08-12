@@ -10,7 +10,7 @@ public abstract class AbstractArchiveContentMojo extends AbstractMojo {
     /**
      * The archive file or directory to be checked.
      */
-    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.${project.packaging}")
+    @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}.${project.packaging}", property = "source.file")
     File sourceFile;
 
     /**
