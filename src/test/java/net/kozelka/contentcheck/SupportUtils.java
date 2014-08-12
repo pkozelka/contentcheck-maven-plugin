@@ -6,7 +6,6 @@ import org.codehaus.plexus.util.FileUtils;
 
 public final class SupportUtils {
     public static final String VENDOR1 = "com.buildbox"; //TODO: change to "com.vendor1" + the same in test resource binaries; these should be created by code (ant or java)
-    public final static String DEFAULT_VENDOR_MANIFEST_ENTRY_NAME = "Implementation-Vendor-Id";
     public final static String DEFAULT_CHECK_FILES_PATTERN = "**/*.jar";
 
     public static File getFile(String fileName) {

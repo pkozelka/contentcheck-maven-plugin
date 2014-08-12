@@ -15,7 +15,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * Scans content listing of archive specified by {@link #sourceFile}
  * and writes it to file specified into {@link #contentListing}.
- * Only entities matching criteria defined by {@link #checkFilePattern}
+ * Only entities matching criteria defined by {@link #checkFilesPattern}
  * and {@link #ignoreVendorArchives} are generated.
  */
 @Mojo(name = "generate")

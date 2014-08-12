@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import net.kozelka.contentcheck.util.EventSink;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
@@ -17,14 +18,23 @@ import org.codehaus.plexus.util.IOUtil;
  */
 public class VendorFilter implements ContentIntrospector.EntryContentFilter {
 
-    private final String vendorId;
-    private final String manifestVendorEntry;
-    private final ContentIntrospector.IntrospectionListener listener;
+    public final static String DEFAULT_VENDOR_MANIFEST_ENTRY_NAME = "Implementation-Vendor-Id";
 
-    VendorFilter(String vendorId, String manifestVendorEntry, ContentIntrospector.IntrospectionListener listener) {
+    private final String vendorId;
+    private String manifestVendorEntry = DEFAULT_VENDOR_MANIFEST_ENTRY_NAME;
+    //todo: use own events!
+    private EventSink<ContentIntrospector.IntrospectionListener> events = EventSink.create(ContentIntrospector.IntrospectionListener.class);
+
+    public VendorFilter(String vendorId) {
         this.vendorId = vendorId;
+    }
+
+    public void setManifestVendorEntry(String manifestVendorEntry) {
         this.manifestVendorEntry = manifestVendorEntry;
-        this.listener = listener;
+    }
+
+    public EventSink<ContentIntrospector.IntrospectionListener> getEvents() {
+        return events;
     }
 
     @Override
@@ -55,13 +65,13 @@ public class VendorFilter implements ContentIntrospector.EntryContentFilter {
             }
 
         } catch (IOException e) {
-            listener.cannotCheckManifest(jarPath, e);
+            events.fire.cannotCheckManifest(jarPath, e);
         } finally {
             if(jarFile != null) {
                 try {
                     jarFile.close();
                 } catch (IOException e) {
-                    listener.cannotClose(jarPath, e);
+                    events.fire.cannotClose(jarPath, e);
                 }
             }
         }
@@ -72,7 +82,7 @@ public class VendorFilter implements ContentIntrospector.EntryContentFilter {
         final File tempFile = File.createTempFile(UUID.randomUUID().toString(), "jar");
         final FileOutputStream fos = new  FileOutputStream(tempFile);
         try {
-            listener.checkingInTmpfile(jarPath, tempFile);
+            events.fire.checkingInTmpfile(jarPath, tempFile);
             IOUtil.copy(archiveInputStream, fos);
             return tempFile;
         } finally {

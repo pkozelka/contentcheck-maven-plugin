@@ -30,7 +30,10 @@ public class ContentIntrospector {
         contentIntrospector.getEvents().addListener(listener);
         contentIntrospector.setCheckFilesPattern(checkFilesPattern);
         if (ignoreVendorArchives) {
-            contentIntrospector.setEntryContentFilter(new VendorFilter(vendorId, manifestVendorEntry, listener));
+            final VendorFilter vendorFilter = new VendorFilter(vendorId);
+            vendorFilter.setManifestVendorEntry(manifestVendorEntry);
+            vendorFilter.getEvents().addListener(listener);
+            contentIntrospector.setEntryContentFilter(vendorFilter);
         }
         return contentIntrospector;
     }
