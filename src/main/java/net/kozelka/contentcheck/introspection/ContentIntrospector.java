@@ -1,18 +1,11 @@
 package net.kozelka.contentcheck.introspection;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.SelectorUtils;
 
 /**
@@ -28,36 +21,21 @@ public class ContentIntrospector {
     };
     private final Set<String> sourceEntries = new LinkedHashSet<String>();
     private IntrospectionListener listener;
-    private boolean ignoreVendorArchives = false;
-    private String vendorId = "com.example";
-    private String manifestVendorEntry = "Implementation-Vendor-Id";
     private FilenameFilter entrynameFilter = ISJAR_FILTER;
+    private EntryContentFilter entryContentFilter;
 
     public static ContentIntrospector create(IntrospectionListener listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
         final ContentIntrospector contentIntrospector = new ContentIntrospector();
         contentIntrospector.setListener(listener);
         contentIntrospector.setCheckFilesPattern(checkFilesPattern);
-        // todo think about vendor detector
-        contentIntrospector.setIgnoreVendorArchives(ignoreVendorArchives);
-        contentIntrospector.setVendorId(vendorId);
-        contentIntrospector.setManifestVendorEntry(manifestVendorEntry);
+        if (ignoreVendorArchives) {
+            contentIntrospector.setEntryContentFilter(new VendorFilter(vendorId, manifestVendorEntry, listener));
+        }
         return contentIntrospector;
     }
 
     public void setListener(IntrospectionListener listener) {
         this.listener = listener;
-    }
-
-    public void setIgnoreVendorArchives(boolean ignoreVendorArchives) {
-        this.ignoreVendorArchives = ignoreVendorArchives;
-    }
-
-    public void setVendorId(String vendorId) {
-        this.vendorId = vendorId;
-    }
-
-    public void setManifestVendorEntry(String manifestVendorEntry) {
-        this.manifestVendorEntry = manifestVendorEntry;
     }
 
     public void setCheckFilesPattern(final String checkFilesPattern) {
@@ -70,6 +48,10 @@ public class ContentIntrospector {
 
     public void setEntrynameFilter(FilenameFilter entrynameFilter) {
         this.entrynameFilter = entrynameFilter;
+    }
+
+    public void setEntryContentFilter(EntryContentFilter entryContentFilter) {
+        this.entryContentFilter = entryContentFilter;
     }
 
     private void processEntry(String entry) throws IOException {
@@ -105,80 +87,43 @@ public class ContentIntrospector {
         }
 
         int totalCnt = 0;
-        for (String entry : inputStrategy.list(sourceFile)) {
+        for (String entryName : inputStrategy.list(sourceFile)) {
             totalCnt++;
-            if (!entrynameFilter.accept(sourceFile, entry)) {
-                listener.skippingEntryNotMatching(entry);
+
+            // filter by entry name
+            if (!entrynameFilter.accept(sourceFile, entryName)) {
+                listener.skippingEntryNotMatching(entryName);
                 continue;
             }
 
-            if(ignoreVendorArchives) {
-                //
-                if(isVendorArchive(entry, inputStrategy.getInputStream(sourceFile, entry))) {
-                    listener.skippingEntryOwnModule(entry);
-                    continue;
+            // filter by entry content
+            if(entryContentFilter != null) {
+                final InputStream entryContentStream = inputStrategy.getInputStream(sourceFile, entryName);
+                try {
+                    if(!entryContentFilter.accept(entryName, entryContentStream)) {
+                        listener.skippingEntryOwnModule(entryName);
+                        continue;
+                    }
+                } finally {
+                    entryContentStream.close();
                 }
             }
-
-            processEntry(entry);
+            //
+            processEntry(entryName);
         }
 
         return totalCnt;
     }
 
-    private boolean isVendorArchive(final String entryName, final InputStream archiveEntryData) throws IOException {
-
-        try {
-            if (!entryName.endsWith(".jar")) return false; // not sure, suppose no
-            final File tempFile = copyStreamToTemporaryFile(entryName, archiveEntryData);
-            tempFile.deleteOnExit();
-            final boolean vendorArchive = checkArchiveManifest(entryName, tempFile);
-            tempFile.delete();//only for sure if the plugin is used in long live JVM
-            return vendorArchive;
-        } finally {
-            archiveEntryData.close();
-        }
+    public static interface EntryContentFilter {
+        /**
+         * Decides if given entry can be accepted, based on its name and content.
+         * @param entryName
+         * @param entryContentStream  the content stream; caller will handle both opening and closing it
+         * @return false if the entry should be skipped
+         * @throws IOException when content processing has troubles
+         */
+        boolean accept(String entryName, InputStream entryContentStream) throws IOException;
     }
 
-    /**
-     * @return true when vendorId matches with jar's manifest otherwise false
-     */
-    private boolean checkArchiveManifest(final String jarPath, File tempJAR) {
-        JarFile jarFile = null;
-        try {
-            jarFile = new JarFile(tempJAR);
-            final Manifest manifest = jarFile.getManifest();
-            if(manifest != null) {
-                final Attributes mainAttributes = manifest.getMainAttributes();
-                if(mainAttributes != null) {
-                    final String vendor = mainAttributes.getValue(manifestVendorEntry);
-                    return vendorId.equals(vendor);
-                }
-            }
-
-        } catch (IOException e) {
-            listener.cannotCheckManifest(jarPath, e);
-        } finally {
-            if(jarFile != null) {
-                try {
-                    jarFile.close();
-                } catch (IOException e) {
-                    listener.cannotClose(jarPath, e);
-                }
-            }
-        }
-        return false;
-    }
-
-    private File copyStreamToTemporaryFile(final String jarPath, final InputStream archiveInputStream) throws IOException {
-        final File tempFile = File.createTempFile(UUID.randomUUID().toString(), "jar");
-        final FileOutputStream fos = new  FileOutputStream(tempFile);
-        try {
-            listener.checkingInTmpfile(jarPath, tempFile);
-            IOUtil.copy(archiveInputStream, fos);
-            return tempFile;
-        } finally {
-            fos.close();
-        }
-    }
 }
