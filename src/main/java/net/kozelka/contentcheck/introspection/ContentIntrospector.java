@@ -21,7 +21,7 @@ public class ContentIntrospector {
     };
     private final Set<String> sourceEntries = new LinkedHashSet<String>();
     private IntrospectionListener listener;
-    private FilenameFilter entrynameFilter = ISJAR_FILTER;
+    private FilenameFilter entryNameFilter = ISJAR_FILTER;
     private EntryContentFilter entryContentFilter;
 
     public static ContentIntrospector create(IntrospectionListener listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
@@ -39,15 +39,15 @@ public class ContentIntrospector {
     }
 
     public void setCheckFilesPattern(final String checkFilesPattern) {
-        setEntrynameFilter(new FilenameFilter() {
+        setEntryNameFilter(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return SelectorUtils.matchPath("/" + checkFilesPattern, "/" + name);
             }
         });
     }
 
-    public void setEntrynameFilter(FilenameFilter entrynameFilter) {
-        this.entrynameFilter = entrynameFilter;
+    public void setEntryNameFilter(FilenameFilter entryNameFilter) {
+        this.entryNameFilter = entryNameFilter;
     }
 
     public void setEntryContentFilter(EntryContentFilter entryContentFilter) {
@@ -66,7 +66,7 @@ public class ContentIntrospector {
     }
 
     /**
-     * Starts reading {@code sourceFile}'s content entry by entry. If an entry passes {@link #setEntrynameFilter entryNameFilter}
+     * Starts reading {@code sourceFile}'s content entry by entry. If an entry passes {@link #setEntryNameFilter entryNameFilter}
      * and is not a vendor archive (in case of {@link #ignoreVendorArchives} is <code>true</code>)
      * the entry will be delegated to the method {@link #processEntry(String)}
      * for further processing.
@@ -91,7 +91,7 @@ public class ContentIntrospector {
             totalCnt++;
 
             // filter by entry name
-            if (!entrynameFilter.accept(sourceFile, entryName)) {
+            if (!entryNameFilter.accept(sourceFile, entryName)) {
                 listener.skippingEntryNotMatching(entryName);
                 continue;
             }
