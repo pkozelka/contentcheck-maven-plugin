@@ -18,7 +18,7 @@ public class LicenseMappingParserTest {
     public void testParseLicenseMappingFile()  throws Exception{
         File licenseMappingFile = SupportUtils.getFile("license.mapping.json");
         Log log = mock(Log.class);
-        Map<String, List<License>> mapping = LicenseShowMojo.parseLicenseMappingFile(licenseMappingFile);
+        Map<String, List<License>> mapping = LicenseShow.parseLicenseMappingFile(licenseMappingFile);
         assertThat("Mapping parser didn't return any result object", mapping, notNullValue());
         assertThat("Mapping parser returned wrong number of entities", mapping.size(), is(2));
         List<License> list = mapping.get("spring-beans-3.0.4.RELEASE.jar");

@@ -1,12 +1,9 @@
 package net.kozelka.contentcheck.mojo;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -42,7 +39,6 @@ import org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
 import org.apache.maven.shared.jar.classes.JarClassesAnalysis;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.plexus.util.FileUtils;
 
 /**
@@ -207,7 +203,16 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
             if(licenseMappingFile != null && licenseMappingFile.exists()) {
                 //read additional license information
                 getLog().info(String.format("Reading license mapping file %s", licenseMappingFile.getAbsolutePath()));
-                additionalLicenseInformation.putAll(parseLicenseMappingFile(licenseMappingFile));
+                try {
+                    additionalLicenseInformation.putAll(LicenseShow.parseLicenseMappingFile(licenseMappingFile));
+                } catch (JsonParseException e) {
+                    throw new MojoFailureException(String.format("Cannot parse JSON from file %s the content of the file is not well formed JSON.", licenseMappingFile),e);
+                } catch (JsonMappingException e) {
+                    throw new MojoFailureException(String.format("Cannot deserialize JSON from file %s", licenseMappingFile),e);
+                } catch (IOException e) {
+                    throw new MojoFailureException(e.getMessage(), e);
+                }
+
             }
 
             getLog().info("Comparing the archive content with Maven project artifacts");
@@ -245,45 +250,17 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
                 }
             }
 
-            final LicenseOutput logOutput = new MavenLogOutput(getLog());
+            final LicenseShow.LicenseOutput logOutput = new MavenLogOutput(getLog());
             logOutput.output(entries);
 
             if(csvOutput) {
-                final CsvOutput csvOutput = new CsvOutput(csvOutputFile);
+                final LicenseShow.CsvOutput csvOutput = new LicenseShow.CsvOutput(csvOutputFile);
                 getLog().info(String.format("Creating license output to CSV file %s", csvOutputFile.getPath()));
                 csvOutput.output(entries);
             }
         } catch (IOException e) {
             throw new MojoFailureException(e.getMessage(), e);
         }
-    }
-
-    static Map<String, List<License>> parseLicenseMappingFile(File licenseMappingFile) throws MojoFailureException{
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final String licenseMappingFilePath = licenseMappingFile.getPath();
-        final Map<String, Object> json;
-        try {
-            json= objectMapper.readValue(licenseMappingFile, Map.class);
-        } catch (JsonParseException e) {
-            throw new MojoFailureException(String.format("Cannot parse JSON from file %s the content of the file is not well formed JSON.", licenseMappingFilePath),e);
-        } catch (JsonMappingException e) {
-            throw new MojoFailureException(String.format("Cannot deserialize JSON from file %s", licenseMappingFilePath),e);
-        } catch (IOException e) {
-            throw new MojoFailureException(e.getMessage(), e);
-        }
-        final Map <String, List<License>> fileToLicenseMapping = new HashMap<String, List<License>>();
-        final List<Map<String, Object>> jsonLicenses = (List<Map<String, Object>>) json.get("licenses");
-        //construct model objects from JSON
-        for (Map<String, Object> jsonLicense : jsonLicenses) {
-            final License license = new License();
-            license.setName((String) jsonLicense.get("name"));
-            license.setUrl((String) jsonLicense.get("url"));
-            final List<String> fileNames = (List<String>) jsonLicense.get("files");
-            for (String fileName : fileNames) {
-                fileToLicenseMapping.put(fileName, Arrays.asList(license));
-            }
-        }
-        return fileToLicenseMapping;
     }
 
     private List<MavenProject> getMavenProjectForDependencies() throws MojoExecutionException, MojoFailureException {
@@ -324,65 +301,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         }
     }
 
-    /**
-     * MavenProject placeholder for JARs that we are not able to connect with
-     * existing MavenProjects.
-     */
-    public static class NullMavenProject extends MavenProject {
-        @Override
-        public List getLicenses() {
-            return Collections.EMPTY_LIST;
-        }
-
-    }
-
-    public static class CsvOutput implements LicenseOutput {
-
-        private final File outputFile;
-
-        public CsvOutput(final File outputFile) {
-            super();
-            this.outputFile = outputFile;
-        }
-
-        public void output(final Map<String, List<License>> licensesPerFile) throws IOException {
-            final Set<String> keySet = licensesPerFile.keySet();
-            final FileWriter csvWriter = new FileWriter(outputFile);
-            try {
-                for (String entry : keySet) {
-                    final List<License> licenses = licensesPerFile.get(entry);
-                    final String jarName = FileUtils.filename(entry);
-                    for(License licence : licenses) {
-                        writeRecord(csvWriter, jarName, licence.getName(), licence.getUrl());
-                    }
-                    if(licenses.isEmpty()) {
-                        writeRecord(csvWriter, jarName, "unknown", "");
-                    }
-                }
-            } finally {
-                csvWriter.close();
-            }
-        }
-
-        private void writeRecord(FileWriter csvWriter, String jarName, String licenseName, String licenseUrl) throws IOException {
-            csvWriter.write(String.format("%s,%s,%s%n", jarName, safeString(licenseName), safeString(licenseUrl)));
-        }
-
-        public String safeString(final String s) {
-            if(s == null) {
-                return "";
-            }
-            return s.replaceAll("\\,", " ");
-        }
-    }
-
-    private static interface LicenseOutput {
-
-        abstract void output(final Map<String, List<License>> licensesPerFile) throws IOException;
-
-    }
-
-    static class MavenLogOutput implements LicenseOutput {
+    static class MavenLogOutput implements LicenseShow.LicenseOutput {
         private final Log log;
 
         public MavenLogOutput(final Log log) {
@@ -391,7 +310,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         }
 
         /**
-         * @see net.kozelka.contentcheck.mojo.LicenseShowMojo.LicenseOutput#output(java.util.Map)
+         * @see net.kozelka.contentcheck.mojo.LicenseShow.LicenseOutput#output(java.util.Map)
          */
         public void output(final Map<String, List<License>> licensesPerFile) {
             final Set<String> keySet = licensesPerFile.keySet();
