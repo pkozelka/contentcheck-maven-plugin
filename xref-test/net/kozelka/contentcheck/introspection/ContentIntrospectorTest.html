@@ -24,8 +24,8 @@
 <a class="jxr_linenumber" name="14" href="#14">14</a>  
 <a class="jxr_linenumber" name="15" href="#15">15</a>      @Test
 <a class="jxr_linenumber" name="16" href="#16">16</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testIntrospection() <strong class="jxr_keyword">throws</strong> IOException{
-<a class="jxr_linenumber" name="17" href="#17">17</a>          <strong class="jxr_keyword">final</strong> IntrospectionListener listener = mock(IntrospectionListener.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="18" href="#18">18</a>          <strong class="jxr_keyword">final</strong> ContentIntrospector introspector = ContentIntrospector.create(listener, false, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+<a class="jxr_linenumber" name="17" href="#17">17</a>          <strong class="jxr_keyword">final</strong> ContentIntrospector.IntrospectionListener listener = mock(ContentIntrospector.IntrospectionListener.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="18" href="#18">18</a>          <strong class="jxr_keyword">final</strong> ContentIntrospector introspector = ContentIntrospector.create(listener, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
 <a class="jxr_linenumber" name="19" href="#19">19</a>          File sourceArchive = SupportUtils.getFile(<span class="jxr_string">"test.war"</span>);
 <a class="jxr_linenumber" name="20" href="#20">20</a>          introspector.readEntries(sourceArchive);
 <a class="jxr_linenumber" name="21" href="#21">21</a>          Set&lt;String&gt; sourceEntries = introspector.getEntries();
@@ -37,8 +37,8 @@
 <a class="jxr_linenumber" name="27" href="#27">27</a>      
 <a class="jxr_linenumber" name="28" href="#28">28</a>      @Test
 <a class="jxr_linenumber" name="29" href="#29">29</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testIntrospectionWithIgnoringOwnArtifacts() <strong class="jxr_keyword">throws</strong> IOException{
-<a class="jxr_linenumber" name="30" href="#30">30</a>          <strong class="jxr_keyword">final</strong> IntrospectionListener listener = mock(IntrospectionListener.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="31" href="#31">31</a>          ContentIntrospector introspector = ContentIntrospector.create(listener, <strong class="jxr_keyword">true</strong>, SupportUtils.VENDOR1, SupportUtils.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+<a class="jxr_linenumber" name="30" href="#30">30</a>          <strong class="jxr_keyword">final</strong> ContentIntrospector.IntrospectionListener listener = mock(ContentIntrospector.IntrospectionListener.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="31" href="#31">31</a>          ContentIntrospector introspector = ContentIntrospector.create(listener, <strong class="jxr_keyword">true</strong>, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
 <a class="jxr_linenumber" name="32" href="#32">32</a>          File archive = SupportUtils.getFile(<span class="jxr_string">"test.war"</span>);
 <a class="jxr_linenumber" name="33" href="#33">33</a>          introspector.readEntries(archive);
 <a class="jxr_linenumber" name="34" href="#34">34</a>          Set&lt;String&gt; sourceEntries = introspector.getEntries();

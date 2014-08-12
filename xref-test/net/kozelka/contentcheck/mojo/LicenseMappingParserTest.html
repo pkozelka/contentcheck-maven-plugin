@@ -28,7 +28,7 @@
 <a class="jxr_linenumber" name="18" href="#18">18</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> testParseLicenseMappingFile()  <strong class="jxr_keyword">throws</strong> Exception{
 <a class="jxr_linenumber" name="19" href="#19">19</a>          File licenseMappingFile = SupportUtils.getFile(<span class="jxr_string">"license.mapping.json"</span>);
 <a class="jxr_linenumber" name="20" href="#20">20</a>          Log log = mock(Log.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="21" href="#21">21</a>          Map&lt;String, List&lt;License&gt;&gt; mapping = LicenseShowMojo.parseLicenseMappingFile(licenseMappingFile);
+<a class="jxr_linenumber" name="21" href="#21">21</a>          Map&lt;String, List&lt;License&gt;&gt; mapping = LicenseShow.parseLicenseMappingFile(licenseMappingFile);
 <a class="jxr_linenumber" name="22" href="#22">22</a>          assertThat(<span class="jxr_string">"Mapping parser didn't return any result object"</span>, mapping, notNullValue());
 <a class="jxr_linenumber" name="23" href="#23">23</a>          assertThat(<span class="jxr_string">"Mapping parser returned wrong number of entities"</span>, mapping.size(), is(2));
 <a class="jxr_linenumber" name="24" href="#24">24</a>          List&lt;License&gt; list = mapping.get(<span class="jxr_string">"spring-beans-3.0.4.RELEASE.jar"</span>);
