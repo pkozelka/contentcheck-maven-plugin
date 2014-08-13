@@ -27,8 +27,9 @@ public class ArchivaWarTest {
         final ContentChecker cc  = new ContentChecker();
         final ContentIntrospector introspector = new ContentIntrospector();
         introspector.setEntryContentFilter(new VendorFilter("org.apache.archiva"));
+        introspector.setSourceFile(archivaWar);
         cc.setIntrospector(introspector);
-        final CheckerOutput result = cc.check(archivaApprovedContent, archivaWar);
+        final CheckerOutput result = cc.check(archivaApprovedContent);
         //
         Assert.assertEquals("Missing entries", 5, result.diffMissingEntries().size());
         Assert.assertEquals("Unexpected entries", 0, result.diffUnexpectedEntries().size());

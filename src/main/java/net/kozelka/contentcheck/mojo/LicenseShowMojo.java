@@ -194,7 +194,8 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         try {
             final ContentIntrospector introspector = ContentIntrospector.create(new MyIntrospectionListener(getLog()),
                     ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-            introspector.readEntries(src);
+            introspector.setSourceFile(src);
+            introspector.readEntries();
 
             final Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getEntries());
             final Map<String, List<License>> entries = new LinkedHashMap<String, List<License>>();

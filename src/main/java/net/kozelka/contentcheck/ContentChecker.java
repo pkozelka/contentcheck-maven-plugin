@@ -29,18 +29,17 @@ public class ContentChecker {
      * Checks a content of {@code sourceFile} according to an allowed content defined by {@code listingFile}.
      * 
      * @param listingFile a file that defines allowed content
-     * @param sourceFile directory or archive file to be checked
-     * 
+     *
      * @return the result of source check
      * 
      * @throws IOException if something very bad happen
      */
-    public CheckerOutput check(final File listingFile, final File sourceFile) throws IOException{
+    public CheckerOutput check(final File listingFile) throws IOException{
         final Set<String> approvedEntries = readListing(listingFile);
-        final int totalCount = introspector.readEntries(sourceFile);
+        final int totalCount = introspector.readEntries();
         //XXX dagi: duplicit entries detection https://github.com/pkozelka/contentcheck-maven-plugin/issues#issue/4
         final Set<String> actualEntries = introspector.getEntries();
-        events.fire.summary(sourceFile, actualEntries.size(), totalCount);
+        events.fire.summary(introspector.getSourceFile(), actualEntries.size(), totalCount);
         return new CheckerOutput(approvedEntries, actualEntries);
     }
 

@@ -32,10 +32,13 @@ public class ContentCheckerTest {
 
     @Test
     public void testUnexpectedEntries() throws Exception {
-        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content.txt");
         File archiveFile = SupportUtils.getFile("test.war");
-        CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
+        final ContentChecker checker = createContentChecker(archiveFile, false,
+                SupportUtils.VENDOR1,
+                VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME,
+                SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        CheckerOutput checkerOutput = checker.check(listingFile);
         Set<String> diffUnexpectedEntries = checkerOutput.diffUnexpectedEntries();
         assertThat("Missing entry WEB-INF/lib/a.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/a.jar"), is(true));
         assertThat("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/c.jar"), is(true));
@@ -43,10 +46,10 @@ public class ContentCheckerTest {
 
     @Test
     public void testUnexpectedEntriesInDirectory() throws Exception {
-        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content.txt");
         File directoryToBeChecked = SupportUtils.getFile("test");
-        CheckerOutput checkerOutput = checker.check(listingFile, directoryToBeChecked);
+        final ContentChecker checker = createContentChecker(directoryToBeChecked, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        CheckerOutput checkerOutput = checker.check(listingFile);
         Set<String> diffUnexpectedEntries = checkerOutput.diffUnexpectedEntries();
         assertTrue("Missing entry WEB-INF/lib/a.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/a.jar"));
         assertTrue("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/c.jar"));
@@ -55,10 +58,10 @@ public class ContentCheckerTest {
 
     @Test
     public void testUnexpectedEntriesIgnoreVendorArchives() throws Exception {
-        final ContentChecker checker = createContentChecker(true, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content.txt");
         File archiveFile = SupportUtils.getFile("test.war");
-        CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
+        final ContentChecker checker = createContentChecker(archiveFile, true, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        CheckerOutput checkerOutput = checker.check(listingFile);
         Set<String> diffUnexpectedEntries = checkerOutput.diffUnexpectedEntries();
         assertThat("Entry WEB-INF/lib/a.jar must not be in the collection of unexpected entries, because it's a vendor archive.", diffUnexpectedEntries.contains("WEB-INF/lib/a.jar"), is(false));
         assertThat("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/c.jar"), is(true));
@@ -66,10 +69,10 @@ public class ContentCheckerTest {
 
     @Test
     public void testCheckFilePatternScan() throws Exception {
-        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, "WEB-INF/**/*");
         File listingFile = SupportUtils.getFile("content.txt");
         File archiveFile = SupportUtils.getFile("test.war");
-        CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
+        final ContentChecker checker = createContentChecker(archiveFile, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, "WEB-INF/**/*");
+        CheckerOutput checkerOutput = checker.check(listingFile);
         Set<String> diffMissingEntries = checkerOutput.diffMissingEntries();
         Set<String> diffUnexpectedEntries = checkerOutput.diffUnexpectedEntries();
 
@@ -80,27 +83,27 @@ public class ContentCheckerTest {
 
     @Test
     public void testUnexpectedEntriesIgnoreVendorArchivesCustomVendorHeader() throws Exception {
-        final ContentChecker checker = createContentChecker(true, SupportUtils.VENDOR1, "Producer", SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content.txt");
         File archiveFile = SupportUtils.getFile("test.war");
-        CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
+        final ContentChecker checker = createContentChecker(archiveFile, true, SupportUtils.VENDOR1, "Producer", SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        CheckerOutput checkerOutput = checker.check(listingFile);
         Set<String> diffUnexpectedEntries = checkerOutput.diffUnexpectedEntries();
         assertThat("Entry WEB-INF/lib/c.jar must not be in the collection of unexpected entries, because it's a vendor archive.", diffUnexpectedEntries.contains("WEB-INF/lib/c.jar"), is(false));
     }
 
     @Test
     public void testMissingEntries() throws Exception {
-        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content-missing-entries.txt");
         File archiveFile = SupportUtils.getFile("test.war");
-        CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
+        final ContentChecker checker = createContentChecker(archiveFile, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        CheckerOutput checkerOutput = checker.check(listingFile);
         Set<String> diffMissingEntries = checkerOutput.diffMissingEntries();
         assertThat("Missing entry WEB-INF/lib/d.jar in the collection of missing entries.", diffMissingEntries.contains("WEB-INF/lib/d.jar"), is(true));
     }
 
     @Test
     public void testReadListingFile() throws Exception{
-        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = new ContentChecker();
         File listingFile = SupportUtils.getFile("content-read-listing-test.txt");
         Set<String> content = checker.readListing(listingFile);
         assertThat(content.size(), is(5));
@@ -108,7 +111,8 @@ public class ContentCheckerTest {
 
     @Test
     public void testReadListinFileWithDuplicitEntries() throws Exception{
-        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = new ContentChecker();
+        checker.getEvents().addListener(contentCheckerListener);
         File listingFile = SupportUtils.getFile("content-duplicit-entries-test.txt");
         checker.readListing(listingFile);
         verify(contentCheckerListener, times(1)).duplicate(any(File.class), anyString());
@@ -116,7 +120,7 @@ public class ContentCheckerTest {
 
     @Test
     public void testReadListingFileEmptyLines() throws Exception{
-        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentChecker checker = new ContentChecker();
         File listingFile = SupportUtils.getFile("content-empty-lines-test.txt");
         Set<String> entries = checker.readListing(listingFile);
         assertThat("Unexpecting count of entries. Whitespaces and empty lines must be ignored.", entries.size(), is(0));
@@ -124,15 +128,15 @@ public class ContentCheckerTest {
 
     @Test
     public void testTopLevelJARS() throws IOException {
-        final ContentChecker checker = createContentChecker(false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         File listingFile = SupportUtils.getFile("content-toplevel-jars.txt");
         File archiveFile = SupportUtils.getFile("test.ear");
-        CheckerOutput checkerOutput = checker.check(listingFile, archiveFile);
+        final ContentChecker checker = createContentChecker(archiveFile, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        CheckerOutput checkerOutput = checker.check(listingFile);
         assertThat("Default file matching pattern (All JARs) is broken, there are reported missing entries but shouldn't.", checkerOutput.diffMissingEntries().isEmpty(), is(true));
         assertThat("Default file matching pattern (All JARs) is broken, there are reported unexpected entries but shouldn't.",checkerOutput.diffUnexpectedEntries().isEmpty(), is(true));
     }
 
-    private ContentChecker createContentChecker(boolean ignoreVendorArchives, String vendor, String vendorManifestEntryName, String checkFilesPattern) {
+    private ContentChecker createContentChecker(File sourceFile, boolean ignoreVendorArchives, String vendor, String vendorManifestEntryName, String checkFilesPattern) {
 
         final ContentChecker contentChecker = new ContentChecker();
         contentChecker.getEvents().addListener(contentCheckerListener);
@@ -141,6 +145,7 @@ public class ContentCheckerTest {
                 vendor,
                 vendorManifestEntryName,
                 checkFilesPattern);
+        introspector.setSourceFile(sourceFile);
         contentChecker.setIntrospector(introspector);
         return contentChecker;
     }

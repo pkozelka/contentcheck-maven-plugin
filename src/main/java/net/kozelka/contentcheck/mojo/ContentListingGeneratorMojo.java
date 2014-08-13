@@ -48,7 +48,8 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
             }
             final ContentIntrospector introspector = ContentIntrospector.create(new MyIntrospectionListener(getLog()),
                     ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-            final int count = introspector.readEntries(sourceFile);
+            introspector.setSourceFile(sourceFile);
+            final int count = introspector.readEntries();
             final List<String> sourceEntries = new ArrayList<String>(introspector.getEntries());
             Collections.sort(sourceEntries);
             getLog().info(String.format("The source contains %d entries, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));

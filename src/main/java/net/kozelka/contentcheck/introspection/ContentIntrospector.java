@@ -24,6 +24,8 @@ public class ContentIntrospector {
     private EventSink<IntrospectionListener> events = EventSink.create(IntrospectionListener.class);
     private FilenameFilter entryNameFilter = ISJAR_FILTER;
     private EntryContentFilter entryContentFilter;
+    private File sourceFile;
+    private IntrospectorInputStrategy walker;
 
     public static ContentIntrospector create(IntrospectionListener listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
         final ContentIntrospector contentIntrospector = new ContentIntrospector();
@@ -69,29 +71,33 @@ public class ContentIntrospector {
         return sourceEntries;
     }
 
+    public File getSourceFile() {
+        return sourceFile;
+    }
+
+    public void setSourceFile(File sourceFile) {
+        this.sourceFile = sourceFile;
+        if (sourceFile.isDirectory()) {
+            walker = new DirectoryIntrospectorStrategy();
+        } else {
+            walker = new ZipArchiveIntrospectorStrategy();
+        }
+    }
+
     /**
      * Starts reading {@code sourceFile}'s content entry by entry. If an entry passes {@link #setEntryNameFilter entryNameFilter}
      * and is not a vendor archive (in case we care)
      * the entry will be delegated to the method {@link #processEntry(String)}
      * for further processing.
      *
-     * @param sourceFile a source file to be read, typically an archive or directory
-     *
      * @return the total number of processed entries, including skipped ones.
      *
      * @see #processEntry(String)
      */
-    public final int readEntries(final File sourceFile) throws IOException {
+    public final int readEntries() throws IOException {
         events.fire.readingSourceFile(sourceFile);
-        final IntrospectorInputStrategy inputStrategy;
-        if (sourceFile.isDirectory()) {
-            inputStrategy = new DirectoryIntrospectorStrategy();
-        } else {
-            inputStrategy = new ZipArchiveIntrospectorStrategy();
-        }
-
         int totalCnt = 0;
-        for (String entryName : inputStrategy.list(sourceFile)) {
+        for (String entryName : walker.list(sourceFile)) {
             totalCnt++;
 
             // filter by entry name
@@ -102,7 +108,7 @@ public class ContentIntrospector {
 
             // filter by entry content
             if(entryContentFilter != null) {
-                final InputStream entryContentStream = inputStrategy.getInputStream(sourceFile, entryName);
+                final InputStream entryContentStream = walker.getInputStream(sourceFile, entryName);
                 try {
                     if(!entryContentFilter.accept(entryName, entryContentStream)) {
                         events.fire.skippingEntryOwnModule(entryName);

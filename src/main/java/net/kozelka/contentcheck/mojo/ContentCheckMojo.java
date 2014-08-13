@@ -82,12 +82,13 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
         try {
             final MyIntrospectionListener introspectionListener = new MyIntrospectionListener(getLog());
             final ContentIntrospector introspector = ContentIntrospector.create(introspectionListener, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            introspector.setSourceFile(sourceFile);
             final ContentChecker contentChecker = new ContentChecker();
             contentChecker.getEvents().addListener(new MyContentCheckerListener(getLog()));
             contentChecker.setIntrospector(introspector);
             //
             getLog().info("Reading listing: " + contentListing);
-            final CheckerOutput output = contentChecker.check(contentListing, sourceFile);
+            final CheckerOutput output = contentChecker.check(contentListing);
 
             // report missing entries
             final Set<String> missingEntries = output.diffMissingEntries();
