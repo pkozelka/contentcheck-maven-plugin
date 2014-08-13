@@ -146,8 +146,8 @@
                         </goals>
                         <configuration>
                             <target>
-                                <mkdir dir="${project.build.outputDirectory}" />
-                                <copy tofile="${project.build.outputDirectory}/archiva-webapp.war" file="${org.apache.archiva:archiva-webapp:war}" overwrite="true" verbose="true"/>
+                                <mkdir dir="${project.build.testOutputDirectory}" />
+                                <copy tofile="${project.build.testOutputDirectory}/archiva-webapp.war" file="${org.apache.archiva:archiva-webapp:war}" overwrite="true" verbose="true"/>
                             </target>
                         </configuration>
                     </execution>
@@ -168,6 +168,32 @@
                                 </copy>
                             </target>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <version>1.8</version>
+                <configuration>
+                    <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                    <cloneClean>true</cloneClean>
+                    <!--<debug>true</debug>-->
+                    <showErrors>true</showErrors>
+                    <preBuildHookScript>prepare</preBuildHookScript>
+                    <postBuildHookScript>verify</postBuildHookScript>
+                    <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+                    <settingsFile>src/it/settings.xml</settingsFile>
+                    <skipInstallation>${skipTests}</skipInstallation>
+                    <skipInvocation>${skipTests}</skipInvocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>install</goal>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
