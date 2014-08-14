@@ -8,7 +8,7 @@ import org.apache.maven.plugin.logging.Log;
 /**
 * @author Petr Kozelka
 */
-public class MyIntrospectionListener implements ContentIntrospector.IntrospectionListener {
+public class MyIntrospectionListener implements ContentIntrospector.Events {
     private final Log log;
 
     public //TODO: just for now (#10)
@@ -38,5 +38,10 @@ public class MyIntrospectionListener implements ContentIntrospector.Introspectio
 
     @Override public void checkingInTmpfile(String jarPath, File tempFile) {
         log.debug("Checking " + jarPath + " to be a vendor archive, using tempfile " + tempFile);
+    }
+
+    @Override
+    public void processEntry(String entryName) {
+        log.debug("Found: " + entryName);
     }
 }

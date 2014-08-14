@@ -23,7 +23,7 @@ public class VendorFilter implements ContentIntrospector.EntryContentFilter {
     private final String vendorId;
     private String manifestVendorEntry = DEFAULT_VENDOR_MANIFEST_ENTRY_NAME;
     //todo: use own events!
-    private EventSink<ContentIntrospector.IntrospectionListener> events = EventSink.create(ContentIntrospector.IntrospectionListener.class);
+    private EventSink<ContentIntrospector.Events> events = EventSink.create(ContentIntrospector.Events.class);
 
     public VendorFilter(String vendorId) {
         this.vendorId = vendorId;
@@ -33,7 +33,7 @@ public class VendorFilter implements ContentIntrospector.EntryContentFilter {
         this.manifestVendorEntry = manifestVendorEntry;
     }
 
-    public EventSink<ContentIntrospector.IntrospectionListener> getEvents() {
+    public EventSink<ContentIntrospector.Events> getEvents() {
         return events;
     }
 

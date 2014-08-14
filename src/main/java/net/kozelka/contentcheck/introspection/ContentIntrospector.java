@@ -4,15 +4,12 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.Collection;
 import net.kozelka.contentcheck.util.EventSink;
 import org.codehaus.plexus.util.SelectorUtils;
 
 /**
- * This introspector captures all passed entities by their paths.
- *
- * @see #sourceEntries
+ * This introspector captures all passed entries by their paths.
  */
 public class ContentIntrospector {
     public static final FilenameFilter ISJAR_FILTER = new FilenameFilter() {
@@ -20,14 +17,13 @@ public class ContentIntrospector {
             return name.endsWith(".jar");
         }
     };
-    private final Set<String> sourceEntries = new LinkedHashSet<String>();
-    private EventSink<IntrospectionListener> events = EventSink.create(IntrospectionListener.class);
+    private EventSink<Events> events = EventSink.create(Events.class);
     private FilenameFilter entryNameFilter = ISJAR_FILTER;
     private EntryContentFilter entryContentFilter;
     private File sourceFile;
     private IntrospectorInputStrategy walker;
 
-    public static ContentIntrospector create(IntrospectionListener listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
+    public static ContentIntrospector create(Events listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
         final ContentIntrospector contentIntrospector = new ContentIntrospector();
         contentIntrospector.getEvents().addListener(listener);
         contentIntrospector.setCheckFilesPattern(checkFilesPattern);
@@ -40,7 +36,7 @@ public class ContentIntrospector {
         return contentIntrospector;
     }
 
-    public EventSink<IntrospectionListener> getEvents() {
+    public EventSink<Events> getEvents() {
         return events;
     }
 
@@ -60,17 +56,6 @@ public class ContentIntrospector {
         this.entryContentFilter = entryContentFilter;
     }
 
-    private void processEntry(String entry) throws IOException {
-        sourceEntries.add(entry);
-    }
-
-    /**
-     * @return the entries found in source
-     */
-    public Set<String> getEntries() {
-        return sourceEntries;
-    }
-
     public File getSourceFile() {
         return sourceFile;
     }
@@ -85,16 +70,14 @@ public class ContentIntrospector {
     }
 
     /**
-     * Starts reading {@code sourceFile}'s content entry by entry. If an entry passes {@link #setEntryNameFilter entryNameFilter}
+     * Walks through the content of {@code sourceFile} entry by entry. If an entry passes {@link #setEntryNameFilter entryNameFilter}
      * and is not a vendor archive (in case we care)
-     * the entry will be delegated to the method {@link #processEntry(String)}
+     * the entry will be delegated to  {@link net.kozelka.contentcheck.introspection.ContentIntrospector.Events#processEntry(String)}
      * for further processing.
      *
      * @return the total number of processed entries, including skipped ones.
-     *
-     * @see #processEntry(String)
      */
-    public final int readEntries() throws IOException {
+    public final int walk() throws IOException {
         events.fire.readingSourceFile(sourceFile);
         int totalCnt = 0;
         for (String entryName : walker.list(sourceFile)) {
@@ -119,7 +102,7 @@ public class ContentIntrospector {
                 }
             }
             //
-            processEntry(entryName);
+            events.fire.processEntry(entryName);
         }
 
         return totalCnt;
@@ -136,7 +119,7 @@ public class ContentIntrospector {
         boolean accept(String entryName, InputStream entryContentStream) throws IOException;
     }
 
-    public static interface IntrospectionListener {
+    public static interface Events {
         void readingSourceFile(File sourceFile);
 
         void skippingEntryNotMatching(String entry);
@@ -148,5 +131,43 @@ public class ContentIntrospector {
         void cannotClose(String jarPath, IOException e);
 
         void checkingInTmpfile(String jarPath, File tempFile);
+
+        void processEntry(String entryName);
+    }
+
+    public static class ContentCollector implements Events {
+        private final Collection<String> actualEntries;
+
+        public ContentCollector(Collection<String> actualEntries) {
+            this.actualEntries = actualEntries;
+        }
+
+        @Override
+        public void readingSourceFile(File sourceFile) {}
+
+        @Override
+        public void skippingEntryNotMatching(String entry) {
+        }
+
+        @Override
+        public void skippingEntryOwnModule(String entry) {
+        }
+
+        @Override
+        public void cannotCheckManifest(String jarPath, Exception e) {
+        }
+
+        @Override
+        public void cannotClose(String jarPath, IOException e) {
+        }
+
+        @Override
+        public void checkingInTmpfile(String jarPath, File tempFile) {
+        }
+
+        @Override
+        public void processEntry(String entryName) {
+            actualEntries.add(entryName);
+        }
     }
 }

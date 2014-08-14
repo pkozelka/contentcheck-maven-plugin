@@ -194,10 +194,14 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         try {
             final ContentIntrospector introspector = ContentIntrospector.create(new MyIntrospectionListener(getLog()),
                     ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final Set<String> archiveEntries = new LinkedHashSet<String>();
             introspector.setSourceFile(src);
-            introspector.readEntries();
+            //TODO: instead of collecting, put the dependency comparison right inside
+            final ContentIntrospector.ContentCollector collector = new ContentIntrospector.ContentCollector(archiveEntries);
+            introspector.getEvents().addListener(collector);
+            introspector.walk();
+            introspector.getEvents().removeListener(collector);
 
-            final Set<String> archiveEntries = new LinkedHashSet<String>(introspector.getEntries());
             final Map<String, List<License>> entries = new LinkedHashMap<String, List<License>>();
 
             final Map<String, List<License>> additionalLicenseInformation = new LinkedHashMap<String, List<License>>();
