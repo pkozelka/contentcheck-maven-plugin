@@ -33,7 +33,7 @@
 <a class="jxr_linenumber" name="23" href="#23">23</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String vendorId;
 <a class="jxr_linenumber" name="24" href="#24">24</a>      <strong class="jxr_keyword">private</strong> String manifestVendorEntry = DEFAULT_VENDOR_MANIFEST_ENTRY_NAME;
 <a class="jxr_linenumber" name="25" href="#25">25</a>      <em class="jxr_comment">//todo: use own events!</em>
-<a class="jxr_linenumber" name="26" href="#26">26</a>      <strong class="jxr_keyword">private</strong> EventSink&lt;ContentIntrospector.IntrospectionListener&gt; events = EventSink.create(ContentIntrospector.IntrospectionListener.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="26" href="#26">26</a>      <strong class="jxr_keyword">private</strong> EventSink&lt;ContentIntrospector.Events&gt; events = EventSink.create(ContentIntrospector.Events.<strong class="jxr_keyword">class</strong>);
 <a class="jxr_linenumber" name="27" href="#27">27</a>  
 <a class="jxr_linenumber" name="28" href="#28">28</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../net/kozelka/contentcheck/introspection/VendorFilter.html">VendorFilter</a>(String vendorId) {
 <a class="jxr_linenumber" name="29" href="#29">29</a>          <strong class="jxr_keyword">this</strong>.vendorId = vendorId;
@@ -43,7 +43,7 @@
 <a class="jxr_linenumber" name="33" href="#33">33</a>          <strong class="jxr_keyword">this</strong>.manifestVendorEntry = manifestVendorEntry;
 <a class="jxr_linenumber" name="34" href="#34">34</a>      }
 <a class="jxr_linenumber" name="35" href="#35">35</a>  
-<a class="jxr_linenumber" name="36" href="#36">36</a>      <strong class="jxr_keyword">public</strong> EventSink&lt;ContentIntrospector.IntrospectionListener&gt; getEvents() {
+<a class="jxr_linenumber" name="36" href="#36">36</a>      <strong class="jxr_keyword">public</strong> EventSink&lt;ContentIntrospector.Events&gt; getEvents() {
 <a class="jxr_linenumber" name="37" href="#37">37</a>          <strong class="jxr_keyword">return</strong> events;
 <a class="jxr_linenumber" name="38" href="#38">38</a>      }
 <a class="jxr_linenumber" name="39" href="#39">39</a>  

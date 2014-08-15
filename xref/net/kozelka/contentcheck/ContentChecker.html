@@ -39,53 +39,55 @@
 <a class="jxr_linenumber" name="29" href="#29">29</a>  <em class="jxr_javadoccomment">     * Checks a content of {@code sourceFile} according to an allowed content defined by {@code listingFile}.</em>
 <a class="jxr_linenumber" name="30" href="#30">30</a>  <em class="jxr_javadoccomment">     * </em>
 <a class="jxr_linenumber" name="31" href="#31">31</a>  <em class="jxr_javadoccomment">     * @param listingFile a file that defines allowed content</em>
-<a class="jxr_linenumber" name="32" href="#32">32</a>  <em class="jxr_javadoccomment">     * @param sourceFile directory or archive file to be checked</em>
-<a class="jxr_linenumber" name="33" href="#33">33</a>  <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment">     * @return the result of source check</em>
-<a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment">     * @throws IOException if something very bad happen</em>
-<a class="jxr_linenumber" name="37" href="#37">37</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="38" href="#38">38</a>      <strong class="jxr_keyword">public</strong> <a href="../../../net/kozelka/contentcheck/CheckerOutput.html">CheckerOutput</a> check(<strong class="jxr_keyword">final</strong> File listingFile, <strong class="jxr_keyword">final</strong> File sourceFile) <strong class="jxr_keyword">throws</strong> IOException{
-<a class="jxr_linenumber" name="39" href="#39">39</a>          <strong class="jxr_keyword">final</strong> Set&lt;String&gt; approvedEntries = readListing(listingFile);
-<a class="jxr_linenumber" name="40" href="#40">40</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> totalCount = introspector.readEntries(sourceFile);
-<a class="jxr_linenumber" name="41" href="#41">41</a>          <em class="jxr_comment">//XXX dagi: duplicit entries detection https://github.com/pkozelka/contentcheck-maven-plugin/issues#issue/4</em>
-<a class="jxr_linenumber" name="42" href="#42">42</a>          <strong class="jxr_keyword">final</strong> Set&lt;String&gt; actualEntries = introspector.getEntries();
-<a class="jxr_linenumber" name="43" href="#43">43</a>          events.fire.summary(sourceFile, actualEntries.size(), totalCount);
-<a class="jxr_linenumber" name="44" href="#44">44</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../net/kozelka/contentcheck/CheckerOutput.html">CheckerOutput</a>(approvedEntries, actualEntries);
-<a class="jxr_linenumber" name="45" href="#45">45</a>      }
-<a class="jxr_linenumber" name="46" href="#46">46</a>  
-<a class="jxr_linenumber" name="47" href="#47">47</a>      <strong class="jxr_keyword">protected</strong> Set&lt;String&gt; readListing(<strong class="jxr_keyword">final</strong> File listingFile) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="48" href="#48">48</a>          <strong class="jxr_keyword">final</strong> Set&lt;String&gt; expectedPaths = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;String&gt;();
-<a class="jxr_linenumber" name="49" href="#49">49</a>          <strong class="jxr_keyword">final</strong> BufferedReader reader = <strong class="jxr_keyword">new</strong> BufferedReader(<strong class="jxr_keyword">new</strong> FileReader(listingFile));
-<a class="jxr_linenumber" name="50" href="#50">50</a>          <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="51" href="#51">51</a>              <strong class="jxr_keyword">int</strong> totalCnt = 0;
-<a class="jxr_linenumber" name="52" href="#52">52</a>              String line;
-<a class="jxr_linenumber" name="53" href="#53">53</a>              <strong class="jxr_keyword">while</strong> ((line = reader.readLine())!= <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="54" href="#54">54</a>                  totalCnt ++;
-<a class="jxr_linenumber" name="55" href="#55">55</a>                  line = line.trim();
-<a class="jxr_linenumber" name="56" href="#56">56</a>                  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> ignoreLine = line.length() == 0 || line.startsWith(<span class="jxr_string">"#"</span>);<em class="jxr_comment">// we ignore empty and comments lines</em>
-<a class="jxr_linenumber" name="57" href="#57">57</a>                  <strong class="jxr_keyword">if</strong> (!ignoreLine) { 
-<a class="jxr_linenumber" name="58" href="#58">58</a>                      <strong class="jxr_keyword">if</strong>(expectedPaths.contains(line)) {
-<a class="jxr_linenumber" name="59" href="#59">59</a>                          events.fire.duplicate(listingFile, line);
-<a class="jxr_linenumber" name="60" href="#60">60</a>                      }
-<a class="jxr_linenumber" name="61" href="#61">61</a>                      expectedPaths.add(line);
-<a class="jxr_linenumber" name="62" href="#62">62</a>                  } 
-<a class="jxr_linenumber" name="63" href="#63">63</a>              }
-<a class="jxr_linenumber" name="64" href="#64">64</a>              events.fire.contentListingSummary(listingFile, expectedPaths.size(), totalCnt);
-<a class="jxr_linenumber" name="65" href="#65">65</a>              <strong class="jxr_keyword">return</strong> expectedPaths;
-<a class="jxr_linenumber" name="66" href="#66">66</a>          } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="67" href="#67">67</a>              reader.close();
-<a class="jxr_linenumber" name="68" href="#68">68</a>          }
-<a class="jxr_linenumber" name="69" href="#69">69</a>      }
-<a class="jxr_linenumber" name="70" href="#70">70</a>  
-<a class="jxr_linenumber" name="71" href="#71">71</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../net/kozelka/contentcheck/ContentChecker.html">Events</a> {
-<a class="jxr_linenumber" name="72" href="#72">72</a>          <strong class="jxr_keyword">void</strong> summary(File sourceFile, <strong class="jxr_keyword">int</strong> checkedCount, <strong class="jxr_keyword">int</strong> totalCount);
-<a class="jxr_linenumber" name="73" href="#73">73</a>  
-<a class="jxr_linenumber" name="74" href="#74">74</a>          <strong class="jxr_keyword">void</strong> duplicate(File listingFile, String line);
+<a class="jxr_linenumber" name="32" href="#32">32</a>  <em class="jxr_javadoccomment">     *</em>
+<a class="jxr_linenumber" name="33" href="#33">33</a>  <em class="jxr_javadoccomment">     * @return the result of source check</em>
+<a class="jxr_linenumber" name="34" href="#34">34</a>  <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="35" href="#35">35</a>  <em class="jxr_javadoccomment">     * @throws IOException if something very bad happen</em>
+<a class="jxr_linenumber" name="36" href="#36">36</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="37" href="#37">37</a>      <strong class="jxr_keyword">public</strong> <a href="../../../net/kozelka/contentcheck/CheckerOutput.html">CheckerOutput</a> check(<strong class="jxr_keyword">final</strong> File listingFile) <strong class="jxr_keyword">throws</strong> IOException{
+<a class="jxr_linenumber" name="38" href="#38">38</a>          <strong class="jxr_keyword">final</strong> Set&lt;String&gt; approvedEntries = readListing(listingFile);
+<a class="jxr_linenumber" name="39" href="#39">39</a>          <strong class="jxr_keyword">final</strong> Set&lt;String&gt; actualEntries = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;String&gt;();
+<a class="jxr_linenumber" name="40" href="#40">40</a>          <strong class="jxr_keyword">final</strong> ContentIntrospector.Events collector = <strong class="jxr_keyword">new</strong> ContentIntrospector.ContentCollector(actualEntries);
+<a class="jxr_linenumber" name="41" href="#41">41</a>          introspector.getEvents().addListener(collector);
+<a class="jxr_linenumber" name="42" href="#42">42</a>          <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> totalCount = introspector.walk();
+<a class="jxr_linenumber" name="43" href="#43">43</a>          introspector.getEvents().removeListener(collector);
+<a class="jxr_linenumber" name="44" href="#44">44</a>          <em class="jxr_comment">//XXX dagi: duplicit entries detection https://github.com/pkozelka/contentcheck-maven-plugin/issues#issue/4</em>
+<a class="jxr_linenumber" name="45" href="#45">45</a>          events.fire.summary(introspector.getSourceFile(), actualEntries.size(), totalCount);
+<a class="jxr_linenumber" name="46" href="#46">46</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../net/kozelka/contentcheck/CheckerOutput.html">CheckerOutput</a>(approvedEntries, actualEntries);
+<a class="jxr_linenumber" name="47" href="#47">47</a>      }
+<a class="jxr_linenumber" name="48" href="#48">48</a>  
+<a class="jxr_linenumber" name="49" href="#49">49</a>      <strong class="jxr_keyword">protected</strong> Set&lt;String&gt; readListing(<strong class="jxr_keyword">final</strong> File listingFile) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="50" href="#50">50</a>          <strong class="jxr_keyword">final</strong> Set&lt;String&gt; expectedPaths = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;String&gt;();
+<a class="jxr_linenumber" name="51" href="#51">51</a>          <strong class="jxr_keyword">final</strong> BufferedReader reader = <strong class="jxr_keyword">new</strong> BufferedReader(<strong class="jxr_keyword">new</strong> FileReader(listingFile));
+<a class="jxr_linenumber" name="52" href="#52">52</a>          <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="53" href="#53">53</a>              <strong class="jxr_keyword">int</strong> totalCnt = 0;
+<a class="jxr_linenumber" name="54" href="#54">54</a>              String line;
+<a class="jxr_linenumber" name="55" href="#55">55</a>              <strong class="jxr_keyword">while</strong> ((line = reader.readLine())!= <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="56" href="#56">56</a>                  totalCnt ++;
+<a class="jxr_linenumber" name="57" href="#57">57</a>                  line = line.trim();
+<a class="jxr_linenumber" name="58" href="#58">58</a>                  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> ignoreLine = line.length() == 0 || line.startsWith(<span class="jxr_string">"#"</span>);<em class="jxr_comment">// we ignore empty and comments lines</em>
+<a class="jxr_linenumber" name="59" href="#59">59</a>                  <strong class="jxr_keyword">if</strong> (!ignoreLine) { 
+<a class="jxr_linenumber" name="60" href="#60">60</a>                      <strong class="jxr_keyword">if</strong>(expectedPaths.contains(line)) {
+<a class="jxr_linenumber" name="61" href="#61">61</a>                          events.fire.duplicate(listingFile, line);
+<a class="jxr_linenumber" name="62" href="#62">62</a>                      }
+<a class="jxr_linenumber" name="63" href="#63">63</a>                      expectedPaths.add(line);
+<a class="jxr_linenumber" name="64" href="#64">64</a>                  } 
+<a class="jxr_linenumber" name="65" href="#65">65</a>              }
+<a class="jxr_linenumber" name="66" href="#66">66</a>              events.fire.contentListingSummary(listingFile, expectedPaths.size(), totalCnt);
+<a class="jxr_linenumber" name="67" href="#67">67</a>              <strong class="jxr_keyword">return</strong> expectedPaths;
+<a class="jxr_linenumber" name="68" href="#68">68</a>          } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="69" href="#69">69</a>              reader.close();
+<a class="jxr_linenumber" name="70" href="#70">70</a>          }
+<a class="jxr_linenumber" name="71" href="#71">71</a>      }
+<a class="jxr_linenumber" name="72" href="#72">72</a>  
+<a class="jxr_linenumber" name="73" href="#73">73</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../net/kozelka/contentcheck/introspection/ContentIntrospector.html">Events</a> {
+<a class="jxr_linenumber" name="74" href="#74">74</a>          <strong class="jxr_keyword">void</strong> summary(File sourceFile, <strong class="jxr_keyword">int</strong> checkedCount, <strong class="jxr_keyword">int</strong> totalCount);
 <a class="jxr_linenumber" name="75" href="#75">75</a>  
-<a class="jxr_linenumber" name="76" href="#76">76</a>          <strong class="jxr_keyword">void</strong> contentListingSummary(File listingFile, <strong class="jxr_keyword">int</strong> pathCount, <strong class="jxr_keyword">int</strong> totalCount);
-<a class="jxr_linenumber" name="77" href="#77">77</a>      }
-<a class="jxr_linenumber" name="78" href="#78">78</a>  }
+<a class="jxr_linenumber" name="76" href="#76">76</a>          <strong class="jxr_keyword">void</strong> duplicate(File listingFile, String line);
+<a class="jxr_linenumber" name="77" href="#77">77</a>  
+<a class="jxr_linenumber" name="78" href="#78">78</a>          <strong class="jxr_keyword">void</strong> contentListingSummary(File listingFile, <strong class="jxr_keyword">int</strong> pathCount, <strong class="jxr_keyword">int</strong> totalCount);
+<a class="jxr_linenumber" name="79" href="#79">79</a>      }
+<a class="jxr_linenumber" name="80" href="#80">80</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>
