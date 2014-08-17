@@ -71,9 +71,7 @@ public class ClassConflictDetector {
         return conflictingArchives;
     }
 
-    public static ClassConflictDetector exploreWar(File war) throws IOException {
-        //todo static?
-        final ClassConflictDetector ccd = new ClassConflictDetector();
+    public void exploreWar(File war) throws IOException {
         final ContentIntrospector ci = new ContentIntrospector();
         ci.setSourceFile(war);
         ci.setEntryContentFilter(new ContentIntrospector.EntryContentFilter() {
@@ -81,13 +79,12 @@ public class ClassConflictDetector {
             public boolean accept(String entryName, InputStream entryContentStream) throws IOException {
                 if (entryName.startsWith("WEB-INF/lib/") && entryName.endsWith(".jar")) {
                     final ZipInputStream zis = new ZipInputStream(entryContentStream);
-                    ccd.exploreArchive(zis, entryName);
+                    ClassConflictDetector.this.exploreArchive(zis, entryName);
                 }
                 return false;
             }
         });
         ci.walk();
-        return ccd;
     }
 
     public int printResults(int previewThreshold, LineOutput output) {
@@ -139,7 +136,8 @@ public class ClassConflictDetector {
 
         System.out.println("Detecting conflict in " + war);
         System.out.println("Class preview threshold: " + previewThreshold);
-        final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(war);
+        final ClassConflictDetector ccd = new ClassConflictDetector();
+        ccd.exploreWar(war);
         ccd.printResults(previewThreshold, new LineOutput() {
             @Override
             public void println(String line) {

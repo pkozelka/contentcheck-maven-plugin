@@ -39,7 +39,8 @@ public class ArchivaWarTest {
 
     @Test
     public void classConflicts() throws Exception {
-        final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(archivaWar);
+        final ClassConflictDetector ccd = new ClassConflictDetector();
+        ccd.exploreWar(archivaWar);
         Assert.assertEquals("Total entries", 235, ccd.getExploredArchives().size());
         Assert.assertEquals("Conflicting archives", 17, ccd.getConflictingArchives().size());
         final int totalConflicts = ccd.printResults(2, new ClassConflictDetector.LineOutput() {

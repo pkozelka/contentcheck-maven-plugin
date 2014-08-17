@@ -53,7 +53,8 @@ public class WarClassConflictsMojo extends AbstractMojo {
         }
 
         try {
-            final ClassConflictDetector ccd = ClassConflictDetector.exploreWar(sourceFile);
+            final ClassConflictDetector ccd = new ClassConflictDetector();
+            ccd.exploreWar(sourceFile);
             final List<ArchiveInfo> conflictingArchives = ccd.getConflictingArchives();
             if (!conflictingArchives.isEmpty()) {
                 final int totalConflicts = ccd.printResults(previewThreshold, new ClassConflictDetector.LineOutput() {
