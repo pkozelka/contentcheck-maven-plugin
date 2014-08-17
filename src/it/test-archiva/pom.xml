@@ -24,6 +24,18 @@
                             <contentListing>../../test-classes/archiva/approved-content.txt</contentListing>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>detect-class-conflicts</id>
+                        <!-- would be verify for war packaging -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>warcc</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>../../test-classes/archiva-webapp.war</sourceFile>
+                            <toleratedConflictCount>290</toleratedConflictCount>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
