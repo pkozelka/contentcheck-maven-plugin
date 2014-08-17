@@ -1,8 +1,8 @@
 package net.kozelka.contentcheck.conflict;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import net.kozelka.contentcheck.introspection.ContentIntrospector;
 
 /**
  * @todo improve design
@@ -71,18 +72,21 @@ public class ClassConflictDetector {
     }
 
     public static ClassConflictDetector exploreWar(File war) throws IOException {
+        //todo static?
         final ClassConflictDetector ccd = new ClassConflictDetector();
-        final ZipInputStream waris = new ZipInputStream(new FileInputStream(war));
-        ZipEntry entry = waris.getNextEntry();
-        while (entry != null) {
-            final String entryName = entry.getName();
-            if (entryName.startsWith("WEB-INF/lib/") && entryName.endsWith(".jar")) {
-                final ZipInputStream zis = new ZipInputStream(waris);
-                ccd.exploreArchive(zis, entry.getName());
+        final ContentIntrospector ci = new ContentIntrospector();
+        ci.setSourceFile(war);
+        ci.setEntryContentFilter(new ContentIntrospector.EntryContentFilter() {
+            @Override
+            public boolean accept(String entryName, InputStream entryContentStream) throws IOException {
+                if (entryName.startsWith("WEB-INF/lib/") && entryName.endsWith(".jar")) {
+                    final ZipInputStream zis = new ZipInputStream(entryContentStream);
+                    ccd.exploreArchive(zis, entryName);
+                }
+                return false;
             }
-            waris.closeEntry();
-            entry = waris.getNextEntry();
-        }
+        });
+        ci.walk();
         return ccd;
     }
 
