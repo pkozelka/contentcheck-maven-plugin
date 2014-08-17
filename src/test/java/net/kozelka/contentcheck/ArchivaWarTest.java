@@ -4,6 +4,7 @@ import java.io.File;
 import net.kozelka.contentcheck.conflict.ClassConflictDetector;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.introspection.VendorFilter;
+import org.codehaus.plexus.util.cli.StreamConsumer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,9 +44,9 @@ public class ArchivaWarTest {
         ccd.exploreWar(archivaWar);
         Assert.assertEquals("Total entries", 235, ccd.getExploredArchives().size());
         Assert.assertEquals("Conflicting archives", 17, ccd.getConflictingArchives().size());
-        final int totalConflicts = ccd.printResults(2, new ClassConflictDetector.LineOutput() {
+        final int totalConflicts = ccd.printResults(2, new StreamConsumer() {
             @Override
-            public void println(String line) {
+            public void consumeLine(String line) {
                 System.out.println(line);
             }
         });

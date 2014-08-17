@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.codehaus.plexus.util.cli.StreamConsumer;
 
 /**
  * Looks for conflicts within the libraries in given sourceFile.
@@ -57,9 +58,9 @@ public class WarClassConflictsMojo extends AbstractMojo {
             ccd.exploreWar(sourceFile);
             final List<ArchiveInfo> conflictingArchives = ccd.getConflictingArchives();
             if (!conflictingArchives.isEmpty()) {
-                final int totalConflicts = ccd.printResults(previewThreshold, new ClassConflictDetector.LineOutput() {
+                final int totalConflicts = ccd.printResults(previewThreshold, new StreamConsumer() {
                     @Override
-                    public void println(String line) {
+                    public void consumeLine(String line) {
                         getLog().error(line);
                     }
                 });

@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
+import org.codehaus.plexus.util.cli.StreamConsumer;
 
 /**
  * @todo improve design
@@ -87,7 +88,7 @@ public class ClassConflictDetector {
         ci.walk();
     }
 
-    public int printResults(int previewThreshold, LineOutput output) {
+    public int printResults(int previewThreshold, StreamConsumer output) {
         final List<ArchiveInfo> sortedConflictingArchives = new ArrayList<ArchiveInfo>(getConflictingArchives());
         Collections.sort(sortedConflictingArchives, new Comparator<ArchiveInfo>() {
             public int compare(ArchiveInfo o1, ArchiveInfo o2) {
@@ -96,8 +97,8 @@ public class ClassConflictDetector {
         });
         int totalConflicts = 0;
         for (ArchiveInfo cai : sortedConflictingArchives) {
-            output.println("");
-            output.println(String.format("File '%s' (%d classes):", cai.getKey(), cai.getClassCount()));
+            output.consumeLine("");
+            output.consumeLine(String.format("File '%s' (%d classes):", cai.getKey(), cai.getClassCount()));
             final List<Conflict> sortedConflicts = new ArrayList<Conflict>(cai.getConflicts());
             Collections.sort(sortedConflicts, new Comparator<Conflict>() {
                 public int compare(Conflict o1, Conflict o2) {
@@ -108,21 +109,21 @@ public class ClassConflictDetector {
                 final List<ResourceInfo> conflictResources = conflict.getResources();
                 final int conflictResourceCount = conflictResources.size();
                 totalConflicts += conflictResourceCount;
-                output.println(String.format("%8d class conflicts with '%s'", conflictResourceCount, conflict.getOtherArchive().getKey()));
+                output.consumeLine(String.format("%8d class conflicts with '%s'", conflictResourceCount, conflict.getOtherArchive().getKey()));
                 if (previewThreshold == 0) continue;
                 int cnt = 0;
                 for (ResourceInfo resource : conflictResources) {
                     cnt ++;
                     if (cnt > previewThreshold && previewThreshold >= 0) {
-                        output.println("                ...");
+                        output.consumeLine("                ...");
                         break;
                     }
-                    output.println(String.format("                %s", resource.key));
+                    output.consumeLine(String.format("                %s", resource.key));
                 }
             }
         }
-        output.println("-------------------------------------------------");
-        output.println(String.format("Total: %d conflicts affect %d of %d archives.",
+        output.consumeLine("-------------------------------------------------");
+        output.consumeLine(String.format("Total: %d conflicts affect %d of %d archives.",
                 totalConflicts,
                 sortedConflictingArchives.size(),
                 getExploredArchives().size()));
@@ -138,15 +139,11 @@ public class ClassConflictDetector {
         System.out.println("Class preview threshold: " + previewThreshold);
         final ClassConflictDetector ccd = new ClassConflictDetector();
         ccd.exploreWar(war);
-        ccd.printResults(previewThreshold, new LineOutput() {
+        ccd.printResults(previewThreshold, new StreamConsumer() {
             @Override
-            public void println(String line) {
+            public void consumeLine(String line) {
                 System.out.println(line);
             }
         });
-    }
-
-    public static interface LineOutput {
-        void println(String line);
     }
 }
