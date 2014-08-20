@@ -44,6 +44,7 @@ import org.codehaus.plexus.util.FileUtils;
 /**
  * Shows license information for selected source entries. By default, the information is parsed from dependency's POM,
  * but the project may define additional mapping between files in output archive and licenses.
+ * @since 1.0.1
  */
 @Mojo(name = "show-licenses")
 public class LicenseShowMojo extends AbstractArchiveContentMojo{

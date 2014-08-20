@@ -16,6 +16,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 /**
  * Checks the archive content according to an authoritative source. This authoritative source
  * defines set of allowed files in the archive.
+ * @since 1.0.0
  */
 @Mojo(name = "check", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
 public class ContentCheckMojo extends AbstractArchiveContentMojo {

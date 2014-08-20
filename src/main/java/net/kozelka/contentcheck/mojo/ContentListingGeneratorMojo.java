@@ -17,6 +17,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * and writes it to file specified into {@link #contentListing}.
  * Only entities matching criteria defined by {@link #checkFilesPattern}
  * and {@link #ignoreVendorArchives} are generated.
+ * @since 1.0.1
  */
 @Mojo(name = "generate")
 public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {

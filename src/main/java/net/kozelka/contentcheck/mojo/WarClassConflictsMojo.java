@@ -18,6 +18,7 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  * Looks for conflicts within the libraries in given sourceFile.
  *
  * @author Petr Kozelka
+ * @since 1.0.3
  */
 @Mojo(name="warcc", defaultPhase = LifecyclePhase.VERIFY)
 public class WarClassConflictsMojo extends AbstractMojo {
