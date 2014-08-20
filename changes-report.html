@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="Date-Revision-yyyymmdd" content="20140821" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>contentcheck-maven-plugin - Project Summary</title>
+    <title>contentcheck-maven-plugin - Changes Report</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.3.1.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -157,7 +157,7 @@
         contentcheck-maven-plugin</a>
                     <span class="divider">/</span>
       </li>
-        <li class="active ">Project Summary</li>
+        <li class="active ">Changes Report</li>
         
                 
                     
@@ -174,55 +174,132 @@
         <div id="bodyColumn" >
                                   
             <div class="section">
-<h2>Project Summary<a name="Project_Summary"></a></h2><a name="Project_Summary"></a>
+<h2>Changes Report<a name="Changes_Report"></a></h2><a name="Changes_Report"></a>
 <div class="section">
-<h3>Project Information<a name="Project_Information"></a></h3><a name="Project_Information"></a>
+<h3>Release History<a name="Release_History"></a></h3><a name="Release_History"></a>
 <table border="0" class="table table-striped">
 <tr class="a">
-<th>Field</th>
-<th>Value</th></tr>
+<th>Version</th>
+<th>Date</th>
+<th>Description</th></tr>
 <tr class="b">
-<td>Name</td>
-<td>Maven Content Check Plugin</td></tr>
+<td><a href="#a1.0-SNAPSHOT">1.0-SNAPSHOT</a></td>
+<td>&#160;</td>
+<td>&#160;</td></tr>
 <tr class="a">
-<td>Description</td>
-<td>Sonatype helps open source projects to set up Maven repositories on https://oss.sonatype.org/</td></tr>
+<td><a href="#a1.0.4">1.0.4</a></td>
+<td>2014-07-22</td>
+<td>Subsequent release</td></tr>
 <tr class="b">
-<td>Homepage</td>
-<td><a class="externalLink" href="http://code.kozelka.net/contentcheck-maven-plugin">http://code.kozelka.net/contentcheck-maven-plugin</a></td></tr></table></div>
+<td><a href="#a1.0.3">1.0.3</a></td>
+<td>2014-07-16</td>
+<td>WarClassConflictMojo</td></tr>
+<tr class="a">
+<td><a href="#a1.0.2">1.0.2</a></td>
+<td>2011-02-21</td>
+<td>Internal fixes</td></tr>
+<tr class="b">
+<td><a href="#a1.0.1">1.0.1</a></td>
+<td>2011-02-16</td>
+<td>LicenseShowMojo</td></tr>
+<tr class="a">
+<td><a href="#a1.0.0">1.0.0</a></td>
+<td>2010-11-27</td>
+<td>Initial release</td></tr></table></div>
 <div class="section">
-<h3>Project Organization<a name="Project_Organization"></a></h3><a name="Project_Organization"></a>
+<h3>Release 1.0-SNAPSHOT<a name="Release_1.0-SNAPSHOT"></a></h3><a name="a1.0-SNAPSHOT"></a>
+<table border="0" class="table table-striped">
+<tr class="b">
+<th>Type</th>
+<th>Changes</th>
+<th>By</th></tr>
+<tr class="a">
+<td><img src="images/update.gif" alt="update" title="update" /></td>
+<td>property &quot;ignoreVendorArchive&quot; now available also on commandline</td>
+<td><a href="team-list.html#Petr Kozelka">Petr Kozelka</a></td></tr></table></div>
+<div class="section">
+<h3>Release 1.0.4 - 2014-07-22<a name="Release_1.0.4_-_2014-07-22"></a></h3><a name="a1.0.4"></a>
+<table border="0" class="table table-striped">
+<tr class="b">
+<th>Type</th>
+<th>Changes</th>
+<th>By</th></tr>
+<tr class="a">
+<td><img src="images/update.gif" alt="update" title="update" /></td>
+<td>check: property &quot;ignoreVendorArchive&quot; now available also on commandline</td>
+<td><a href="team-list.html#Petr Kozelka">Petr Kozelka</a></td></tr>
+<tr class="b">
+<td><img src="images/update.gif" alt="update" title="update" /></td>
+<td>check: parameters &quot;archive&quot; and &quot;directory&quot; deprecated, recommended parameter is &quot;sourceFile&quot;</td>
+<td><a href="team-list.html#Petr Kozelka">Petr Kozelka</a></td></tr></table></div>
+<div class="section">
+<h3>Release 1.0.3 - 2014-07-16<a name="Release_1.0.3_-_2014-07-16"></a></h3><a name="a1.0.3"></a>
 <table border="0" class="table table-striped">
 <tr class="a">
-<th>Field</th>
-<th>Value</th></tr>
+<th>Type</th>
+<th>Changes</th>
+<th>By</th></tr>
 <tr class="b">
-<td>Name</td>
-<td>Petr Kozelka</td></tr>
+<td><img src="images/update.gif" alt="update" title="update" /></td>
+<td>Internal: switched to namespace &quot;net.kozelka&quot; for both groupId and package</td>
+<td><a href="team-list.html#Petr Kozelka">Petr Kozelka</a></td></tr>
 <tr class="a">
-<td>URL</td>
-<td><a class="externalLink" href="http://kozelka.net">http://kozelka.net</a></td></tr></table></div>
+<td><img src="images/add.gif" alt="add" title="add" /></td>
+<td>New mojo &quot;warcc&quot; for checking class conflicts in a war Fixes <a class="externalLink" href="https://github.com/pkozelka/contentcheck-maven-plugin/3">3</a>.</td>
+<td><a href="team-list.html#Petr Kozelka">Petr Kozelka</a></td></tr>
+<tr class="b">
+<td><img src="images/add.gif" alt="add" title="add" /></td>
+<td>Support for directory checking</td>
+<td><a href="team-list.html#Juraj Martinka">Juraj Martinka</a></td></tr>
+<tr class="a">
+<td><img src="images/update.gif" alt="update" title="update" /></td>
+<td>Logging improvements</td>
+<td><a href="team-list.html#Martin Čáslavský">Martin &#x10c;&#xe1;slavsk&#xfd;</a></td></tr>
+<tr class="b">
+<td><img src="images/update.gif" alt="update" title="update" /></td>
+<td>ContentCheckMojo marked as threadsafe</td>
+<td><a href="team-list.html#Dušan Katona">Du&#x161;an Katona</a></td></tr></table></div>
 <div class="section">
-<h3>Build Information<a name="Build_Information"></a></h3><a name="Build_Information"></a>
+<h3>Release 1.0.2 - 2011-02-21<a name="Release_1.0.2_-_2011-02-21"></a></h3><a name="a1.0.2"></a>
+<p>No changes in this release.</p>
+<div class="section">
+<h3>Release 1.0.1 - 2011-02-16<a name="Release_1.0.1_-_2011-02-16"></a></h3><a name="a1.0.1"></a>
 <table border="0" class="table table-striped">
 <tr class="a">
-<th>Field</th>
-<th>Value</th></tr>
+<th>Type</th>
+<th>Changes</th>
+<th>By</th></tr>
 <tr class="b">
-<td>GroupId</td>
-<td>net.kozelka.maven</td></tr>
+<td><img src="images/update.gif" alt="update" title="update" /></td>
+<td>Improved documentation</td>
+<td><a href="team-list.html#Roman Pichlík">Roman Pichl&#xed;k</a></td></tr>
 <tr class="a">
-<td>ArtifactId</td>
-<td>contentcheck-maven-plugin</td></tr>
+<td><img src="images/add.gif" alt="add" title="add" /></td>
+<td>New mojo &quot;show-licenses&quot; - show licenses in use</td>
+<td><a href="team-list.html#Roman Pichlík">Roman Pichl&#xed;k</a></td></tr>
 <tr class="b">
-<td>Version</td>
-<td>1.0-SNAPSHOT</td></tr>
+<td><img src="images/add.gif" alt="add" title="add" /></td>
+<td>New mojo &quot;generate&quot; - creates the initial content listing Fixes <a class="externalLink" href="https://github.com/pkozelka/contentcheck-maven-plugin/2">2</a>.</td>
+<td><a href="team-list.html#Roman Pichlík">Roman Pichl&#xed;k</a></td></tr></table></div>
+<div class="section">
+<h3>Release 1.0.0 - 2010-11-27<a name="Release_1.0.0_-_2010-11-27"></a></h3><a name="a1.0.0"></a>
+<table border="0" class="table table-striped">
 <tr class="a">
-<td>Type</td>
-<td>maven-plugin</td></tr>
+<th>Type</th>
+<th>Changes</th>
+<th>By</th></tr>
 <tr class="b">
-<td>JDK Rev</td>
-<td>-</td></tr></table></div></div>
+<td><img src="images/add.gif" alt="add" title="add" /></td>
+<td>Initial implementation</td>
+<td><a href="team-list.html#Petr Kozelka">Petr Kozelka</a></td></tr>
+<tr class="a">
+<td><img src="images/add.gif" alt="add" title="add" /></td>
+<td>Github - aware documentation</td>
+<td><a href="team-list.html#Roman Pichlík">Roman Pichl&#xed;k</a></td></tr>
+<tr class="b">
+<td><img src="images/add.gif" alt="add" title="add" /></td>
+<td>Initial set of JUnit tests</td>
+<td><a href="team-list.html#Roman Pichlík">Roman Pichl&#xed;k</a></td></tr></table></div></div>
                   </div>
           </div>
 
