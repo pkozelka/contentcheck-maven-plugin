@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.kozelka.maven</groupId>
     <artifactId>contentcheck-maven-plugin</artifactId>
@@ -257,21 +259,50 @@
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>2.5.4</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <xmlPath>${basedir}/changes.xml</xmlPath>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>changes-report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
         </plugins>
     </reporting>
     <developers>
         <developer>
             <name>Petr Kozelka</name>
             <email>pkozelka@gmail.com</email>
-            <id>pkozelka</id>
             <url>http://kozelka.net</url>
         </developer>
         <developer>
             <name>Roman Pichlík</name>
-            <id>dagi</id>
+            <email>pichlik@seznam.cz</email>
             <url>http://www.dagblog.cz</url>
         </developer>
     </developers>
+    <contributors>
+        <contributor>
+            <name>Juraj Martinka</name>
+            <url>https://github.com/jumarko</url>
+        </contributor>
+        <contributor>
+            <name>Dušan Katona</name>
+            <url>https://github.com/dkatona</url>
+        </contributor>
+        <contributor>
+            <url>https://github.com/martiner</url>
+            <name>Martin Čáslavský</name>
+            <email>martin.caslavsky@gooddata.com</email>
+        </contributor>
+    </contributors>
     <issueManagement>
         <system>github</system>
         <url>https://github.com/pkozelka/contentcheck-maven-plugin/issues</url>

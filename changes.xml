@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+    <properties>
+    </properties>
+    <body>
+        <release version="1.0-SNAPSHOT">
+            <action dev="Petr Kozelka" type="update">property "ignoreVendorArchive" now available also on commandline
+            </action>
+        </release>
+        <release version="1.0.4" date="2014-07-22" description="Subsequent release">
+            <action dev="Petr Kozelka" type="update">check: property "ignoreVendorArchive" now available also on commandline</action>
+            <action dev="Petr Kozelka" type="update">check: parameters "archive" and "directory" deprecated, recommended parameter is "sourceFile"</action>
+        </release>
+
+        <release version="1.0.3" date="2014-07-16" description="WarClassConflictMojo">
+            <action dev="Petr Kozelka" type="update" date="2014-07-11">Internal: switched to namespace "net.kozelka" for both groupId and package</action>
+            <action dev="Petr Kozelka" type="add" issue="3" system="github">New mojo "warcc" for checking class conflicts in a war</action>
+            <action dev="Juraj Martinka" type="add">Support for directory checking</action>
+            <action dev="Martin Čáslavský" type="update">Logging improvements</action>
+            <action dev="Dušan Katona" type="update">ContentCheckMojo marked as threadsafe</action>
+        </release>
+
+        <release version="1.0.2" date="2011-02-21" description="Internal fixes">
+        </release>
+
+        <release version="1.0.1" date="2011-02-16" description="LicenseShowMojo">
+            <action dev="Roman Pichlík" type="update">Improved documentation</action>
+            <action dev="Roman Pichlík" type="add">New mojo "show-licenses" - show licenses in use</action>
+            <action dev="Roman Pichlík" type="add" issue="2">New mojo "generate" - creates the initial content listing</action>
+        </release>
+
+        <release version="1.0.0" date="2010-11-27" description="Initial release">
+            <action dev="Petr Kozelka" type="add">Initial implementation</action>
+            <action dev="Roman Pichlík" type="add">Github - aware documentation</action>
+            <action dev="Roman Pichlík" type="add">Initial set of JUnit tests</action>
+        </release>
+    </body>
+</document>
