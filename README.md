@@ -7,7 +7,7 @@ Protects your WAR against
 * uncontrolled arrival of new jars into WEB-INF/lib
 * class conflicts between contained jars
 
-For more info, see the [project website](http://pkozelka.github.io/contentcheck-maven-plugin/index.html) hosted by Github Pages.
+For more info, see the [project website](http://code.kozelka.net/contentcheck-maven-plugin/index.html) hosted by Github Pages.
 
 
 -----
