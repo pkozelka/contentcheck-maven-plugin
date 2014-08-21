@@ -28,6 +28,19 @@
             <leftColumnClass>span3</leftColumnClass>
             <bodyColumnClass>span9</bodyColumnClass>
             <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+            <googlePlusOne/>
+            <breadcrumbDivider>»</breadcrumbDivider>
+            <skipGenerationDate>true</skipGenerationDate>
+            <!--
+            <twitter>
+                <user>pkozelka</user>
+            </twitter>
+            <flattr>
+                <thing>3329374/pkozelka</thing>
+                <project>${project.url}</project>
+                <style>large</style>
+            </flattr>
+            -->
         </fluidoSkin>
     </custom>
     <publishDate position="right"/>
