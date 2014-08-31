@@ -7,7 +7,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="Date-Revision-yyyymmdd" content="20140822" />
+    <meta name="Date-Revision-yyyymmdd" content="20140831" />
     <meta http-equiv="Content-Language" content="en" />
     <title>contentcheck-maven-plugin - Ignore your own artifacts</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.3.1.min.css" />
@@ -169,7 +169,7 @@
         
                 
                     
-                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2014-08-22</li>
+                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2014-08-31</li>
               <li id="projectVersion" class="pull-right">
                     Version: 1.0-SNAPSHOT
         </li>
@@ -198,19 +198,19 @@
         &lt;ignoreVendorArchives&gt;true&lt;/ignoreVendorArchives&gt;
     &lt;/configuration&gt;
 &lt;/plugin&gt;
+</pre></div>
+<p>You can put to <i>vendorId</i> whatever you want. You can also use any other key instead of <tt>Implementation-Vendor-Id</tt> for matching. A key name is specified by property <i>manifestVendorEntry</i>.</p>
 
-You can put to *vendorId* whatever you want. You can also use any other key instead of ``Implementation-Vendor-Id`` for matching. A key name is specified by property *manifestVendorEntry*.
-
-...
+<div class="source">
+<pre>...
 &lt;configuration&gt;
     &lt;manifestVendorEntry&gt;Producer&lt;/manifestVendorEntry&gt;
     &lt;vendorId&gt;com.example&lt;/vendorId&gt;
     &lt;ignoreVendorArchives&gt;true&lt;/ignoreVendorArchives&gt;
 &lt;/configuration&gt;
 ...
-
-Matches every MANIFEST.MF with key/value pair ``Producer: com.example``.
-</pre></div></div>
+</pre></div>
+<p>Matches every MANIFEST.MF with key/value pair <tt>Producer: com.example</tt>.</p></div>
                   </div>
           </div>
 
