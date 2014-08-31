@@ -67,7 +67,7 @@
         <menu name="Reports" ref="reports"/>
     </body>
     <poweredBy>
-        <logo img="http://maven.apache.org/images/logos/maven-feather.png" 
+        <logo img="http://maven.apache.org/images/logos/maven-feather.png"
               href="http://maven.apache.org"
               name="Apache Maven" position="left"/>
     </poweredBy>

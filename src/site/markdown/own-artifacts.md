@@ -28,7 +28,7 @@ Content check plugin has to be configured to *ignoreVendorArchives* for a given 
         </configuration>
     </plugin>
 
-    You can put to *vendorId* whatever you want. You can also use any other key instead of ``Implementation-Vendor-Id`` for matching. A key name is specified by property *manifestVendorEntry*.
+You can put to *vendorId* whatever you want. You can also use any other key instead of ``Implementation-Vendor-Id`` for matching. A key name is specified by property *manifestVendorEntry*.
 
     ...
     <configuration>
@@ -38,4 +38,4 @@ Content check plugin has to be configured to *ignoreVendorArchives* for a given 
     </configuration>
     ...
 
-    Matches every MANIFEST.MF with key/value pair ``Producer: com.example``.
+Matches every MANIFEST.MF with key/value pair ``Producer: com.example``.
