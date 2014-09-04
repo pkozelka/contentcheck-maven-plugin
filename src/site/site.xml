@@ -20,11 +20,12 @@
                 <href>http://code.kozelka.net/index.html</href>
             </topBarIcon>
             <sideBarEnabled>false</sideBarEnabled>
+<!--
             <gitHub>
                 <projectId>pkozelka/contentcheck-maven-plugin</projectId>
-                <ribbonOrientation>right</ribbonOrientation>
                 <ribbonColor>green</ribbonColor>
             </gitHub>
+-->
             <leftColumnClass>span3</leftColumnClass>
             <bodyColumnClass>span9</bodyColumnClass>
             <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
@@ -61,6 +62,7 @@
             </item>
         </menu>
         <menu name="Links">
+            <item name="Fork me on GitHub" href="${project.scm.url}"/>
             <item name="Apache" href="http://www.apache.org/"/>
             <item name="Maven 2" href="http://maven.apache.org/"/>
         </menu>

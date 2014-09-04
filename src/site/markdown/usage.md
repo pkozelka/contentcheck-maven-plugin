@@ -6,7 +6,7 @@ Put the following XML fragment to a POM file producing an artifact (e.g. WAR or 
         <plugin>
         <groupId>net.kozelka.maven</groupId>
         <artifactId>contentcheck-maven-plugin</artifactId>
-        <version>1.0.0</version>
+        <version>@{project.version}</version>
             <configuration>
                 <!-- optional configuration see below -->
             </configuration>
