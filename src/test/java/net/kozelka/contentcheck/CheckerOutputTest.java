@@ -16,12 +16,12 @@ public class CheckerOutputTest {
     
     @Before
     public void setUp() {
-        Set<String> allowedEntries = new LinkedHashSet<String>() {
+        Set<CheckerEntry> approvedEntries = new LinkedHashSet<CheckerEntry>() {
             {
-                add("a.jar");
-                add("b.jar");
-                add("c.jar");
-                add("x-1.2.*.jar");
+                add(urientry("a.jar"));
+                add(urientry("b.jar"));
+                add(urientry("c.jar"));
+                add(urientry("x-1.2.*.jar"));
             }
         };
         
@@ -33,7 +33,13 @@ public class CheckerOutputTest {
             }
         };
         
-        this.output = new CheckerOutput(allowedEntries, sourceContent);
+        this.output = new CheckerOutput(approvedEntries, sourceContent);
+    }
+
+    private static CheckerEntry urientry(String uri) {
+        final CheckerEntry result = new CheckerEntry();
+        result.setUri(uri);
+        return result;
     }
 
     @Test
@@ -58,7 +64,7 @@ public class CheckerOutputTest {
 
     @Test
     public void testDiffMissingEntries() {
-        Set<String> missingEntries = output.diffMissingEntries();
+        Set<CheckerEntry> missingEntries = output.diffMissingEntries();
         assertThat(missingEntries, notNullValue());
         assertThat("Wrong count of missing entries.", missingEntries.size(), is(2));
         assertThat(missingEntries.contains("b.jar"), is(true));

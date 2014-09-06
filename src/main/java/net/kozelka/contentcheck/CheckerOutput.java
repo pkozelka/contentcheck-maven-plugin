@@ -1,7 +1,5 @@
 package net.kozelka.contentcheck;
 
-import org.codehaus.plexus.util.SelectorUtils;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
 

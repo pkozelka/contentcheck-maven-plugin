@@ -73,7 +73,7 @@ public class ContentCheckerTest {
         File archiveFile = SupportUtils.getFile("test.war");
         final ContentChecker checker = createContentChecker(archiveFile, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, "WEB-INF/**/*");
         CheckerOutput checkerOutput = checker.check(listingFile);
-        Set<String> diffMissingEntries = checkerOutput.diffMissingEntries();
+        Set<CheckerEntry> diffMissingEntries = checkerOutput.diffMissingEntries();
         Set<String> diffUnexpectedEntries = checkerOutput.diffUnexpectedEntries();
 
         assertThat("Entry WEB-INF/testfile.txt is reported as missing but should not.", diffMissingEntries.contains("WEB-INF/testfile.txt"), is(false));
@@ -97,7 +97,7 @@ public class ContentCheckerTest {
         File archiveFile = SupportUtils.getFile("test.war");
         final ContentChecker checker = createContentChecker(archiveFile, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         CheckerOutput checkerOutput = checker.check(listingFile);
-        Set<String> diffMissingEntries = checkerOutput.diffMissingEntries();
+        Set<CheckerEntry> diffMissingEntries = checkerOutput.diffMissingEntries();
         assertThat("Missing entry WEB-INF/lib/d.jar in the collection of missing entries.", diffMissingEntries.contains("WEB-INF/lib/d.jar"), is(true));
     }
 
@@ -105,7 +105,7 @@ public class ContentCheckerTest {
     public void testReadListingFile() throws Exception{
         final ContentChecker checker = new ContentChecker();
         File listingFile = SupportUtils.getFile("content-read-listing-test.txt");
-        Set<String> content = checker.readListing(listingFile);
+        Set<CheckerEntry> content = checker.readListing(listingFile);
         assertThat(content.size(), is(5));
     }
 
@@ -122,7 +122,7 @@ public class ContentCheckerTest {
     public void testReadListingFileEmptyLines() throws Exception{
         final ContentChecker checker = new ContentChecker();
         File listingFile = SupportUtils.getFile("content-empty-lines-test.txt");
-        Set<String> entries = checker.readListing(listingFile);
+        Set<CheckerEntry> entries = checker.readListing(listingFile);
         assertThat("Unexpecting count of entries. Whitespaces and empty lines must be ignored.", entries.size(), is(0));
     }
 
