@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import net.kozelka.contentcheck.CheckerEntry;
 import net.kozelka.contentcheck.ContentChecker;
 import net.kozelka.contentcheck.CheckerOutput;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
@@ -92,9 +93,9 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
             final CheckerOutput output = contentChecker.check(contentListing);
 
             // report missing entries
-            final Set<String> missingEntries = output.diffMissingEntries();
-            for (String entry : missingEntries) {
-                log(failOnMissing, String.format(msgMissing, entry));
+            final Set<CheckerEntry> missingEntries = output.diffMissingEntries();
+            for (CheckerEntry missing : missingEntries) {
+                log(failOnMissing, String.format(msgMissing, missing));
             }
             // report unexpected entries
             final Set<String> unexpectedEntries = output.diffUnexpectedEntries();

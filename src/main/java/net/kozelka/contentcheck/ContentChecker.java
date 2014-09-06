@@ -35,7 +35,7 @@ public class ContentChecker {
      * @throws IOException if something very bad happen
      */
     public CheckerOutput check(final File listingFile) throws IOException{
-        final Set<String> approvedEntries = readListing(listingFile);
+        final Set<CheckerEntry> approvedEntries = readListing(listingFile);
         final Set<String> actualEntries = new LinkedHashSet<String>();
         final ContentIntrospector.Events collector = new ContentIntrospector.ContentCollector(actualEntries);
         introspector.getEvents().addListener(collector);
@@ -46,8 +46,8 @@ public class ContentChecker {
         return new CheckerOutput(approvedEntries, actualEntries);
     }
 
-    protected Set<String> readListing(final File listingFile) throws IOException {
-        final Set<String> expectedPaths = new LinkedHashSet<String>();
+    protected Set<CheckerEntry> readListing(final File listingFile) throws IOException {
+        final Set<CheckerEntry> expectedPaths = new LinkedHashSet<CheckerEntry>();
         final BufferedReader reader = new BufferedReader(new FileReader(listingFile));
         try {
             int totalCnt = 0;
@@ -60,7 +60,9 @@ public class ContentChecker {
                     if(expectedPaths.contains(line)) {
                         events.fire.duplicate(listingFile, line);
                     }
-                    expectedPaths.add(line);
+                    final CheckerEntry entry = new CheckerEntry();
+                    entry.setUri(line);
+                    expectedPaths.add(entry);
                 } 
             }
             events.fire.contentListingSummary(listingFile, expectedPaths.size(), totalCnt);
@@ -77,4 +79,5 @@ public class ContentChecker {
 
         void contentListingSummary(File listingFile, int pathCount, int totalCount);
     }
+
 }

@@ -9,16 +9,16 @@ import java.util.Set;
  * This class represents a captured output from content check.
  */
 public class CheckerOutput {
-    private final Set<String> approvedEntries;
-    private final  Set<String> actualEntries;
+    private final Set<CheckerEntry> approvedEntries;
+    private final Set<String> actualEntries;
 
-    public CheckerOutput(Set<String> approvedEntries, Set<String> archiveContent) {
+    public CheckerOutput(Set<CheckerEntry> approvedEntries, Set<String> archiveContent) {
         super();
         this.approvedEntries = approvedEntries;
         this.actualEntries = archiveContent;
     }
 
-    public Set<String> getApprovedEntries() {
+    public Set<CheckerEntry> getApprovedEntries() {
         return approvedEntries;
     }
 
@@ -32,16 +32,16 @@ public class CheckerOutput {
      */
     public Set<String> diffUnexpectedEntries() {
         final Set<String> unexpectedEntries = new LinkedHashSet<String>(actualEntries.size());
-        for (String entry: actualEntries) {
+        for (String actual: actualEntries) {
             boolean found = false;
-            for (String pattern: approvedEntries) {
-                if (SelectorUtils.matchPath(pattern, entry)) {
+            for (CheckerEntry approved: approvedEntries) {
+                if (approved.match(actual)) {
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                unexpectedEntries.add(entry);
+                unexpectedEntries.add(actual);
             }
         }
         return unexpectedEntries;
@@ -51,18 +51,18 @@ public class CheckerOutput {
      * Diff allowed entries and entries present in the source.
      * @return the set of entries that should be in present in the source, but they are not.
      */
-    public Set<String> diffMissingEntries() {
-        final Set<String> missingEntries = new LinkedHashSet<String>(approvedEntries.size());
-        for (String pattern: approvedEntries) {
+    public Set<CheckerEntry> diffMissingEntries() {
+        final Set<CheckerEntry> missingEntries = new LinkedHashSet<CheckerEntry>(approvedEntries.size());
+        for (CheckerEntry approved: approvedEntries) {
             boolean found = false;
-            for (String entry: actualEntries) {
-                if (SelectorUtils.matchPath(pattern, entry)) {
+            for (String actual: actualEntries) {
+                if (approved.match(actual)) {
                     found = true;
                     break;
                 }
             }
             if (!found) {
-                missingEntries.add(pattern);
+                missingEntries.add(approved);
             }
         }
         return missingEntries;
