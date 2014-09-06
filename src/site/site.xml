@@ -61,12 +61,12 @@
                 <item name="Additional license info" href="additional-lic-info.html"/>
             </item>
         </menu>
-        <menu name="Links">
+        <menu name="Reports" ref="reports"/>
+        <links>
             <item name="Fork me on GitHub" href="${project.scm.url}"/>
             <item name="Apache" href="http://www.apache.org/"/>
             <item name="Maven 2" href="http://maven.apache.org/"/>
-        </menu>
-        <menu name="Reports" ref="reports"/>
+        </links>
     </body>
     <poweredBy>
         <logo img="http://maven.apache.org/images/logos/maven-feather.png"
