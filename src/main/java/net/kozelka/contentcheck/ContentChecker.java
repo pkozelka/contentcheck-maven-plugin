@@ -17,6 +17,13 @@ public class ContentChecker {
     private final EventSink<Events> events = EventSink.create(Events.class);
     private ContentIntrospector introspector;
 
+    static boolean entrysetContainsUri(Set<CheckerEntry> entryset, String uri) {
+        for (CheckerEntry checkerEntry : entryset) {
+            if (checkerEntry.getUri().equals(uri)) return true;
+        }
+        return false;
+    }
+
     public EventSink<Events> getEvents() {
         return events;
     }
@@ -35,7 +42,7 @@ public class ContentChecker {
      * @throws IOException if something very bad happen
      */
     public CheckerOutput check(final File listingFile) throws IOException{
-        final Set<CheckerEntry> approvedEntries = readListing(listingFile);
+        final Set<CheckerEntry> approvedEntries = readApprovedContent(listingFile);
         final Set<String> actualEntries = new LinkedHashSet<String>();
         final ContentIntrospector.Events collector = new ContentIntrospector.ContentCollector(actualEntries);
         introspector.getEvents().addListener(collector);
@@ -46,27 +53,28 @@ public class ContentChecker {
         return new CheckerOutput(approvedEntries, actualEntries);
     }
 
-    protected Set<CheckerEntry> readListing(final File listingFile) throws IOException {
-        final Set<CheckerEntry> expectedPaths = new LinkedHashSet<CheckerEntry>();
-        final BufferedReader reader = new BufferedReader(new FileReader(listingFile));
+    protected Set<CheckerEntry> readApprovedContent(final File approvedContentFile) throws IOException {
+        final Set<CheckerEntry> approvedContent = new LinkedHashSet<CheckerEntry>();
+        final BufferedReader reader = new BufferedReader(new FileReader(approvedContentFile));
         try {
             int totalCnt = 0;
             String line;
             while ((line = reader.readLine())!= null) {
                 totalCnt ++;
                 line = line.trim();
-                final boolean ignoreLine = line.length() == 0 || line.startsWith("#");// we ignore empty and comments lines
-                if (!ignoreLine) { 
-                    if(expectedPaths.contains(line)) {
-                        events.fire.duplicate(listingFile, line);
-                    }
-                    final CheckerEntry entry = new CheckerEntry();
-                    entry.setUri(line);
-                    expectedPaths.add(entry);
-                } 
+                // we ignore empty and comments lines
+                if (line.length() == 0) continue;
+                if (line.startsWith("#")) continue;
+                // TODO: this is a bit incorrect, because line is now rather "rule" that can have multiple, hard-to-compare forms. We should replace this with checking that each occurrence is matched by exactly one rule.
+                if(entrysetContainsUri(approvedContent, line)) {
+                    events.fire.duplicate(approvedContentFile, line);
+                }
+                final CheckerEntry entry = new CheckerEntry();
+                entry.setUri(line);
+                approvedContent.add(entry);
             }
-            events.fire.contentListingSummary(listingFile, expectedPaths.size(), totalCnt);
-            return expectedPaths;
+            events.fire.contentListingSummary(approvedContentFile, approvedContent.size(), totalCnt);
+            return approvedContent;
         } finally {
             reader.close();
         }

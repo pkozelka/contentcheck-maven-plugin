@@ -67,7 +67,8 @@ public class CheckerOutputTest {
         Set<CheckerEntry> missingEntries = output.diffMissingEntries();
         assertThat(missingEntries, notNullValue());
         assertThat("Wrong count of missing entries.", missingEntries.size(), is(2));
-        assertThat(missingEntries.contains("b.jar"), is(true));
-        assertThat(missingEntries.contains("c.jar"), is(true));
+        assertThat(ContentChecker.entrysetContainsUri(missingEntries, "b.jar"), is(true));
+        assertThat(ContentChecker.entrysetContainsUri(missingEntries, "c.jar"), is(true));
     }
+
 }

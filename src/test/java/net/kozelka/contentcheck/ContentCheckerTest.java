@@ -98,14 +98,14 @@ public class ContentCheckerTest {
         final ContentChecker checker = createContentChecker(archiveFile, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         CheckerOutput checkerOutput = checker.check(listingFile);
         Set<CheckerEntry> diffMissingEntries = checkerOutput.diffMissingEntries();
-        assertThat("Missing entry WEB-INF/lib/d.jar in the collection of missing entries.", diffMissingEntries.contains("WEB-INF/lib/d.jar"), is(true));
+        assertThat("Missing entry WEB-INF/lib/d.jar in the collection of missing entries.", ContentChecker.entrysetContainsUri(diffMissingEntries, "WEB-INF/lib/d.jar"), is(true));
     }
 
     @Test
     public void testReadListingFile() throws Exception{
         final ContentChecker checker = new ContentChecker();
         File listingFile = SupportUtils.getFile("content-read-listing-test.txt");
-        Set<CheckerEntry> content = checker.readListing(listingFile);
+        Set<CheckerEntry> content = checker.readApprovedContent(listingFile);
         assertThat(content.size(), is(5));
     }
 
@@ -114,7 +114,7 @@ public class ContentCheckerTest {
         final ContentChecker checker = new ContentChecker();
         checker.getEvents().addListener(contentCheckerListener);
         File listingFile = SupportUtils.getFile("content-duplicit-entries-test.txt");
-        checker.readListing(listingFile);
+        checker.readApprovedContent(listingFile);
         verify(contentCheckerListener, times(1)).duplicate(any(File.class), anyString());
     }
 
@@ -122,7 +122,7 @@ public class ContentCheckerTest {
     public void testReadListingFileEmptyLines() throws Exception{
         final ContentChecker checker = new ContentChecker();
         File listingFile = SupportUtils.getFile("content-empty-lines-test.txt");
-        Set<CheckerEntry> entries = checker.readListing(listingFile);
+        Set<CheckerEntry> entries = checker.readApprovedContent(listingFile);
         assertThat("Unexpecting count of entries. Whitespaces and empty lines must be ignored.", entries.size(), is(0));
     }
 
