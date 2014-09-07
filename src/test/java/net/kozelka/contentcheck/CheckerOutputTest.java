@@ -16,7 +16,7 @@ public class CheckerOutputTest {
     
     @Before
     public void setUp() {
-        Set<CheckerEntry> approvedEntries = new LinkedHashSet<CheckerEntry>() {
+        final Set<CheckerEntry> approvedEntries = new LinkedHashSet<CheckerEntry>() {
             {
                 add(urientry("a.jar"));
                 add(urientry("b.jar"));
@@ -24,8 +24,8 @@ public class CheckerOutputTest {
                 add(urientry("x-1.2.*.jar"));
             }
         };
-        
-        Set<String> sourceContent = new LinkedHashSet<String>() {
+
+        final Set<String> sourceContent = new LinkedHashSet<String>() {
             {
                 add("a.jar");
                 add("d.jar");
@@ -46,7 +46,7 @@ public class CheckerOutputTest {
     public void testGetAllowedEntries() {
         assertThat(output.getApprovedEntries(), notNullValue());
         assertThat(output.getApprovedEntries().size(), is(4));
-	}
+    }
 
     @Test
     public void testGetSourceEntries() {
@@ -56,7 +56,7 @@ public class CheckerOutputTest {
 
     @Test
     public void testDiffUnexpectedEntries() {
-        Set<String> unexpectedEntries = output.diffUnexpectedEntries();
+        final Set<String> unexpectedEntries = output.diffUnexpectedEntries();
         assertThat(unexpectedEntries, notNullValue());
         assertThat("Wrong count of unexpected entries.", unexpectedEntries.size(), is(1));
         assertThat("Concrete unexpected entry is missing.", unexpectedEntries.contains("d.jar"), is(true));
@@ -64,7 +64,7 @@ public class CheckerOutputTest {
 
     @Test
     public void testDiffMissingEntries() {
-        Set<CheckerEntry> missingEntries = output.diffMissingEntries();
+        final Set<CheckerEntry> missingEntries = output.diffMissingEntries();
         assertThat(missingEntries, notNullValue());
         assertThat("Wrong count of missing entries.", missingEntries.size(), is(2));
         assertThat(ContentChecker.entrysetContainsUri(missingEntries, "b.jar"), is(true));
