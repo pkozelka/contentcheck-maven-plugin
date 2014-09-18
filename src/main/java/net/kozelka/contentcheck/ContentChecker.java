@@ -50,7 +50,44 @@ public class ContentChecker {
         introspector.getEvents().removeListener(collector);
         //XXX dagi: duplicit entries detection https://github.com/pkozelka/contentcheck-maven-plugin/issues#issue/4
         events.fire.summary(introspector.getSourceFile(), actualEntries.size(), totalCount);
-        return new CheckerOutput(approvedEntries, actualEntries);
+        final CheckerOutput result = new CheckerOutput(approvedEntries, actualEntries);
+        compareEntries(result);
+        return result;
+    }
+
+    static void compareEntries(CheckerOutput co) {
+        final Set<String> unexpectedEntries = new LinkedHashSet<String>(co.getActualEntries().size());
+        for (String actual : co.getActualEntries()) {
+            boolean found = false;
+            for (CheckerEntry approved : co.getApprovedEntries()) {
+                if (approved.match(actual)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                unexpectedEntries.add(actual);
+            }
+        }
+        co.setUnexpectedEntries(unexpectedEntries);
+
+        // TODO: merge these two iterations into one; remove from a working set while doing first iteration, etc. Beware of regexes on one side.
+
+        final Set<CheckerEntry> missingEntries = new LinkedHashSet<CheckerEntry>(co.getApprovedEntries().size());
+        for (CheckerEntry approved : co.getApprovedEntries()) {
+            boolean found = false;
+            for (String actual : co.getActualEntries()) {
+                if (approved.match(actual)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                missingEntries.add(approved);
+            }
+        }
+        co.setMissingEntries(missingEntries);
+
     }
 
     protected Set<CheckerEntry> readApprovedContent(final File approvedContentFile) throws IOException {

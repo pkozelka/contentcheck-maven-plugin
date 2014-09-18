@@ -32,8 +32,8 @@ public class ArchivaWarTest {
         cc.setIntrospector(introspector);
         final CheckerOutput result = cc.check(archivaApprovedContent);
         //
-        Assert.assertEquals("Missing entries", 5, result.diffMissingEntries().size());
-        Assert.assertEquals("Unexpected entries", 0, result.diffUnexpectedEntries().size());
+        Assert.assertEquals("Missing entries", 5, result.getMissingEntries().size());
+        Assert.assertEquals("Unexpected entries", 0, result.getUnexpectedEntries().size());
         Assert.assertEquals("Actual entries", 230, result.getActualEntries().size());
         Assert.assertEquals("Approved entries", 235, result.getApprovedEntries().size());
     }

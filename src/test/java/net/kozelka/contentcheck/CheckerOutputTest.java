@@ -56,7 +56,7 @@ public class CheckerOutputTest {
 
     @Test
     public void testDiffUnexpectedEntries() {
-        final Set<String> unexpectedEntries = output.diffUnexpectedEntries();
+        final Set<String> unexpectedEntries = output.getUnexpectedEntries();
         assertThat(unexpectedEntries, notNullValue());
         assertThat("Wrong count of unexpected entries.", unexpectedEntries.size(), is(1));
         assertThat("Concrete unexpected entry is missing.", unexpectedEntries.contains("d.jar"), is(true));
@@ -64,7 +64,7 @@ public class CheckerOutputTest {
 
     @Test
     public void testDiffMissingEntries() {
-        final Set<CheckerEntry> missingEntries = output.diffMissingEntries();
+        final Set<CheckerEntry> missingEntries = output.getMissingEntries();
         assertThat(missingEntries, notNullValue());
         assertThat("Wrong count of missing entries.", missingEntries.size(), is(2));
         assertThat(ContentChecker.entrysetContainsUri(missingEntries, "b.jar"), is(true));

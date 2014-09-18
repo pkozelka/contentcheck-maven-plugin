@@ -93,12 +93,12 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
             final CheckerOutput output = contentChecker.check(contentListing);
 
             // report missing entries
-            final Set<CheckerEntry> missingEntries = output.diffMissingEntries();
+            final Set<CheckerEntry> missingEntries = output.getMissingEntries();
             for (CheckerEntry missing : missingEntries) {
                 log(failOnMissing, String.format(msgMissing, missing));
             }
             // report unexpected entries
-            final Set<String> unexpectedEntries = output.diffUnexpectedEntries();
+            final Set<String> unexpectedEntries = output.getUnexpectedEntries();
             for (String entry : unexpectedEntries) {
                 log(failOnUnexpected, String.format(msgUnexpected, entry));
             }
