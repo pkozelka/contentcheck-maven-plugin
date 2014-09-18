@@ -33,7 +33,7 @@ public class CheckerOutputTest {
             }
         };
         
-        this.output = new CheckerOutput(approvedEntries, sourceContent);
+        this.output = ContentChecker.compareEntries(approvedEntries, sourceContent);
     }
 
     private static CheckerEntry urientry(String uri) {
