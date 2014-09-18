@@ -50,16 +50,14 @@ public class ContentChecker {
         introspector.getEvents().removeListener(collector);
         //XXX dagi: duplicit entries detection https://github.com/pkozelka/contentcheck-maven-plugin/issues#issue/4
         events.fire.summary(introspector.getSourceFile(), actualEntries.size(), totalCount);
-        final CheckerOutput result = new CheckerOutput(approvedEntries, actualEntries);
-        compareEntries(result);
-        return result;
+        return compareEntries(approvedEntries, actualEntries);
     }
 
-    static void compareEntries(CheckerOutput co) {
-        final Set<String> unexpectedEntries = new LinkedHashSet<String>(co.getActualEntries().size());
-        for (String actual : co.getActualEntries()) {
+    static CheckerOutput compareEntries(Set<CheckerEntry> approvedEntries, Set<String> actualEntries) {
+        final Set<String> unexpectedEntries = new LinkedHashSet<String>(actualEntries.size());
+        for (String actual : actualEntries) {
             boolean found = false;
-            for (CheckerEntry approved : co.getApprovedEntries()) {
+            for (CheckerEntry approved : approvedEntries) {
                 if (approved.match(actual)) {
                     found = true;
                     break;
@@ -69,14 +67,15 @@ public class ContentChecker {
                 unexpectedEntries.add(actual);
             }
         }
-        co.setUnexpectedEntries(unexpectedEntries);
+        final CheckerOutput result = new CheckerOutput(approvedEntries, actualEntries);
+        result.setUnexpectedEntries(unexpectedEntries);
 
         // TODO: merge these two iterations into one; remove from a working set while doing first iteration, etc. Beware of regexes on one side.
 
-        final Set<CheckerEntry> missingEntries = new LinkedHashSet<CheckerEntry>(co.getApprovedEntries().size());
-        for (CheckerEntry approved : co.getApprovedEntries()) {
+        final Set<CheckerEntry> missingEntries = new LinkedHashSet<CheckerEntry>(approvedEntries.size());
+        for (CheckerEntry approved : approvedEntries) {
             boolean found = false;
-            for (String actual : co.getActualEntries()) {
+            for (String actual : actualEntries) {
                 if (approved.match(actual)) {
                     found = true;
                     break;
@@ -86,8 +85,8 @@ public class ContentChecker {
                 missingEntries.add(approved);
             }
         }
-        co.setMissingEntries(missingEntries);
-
+        result.setMissingEntries(missingEntries);
+        return result;
     }
 
     protected Set<CheckerEntry> readApprovedContent(final File approvedContentFile) throws IOException {
