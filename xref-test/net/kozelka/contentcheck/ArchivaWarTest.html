@@ -42,8 +42,8 @@
 <a class="jxr_linenumber" name="32" href="#32">32</a>          cc.setIntrospector(introspector);
 <a class="jxr_linenumber" name="33" href="#33">33</a>          <strong class="jxr_keyword">final</strong> CheckerOutput result = cc.check(archivaApprovedContent);
 <a class="jxr_linenumber" name="34" href="#34">34</a>          <em class="jxr_comment">//</em>
-<a class="jxr_linenumber" name="35" href="#35">35</a>          Assert.assertEquals(<span class="jxr_string">"Missing entries"</span>, 5, result.diffMissingEntries().size());
-<a class="jxr_linenumber" name="36" href="#36">36</a>          Assert.assertEquals(<span class="jxr_string">"Unexpected entries"</span>, 0, result.diffUnexpectedEntries().size());
+<a class="jxr_linenumber" name="35" href="#35">35</a>          Assert.assertEquals(<span class="jxr_string">"Missing entries"</span>, 5, result.getMissingEntries().size());
+<a class="jxr_linenumber" name="36" href="#36">36</a>          Assert.assertEquals(<span class="jxr_string">"Unexpected entries"</span>, 0, result.getUnexpectedEntries().size());
 <a class="jxr_linenumber" name="37" href="#37">37</a>          Assert.assertEquals(<span class="jxr_string">"Actual entries"</span>, 230, result.getActualEntries().size());
 <a class="jxr_linenumber" name="38" href="#38">38</a>          Assert.assertEquals(<span class="jxr_string">"Approved entries"</span>, 235, result.getApprovedEntries().size());
 <a class="jxr_linenumber" name="39" href="#39">39</a>      }
