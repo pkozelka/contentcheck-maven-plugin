@@ -26,4 +26,4 @@ codeship-setup:
 	mvn dependency:go-offline
 
 codeship-test:
-	mvn --batch --show-version -e verify
+	mvn --batch-mode --show-version -e verify
