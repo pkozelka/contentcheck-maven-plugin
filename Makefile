@@ -15,3 +15,15 @@ site:
 
 site-deploy:
 	git push origin gh-pages
+
+
+codeship-setup:
+	# maven repository will be cached between builds - it has no snapshots anyway
+	rm -rf .m2/repository
+	mkdir -p .m2 cache/repository
+	ln -sf ../cache/repository .m2/repository || true
+	#
+	mvn dependency:go-offline
+
+codeship-test:
+	mvn --batch --show-version -e verify
