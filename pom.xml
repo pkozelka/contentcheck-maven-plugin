@@ -9,9 +9,10 @@
     <packaging>maven-plugin</packaging>
     <name>Maven Content Check Plugin</name>
     <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>9</version>
+        <groupId>net.sf.buildbox.maven</groupId>
+        <artifactId>buildbox-pom</artifactId>
+        <version>1.0.5</version>
+        <relativePath/>
     </parent>
     <url>http://code.kozelka.net/${project.artifactId}</url>
     <dependencies>
