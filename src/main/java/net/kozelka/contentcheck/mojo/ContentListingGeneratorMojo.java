@@ -36,7 +36,6 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
     @Parameter(defaultValue = "false", property = "overwriteExistingListing")
     boolean overwriteExistingListing;
 
-    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if(!overwriteExistingListing && contentListing.exists()) {
             //TODO: use alternate output file (like target/contentcheck-maven-plugin/approved-content.txt) and fail after finishing the generation (issue #15)

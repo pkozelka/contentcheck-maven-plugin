@@ -76,7 +76,6 @@ public class ClassConflictDetector {
         final ContentIntrospector ci = new ContentIntrospector();
         ci.setSourceFile(war);
         ci.setEntryContentFilter(new ContentIntrospector.EntryContentFilter() {
-            @Override
             public boolean accept(String entryName, InputStream entryContentStream) throws IOException {
                 if (entryName.startsWith("WEB-INF/lib/") && entryName.endsWith(".jar")) {
                     final ZipInputStream zis = new ZipInputStream(entryContentStream);
@@ -140,7 +139,6 @@ public class ClassConflictDetector {
         final ClassConflictDetector ccd = new ClassConflictDetector();
         ccd.exploreWar(war);
         ccd.printResults(previewThreshold, new StreamConsumer() {
-            @Override
             public void consumeLine(String line) {
                 System.out.println(line);
             }

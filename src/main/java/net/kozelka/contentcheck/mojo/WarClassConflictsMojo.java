@@ -60,7 +60,6 @@ public class WarClassConflictsMojo extends AbstractMojo {
             final List<ArchiveInfo> conflictingArchives = ccd.getConflictingArchives();
             if (!conflictingArchives.isEmpty()) {
                 final int totalConflicts = ccd.printResults(previewThreshold, new StreamConsumer() {
-                    @Override
                     public void consumeLine(String line) {
                         getLog().error(line);
                     }

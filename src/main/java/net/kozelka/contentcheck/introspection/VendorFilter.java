@@ -37,7 +37,6 @@ public class VendorFilter implements ContentIntrospector.EntryContentFilter {
         return events;
     }
 
-    @Override
     public boolean accept(String entryName, InputStream entryContentStream) throws IOException {
         if (!entryName.endsWith(".jar")) return true;
         //todo avoid the need for temporary file

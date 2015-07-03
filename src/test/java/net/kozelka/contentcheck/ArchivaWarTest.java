@@ -45,7 +45,6 @@ public class ArchivaWarTest {
         Assert.assertEquals("Total entries", 235, ccd.getExploredArchives().size());
         Assert.assertEquals("Conflicting archives", 17, ccd.getConflictingArchives().size());
         final int totalConflicts = ccd.printResults(2, new StreamConsumer() {
-            @Override
             public void consumeLine(String line) {
                 System.out.println(line);
             }

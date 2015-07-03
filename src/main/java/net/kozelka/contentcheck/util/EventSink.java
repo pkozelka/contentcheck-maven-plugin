@@ -56,7 +56,6 @@ public class EventSink<T> {
     }
 
     private final InvocationHandler handler = new InvocationHandler() {
-        @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             for (T listener : listeners) {
                 method.invoke(listener, args);

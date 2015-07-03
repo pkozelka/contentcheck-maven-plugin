@@ -14,28 +14,24 @@ public class EventSinkTest {
         sb = new StringBuilder();
         myEvents = EventSink.create(MyEvents.class);
         myEvents.addListener(new MyEvents() {
-            @Override
             public void onString(String s) {
                 sb.append("<");
                 sb.append(s);
                 sb.append(">");
             }
 
-            @Override
             public void onEmpty() {
                 sb.append("()");
             }
         });
 
         myEvents.addListener(new MyEvents() {
-            @Override
             public void onString(String s) {
                 sb.append("[");
                 sb.append(s);
                 sb.append("]");
             }
 
-            @Override
             public void onEmpty() {
                 sb.append("{}");
             }
