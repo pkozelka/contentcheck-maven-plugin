@@ -1,17 +1,14 @@
 package net.kozelka.contentcheck.introspection;
 
-import static junit.framework.Assert.assertNotNull;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
-import org.apache.commons.io.IOUtils;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
+import org.apache.commons.io.IOUtils;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 public abstract class AbstractIntrospectorStrategyTest {
 
@@ -37,7 +34,7 @@ public abstract class AbstractIntrospectorStrategyTest {
     @Test
     public void testReadEntryData() throws Exception {
         final InputStream data = directoryStrategy.getInputStream(containerFileToBeChecked, "WEB-INF/testfile.txt");
-        Assert.assertNotNull("content of WEB-INF/testfile.txt should not be empty!", data);
+        assertNotNull("content of WEB-INF/testfile.txt should not be empty!", data);
         assertThat((String) IOUtils.readLines(data).get(0), is("Lorem ipsumLorem ipsumLorem ipsumLorem ipsum"));
     }
 }
