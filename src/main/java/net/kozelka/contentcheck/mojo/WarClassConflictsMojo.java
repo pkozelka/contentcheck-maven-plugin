@@ -58,8 +58,12 @@ public class WarClassConflictsMojo extends AbstractMojo {
             final ClassConflictDetector ccd = new ClassConflictDetector();
             ccd.exploreWar(sourceFile);
             final List<ArchiveInfo> conflictingArchives = ccd.getConflictingArchives();
-            if (!conflictingArchives.isEmpty()) {
-                final int totalConflicts = ccd.printResults(previewThreshold, new StreamConsumer() {
+            final int totalConflicts;
+            if (conflictingArchives.isEmpty()) {
+                totalConflicts = 0;
+                getLog().info("No conflicts detected.");
+            } else {
+                totalConflicts = ccd.printResults(previewThreshold, new StreamConsumer() {
                     @Override
                     public void consumeLine(String line) {
                         getLog().error(line);
@@ -70,9 +74,9 @@ public class WarClassConflictsMojo extends AbstractMojo {
                 if (totalConflicts > toleratedConflictCount) {
                     throw new MojoFailureException(errorMessage);
                 }
-                if (totalConflicts > 0 && toleratedConflictCount > totalConflicts) {
-                    getLog().warn(String.format("We currently tolerate %d conflicts; please reduce the tolerance to prevent growing conflicts", toleratedConflictCount));
-                }
+            }
+            if (totalConflicts < toleratedConflictCount) {
+                getLog().warn(String.format("We currently tolerate %d conflicts; please reduce the tolerance to prevent growing conflicts", toleratedConflictCount));
             }
         } catch (IOException e) {
             throw new MojoExecutionException(sourceFile.getAbsolutePath(), e);
