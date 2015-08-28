@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import net.kozelka.contentcheck.conflict.api.ArchiveInfoDao;
+import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ConflictingArchive;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
@@ -80,39 +80,36 @@ public class ClassConflictDetector {
         return null;
     }
 
-    public Set<ArchiveInfo> getExploredArchives() {
-        return archiveInfoDao.getAllArchives();
-    }
-
-    public List<ArchiveInfo> getConflictingArchives() {
-        final List<ArchiveInfo> conflictingArchives = new ArrayList<ArchiveInfo>();
-        for (ArchiveInfo archive : archiveInfoDao.getAllArchives()) {
-            if (! archive.getConflictingArchives().isEmpty()) {
-                conflictingArchives.add(archive);
-            }
-        }
-        return conflictingArchives;
-    }
-
-    public void exploreWar(File war) throws IOException {
+    public ConflictCheckResponse exploreWar(File war) throws IOException {
         final ContentIntrospector ci = new ContentIntrospector();
         ci.setSourceFile(war);
+        final ConflictCheckResponse response = new ConflictCheckResponse();
         ci.setEntryContentFilter(new ContentIntrospector.EntryContentFilter() {
             @Override
             public boolean accept(String entryName, InputStream entryContentStream) throws IOException {
                 if (entryName.startsWith("WEB-INF/lib/") && entryName.endsWith(".jar")) {
                     final ZipInputStream zis = new ZipInputStream(entryContentStream);
                     ClassConflictDetector.this.exploreArchive(zis, entryName);
+                    response.incrementExploredArchiveCount();
                 }
                 //TODO: add support for WEB-INF/classes as another resource
                 return false;
             }
         });
         ci.walk();
+
+        // fill response
+        final List<ArchiveInfo> conflictingArchives = response.getConflictingArchives();
+        for (ArchiveInfo archive : archiveInfoDao.getAllArchives()) {
+            if (! archive.getConflictingArchives().isEmpty()) {
+                conflictingArchives.add(archive);
+            }
+        }
+        return response;
     }
 
-    public int printResults(int previewThreshold, StreamConsumer output) {
-        final List<ArchiveInfo> sortedConflictingArchives = new ArrayList<ArchiveInfo>(getConflictingArchives());
+    public static int printResults(ConflictCheckResponse response, int previewThreshold, StreamConsumer output) {
+        final List<ArchiveInfo> sortedConflictingArchives = new ArrayList<ArchiveInfo>(response.getConflictingArchives());
         Collections.sort(sortedConflictingArchives, new Comparator<ArchiveInfo>() {
             public int compare(ArchiveInfo o1, ArchiveInfo o2) {
                 return o1.getKey().compareTo(o2.getKey());
@@ -149,7 +146,7 @@ public class ClassConflictDetector {
         output.consumeLine(String.format("Total: %d conflicts affect %d of %d archives.",
                 totalConflicts,
                 sortedConflictingArchives.size(),
-                getExploredArchives().size()));
+                response.getExploredArchiveCount()));
         return totalConflicts;
     }
 
@@ -161,8 +158,8 @@ public class ClassConflictDetector {
         System.out.println("Detecting conflict in " + war);
         System.out.println("Class preview threshold: " + previewThreshold);
         final ClassConflictDetector ccd = new ClassConflictDetector();
-        ccd.exploreWar(war);
-        ccd.printResults(previewThreshold, new StreamConsumer() {
+        final ConflictCheckResponse response = ccd.exploreWar(war);
+        ccd.printResults(response, previewThreshold, new StreamConsumer() {
             @Override
             public void consumeLine(String line) {
                 System.out.println(line);

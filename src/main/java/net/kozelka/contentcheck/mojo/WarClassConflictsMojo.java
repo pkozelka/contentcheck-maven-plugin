@@ -1,5 +1,6 @@
 package net.kozelka.contentcheck.mojo;
 
+import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
 import org.apache.maven.plugin.AbstractMojo;
@@ -56,14 +57,14 @@ public class WarClassConflictsMojo extends AbstractMojo {
 
         try {
             final ClassConflictDetector ccd = new ClassConflictDetector();
-            ccd.exploreWar(sourceFile);
-            final List<ArchiveInfo> conflictingArchives = ccd.getConflictingArchives();
+            final ConflictCheckResponse response = ccd.exploreWar(sourceFile);
+            final List<ArchiveInfo> conflictingArchives = response.getConflictingArchives();
             final int totalConflicts;
             if (conflictingArchives.isEmpty()) {
                 totalConflicts = 0;
                 getLog().info("No conflicts detected.");
             } else {
-                totalConflicts = ccd.printResults(previewThreshold, new StreamConsumer() {
+                totalConflicts = ccd.printResults(response, previewThreshold, new StreamConsumer() {
                     @Override
                     public void consumeLine(String line) {
                         getLog().error(line);
