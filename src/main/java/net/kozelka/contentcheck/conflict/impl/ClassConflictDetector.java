@@ -53,7 +53,7 @@ public class ClassConflictDetector {
         if (resourceInfo == null) {
             resourceInfo = new ResourceInfo();
             resourceInfo.setKey(key);
-            //TODO: resourceInfo.setHash(computeResourceHash(...));
+            resourceInfo.setHash("crc:" + entry.getCrc());
             archiveInfoDao.saveResource(resourceInfo);
         }
         addHostingArchive(archiveInfo, resourceInfo);
@@ -111,6 +111,7 @@ public class ClassConflictDetector {
                     final ZipInputStream zis = new ZipInputStream(entryContentStream);
                     ClassConflictDetector.this.exploreArchive(zis, entryName);
                 }
+                //TODO: add support for WEB-INF/classes as another resource
                 return false;
             }
         });

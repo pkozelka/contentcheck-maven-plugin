@@ -9,6 +9,7 @@ import java.util.List;
 public class ResourceInfo {
     private String key;
     private final List<ArchiveInfo> hostingArchives = new ArrayList<ArchiveInfo>();
+    private String hash;
 
 
     public ResourceInfo() {
@@ -26,4 +27,11 @@ public class ResourceInfo {
         return hostingArchives;
     }
 
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public String getHash() {
+        return hash;
+    }
 }
