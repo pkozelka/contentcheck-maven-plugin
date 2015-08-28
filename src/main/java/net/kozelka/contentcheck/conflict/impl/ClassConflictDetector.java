@@ -42,8 +42,7 @@ public class ClassConflictDetector {
             entry = zis.getNextEntry();
         }
         archiveInfo.setClassCount(classCount);
-        archiveInfoDao.saveArchive(archiveInfo);
-        return archiveInfo;
+        return archiveInfoDao.saveArchive(archiveInfo);
     }
 
     private void processClassResource(ArchiveInfo archiveInfo, ZipEntry entry) {

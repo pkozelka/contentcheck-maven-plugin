@@ -9,20 +9,20 @@ import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 
 /**
- * @author Petr Kozelka
+ * In-memory implementation of {@link ArchiveInfoDao}.
  */
 class ArchiveInfoDaoImpl implements ArchiveInfoDao {
 
-    private final Set<ArchiveInfo> exploredArchives = new LinkedHashSet<ArchiveInfo>();
+    private final Set<ArchiveInfo> archives = new LinkedHashSet<ArchiveInfo>();
     @Override
     public ArchiveInfo saveArchive(ArchiveInfo archiveInfo) {
-        exploredArchives.add(archiveInfo);
+        archives.add(archiveInfo);
         return archiveInfo;
     }
 
     @Override
     public Set<ArchiveInfo> getAllArchives() {
-        return exploredArchives;
+        return archives;
     }
 
 
