@@ -31,13 +31,17 @@ class ArchiveInfoDaoImpl implements ArchiveInfoDao {
 
     @Override
     public ResourceInfo saveResource(ResourceInfo resourceInfo) {
-        resources.put(resourceInfo.getUri(), resourceInfo);
+        final String key = key(resourceInfo);
+        final ResourceInfo existingInstance = resources.get(key);
+        if (existingInstance != null) {
+            return existingInstance;
+        }
+        resources.put(key, resourceInfo);
         return resourceInfo;
     }
 
-    @Override
-    public ResourceInfo findResourceByKey(String key) {
-        return resources.get(key);
+    private String key(ResourceInfo resourceInfo) {
+        return resourceInfo.getUri(); // todo + "@" + resourceInfo.getHash();
     }
 
 }

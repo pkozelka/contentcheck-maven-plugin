@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Petr Kozelka
+ * Represents one resource in the classpath element - for instance, a class file.
  */
 public class ResourceInfo {
     private String uri;

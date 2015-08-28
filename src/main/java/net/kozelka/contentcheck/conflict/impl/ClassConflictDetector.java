@@ -47,23 +47,17 @@ public class ClassConflictDetector {
     }
 
     private void processClassResource(ArchiveInfo archiveInfo, ZipEntry entry) {
-        final String key = entry.getName();
-//        System.out.println(" : " + key);
-        ResourceInfo resourceInfo = archiveInfoDao.findResourceByKey(key);
-        if (resourceInfo == null) {
-            resourceInfo = new ResourceInfo();
-            resourceInfo.setUri(key);
-            resourceInfo.setHash("crc:" + entry.getCrc());
-            resourceInfo = archiveInfoDao.saveResource(resourceInfo);
-        }
-        addHostingArchive(archiveInfo, resourceInfo);
-    }
+        ResourceInfo resourceInfo = new ResourceInfo();
+        resourceInfo.setUri(entry.getName());
+        resourceInfo.setHash("crc:" + entry.getCrc());
+        resourceInfo = archiveInfoDao.saveResource(resourceInfo);
 
-    private void addHostingArchive(ArchiveInfo archiveInfo, ResourceInfo resourceInfo) {
+        //TODO following prepares the results and should be probably moved elsewhere
         for (ArchiveInfo hostingArchive : resourceInfo.getHostingArchives()) {
             addConflict(hostingArchive, archiveInfo, resourceInfo);
             addConflict(archiveInfo, hostingArchive, resourceInfo);
         }
+        //
         resourceInfo.getHostingArchives().add(archiveInfo);
     }
 

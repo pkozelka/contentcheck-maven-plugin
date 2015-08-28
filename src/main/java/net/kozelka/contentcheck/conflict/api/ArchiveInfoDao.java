@@ -13,6 +13,4 @@ public interface ArchiveInfoDao {
     Set<ArchiveInfo> getAllArchives();
 
     ResourceInfo saveResource(ResourceInfo resourceInfo);
-
-    ResourceInfo findResourceByKey(String key);
 }
