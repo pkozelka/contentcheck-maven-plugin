@@ -10,11 +10,16 @@ public class ResourceInfo {
     String key;
     private final List<ArchiveInfo> hostingArchives = new ArrayList<ArchiveInfo>();
 
-    public void addHostingArchive(ArchiveInfo archiveInfo) {
-        for (ArchiveInfo hostingArchive : hostingArchives) {
-            hostingArchive.addConflict(archiveInfo, this);
-            archiveInfo.addConflict(hostingArchive, this);
-        }
-        hostingArchives.add(archiveInfo);
+    public String getKey() {
+        return key;
     }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public List<ArchiveInfo> getHostingArchives() {
+        return hostingArchives;
+    }
+
 }

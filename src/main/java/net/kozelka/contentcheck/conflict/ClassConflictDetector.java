@@ -52,10 +52,22 @@ public class ClassConflictDetector {
         ResourceInfo resourceInfo = exploredResources.get(key);
         if (resourceInfo == null) {
             resourceInfo = new ResourceInfo();
-            resourceInfo.key = key;
+            resourceInfo.setKey(key);
             exploredResources.put(key, resourceInfo);
         }
-        resourceInfo.addHostingArchive(archiveInfo);
+        addHostingArchive(archiveInfo, resourceInfo);
+    }
+
+    private void addHostingArchive(ArchiveInfo archiveInfo, ResourceInfo resourceInfo) {
+        for (ArchiveInfo hostingArchive : resourceInfo.getHostingArchives()) {
+            addConflict(archiveInfo, resourceInfo, hostingArchive);
+            addConflict(hostingArchive, resourceInfo, archiveInfo);
+        }
+        resourceInfo.getHostingArchives().add(archiveInfo);
+    }
+
+    private void addConflict(ArchiveInfo archiveInfo, ResourceInfo resourceInfo, ArchiveInfo hostingArchive) {
+        hostingArchive.addConflict(archiveInfo, resourceInfo);
     }
 
     public Set<ArchiveInfo> getExploredArchives() {
@@ -118,7 +130,7 @@ public class ClassConflictDetector {
                         output.consumeLine("                ...");
                         break;
                     }
-                    output.consumeLine(String.format("                %s", resource.key));
+                    output.consumeLine(String.format("                %s", resource.getKey()));
                 }
             }
         }
