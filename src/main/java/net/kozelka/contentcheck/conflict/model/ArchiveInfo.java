@@ -1,8 +1,7 @@
-package net.kozelka.contentcheck.conflict;
+package net.kozelka.contentcheck.conflict.model;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Representation of an explored archive
@@ -11,17 +10,14 @@ import java.util.Map;
 public class ArchiveInfo {
     private String key;
     private int classCount;
-    private Map<String, Conflict> conflicts = new LinkedHashMap<String, Conflict>();
+    private Set<ConflictingArchive> conflictingArchives = new LinkedHashSet<ConflictingArchive>();
 
-    public void addConflict(ArchiveInfo otherArchive, ResourceInfo conflictingResource) {
-        Conflict conflict = conflicts.get(otherArchive.getKey());
-        if (conflict == null) {
-            conflict = new Conflict(otherArchive);
-            conflicts.put(otherArchive.getKey(), conflict);
-        }
-        conflict.addResource(conflictingResource);
+    public ArchiveInfo() {
     }
 
+    /**
+     * @return name of the archive, in presentation-specific form
+     */
     public String getKey() {
         return key;
     }
@@ -41,8 +37,8 @@ public class ArchiveInfo {
         return classCount;
     }
 
-    public Collection<Conflict> getConflicts() {
-        return conflicts.values();
+    public Set<ConflictingArchive> getConflictingArchives() {
+        return conflictingArchives;
     }
 
     @Override

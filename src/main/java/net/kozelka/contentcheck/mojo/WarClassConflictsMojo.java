@@ -1,7 +1,7 @@
 package net.kozelka.contentcheck.mojo;
 
-import net.kozelka.contentcheck.conflict.ArchiveInfo;
-import net.kozelka.contentcheck.conflict.ClassConflictDetector;
+import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
+import net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;

@@ -1,4 +1,4 @@
-package net.kozelka.contentcheck.conflict;
+package net.kozelka.contentcheck.conflict.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,12 @@ import java.util.List;
  * @author Petr Kozelka
  */
 public class ResourceInfo {
-    String key;
+    private String key;
     private final List<ArchiveInfo> hostingArchives = new ArrayList<ArchiveInfo>();
+
+
+    public ResourceInfo() {
+    }
 
     public String getKey() {
         return key;

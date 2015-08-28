@@ -1,7 +1,7 @@
 package net.kozelka.contentcheck;
 
 import java.io.File;
-import net.kozelka.contentcheck.conflict.ClassConflictDetector;
+import net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.introspection.VendorFilter;
 import org.codehaus.plexus.util.cli.StreamConsumer;

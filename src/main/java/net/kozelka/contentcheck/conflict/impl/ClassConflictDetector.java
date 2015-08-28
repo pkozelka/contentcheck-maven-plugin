@@ -1,4 +1,4 @@
-package net.kozelka.contentcheck.conflict;
+package net.kozelka.contentcheck.conflict.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,13 +6,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import net.kozelka.contentcheck.conflict.api.ArchiveInfoDao;
+import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
+import net.kozelka.contentcheck.conflict.model.ConflictingArchive;
+import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 
@@ -22,14 +23,12 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  * @author Petr Kozelka
  */
 public class ClassConflictDetector {
-    private final Set<ArchiveInfo> exploredArchives = new LinkedHashSet<ArchiveInfo>();
-    private final Map<String, ResourceInfo> exploredResources = new LinkedHashMap<String, ResourceInfo>();
+    private final ArchiveInfoDao archiveInfoDao = new ArchiveInfoDaoImpl();
 
     private ArchiveInfo exploreArchive(ZipInputStream zis, String archiveName) throws IOException {
 //        System.out.println("exploreArchive: " + archiveName);
         final ArchiveInfo archiveInfo = new ArchiveInfo();
         archiveInfo.setKey(archiveName);
-        exploredArchives.add(archiveInfo);
         ZipEntry entry = zis.getNextEntry();
         int classCount = 0;
         while (entry != null) {
@@ -43,41 +42,59 @@ public class ClassConflictDetector {
             entry = zis.getNextEntry();
         }
         archiveInfo.setClassCount(classCount);
+        archiveInfoDao.saveArchive(archiveInfo);
         return archiveInfo;
     }
 
     private void processClassResource(ArchiveInfo archiveInfo, ZipEntry entry) {
         final String key = entry.getName();
 //        System.out.println(" : " + key);
-        ResourceInfo resourceInfo = exploredResources.get(key);
+        ResourceInfo resourceInfo = archiveInfoDao.findResourceByKey(key);
         if (resourceInfo == null) {
             resourceInfo = new ResourceInfo();
             resourceInfo.setKey(key);
-            exploredResources.put(key, resourceInfo);
+            //TODO: resourceInfo.setHash(computeResourceHash(...));
+            archiveInfoDao.saveResource(resourceInfo);
         }
         addHostingArchive(archiveInfo, resourceInfo);
     }
 
     private void addHostingArchive(ArchiveInfo archiveInfo, ResourceInfo resourceInfo) {
         for (ArchiveInfo hostingArchive : resourceInfo.getHostingArchives()) {
-            addConflict(archiveInfo, resourceInfo, hostingArchive);
-            addConflict(hostingArchive, resourceInfo, archiveInfo);
+            addConflict(hostingArchive, archiveInfo, resourceInfo);
+            addConflict(archiveInfo, hostingArchive, resourceInfo);
         }
         resourceInfo.getHostingArchives().add(archiveInfo);
     }
 
-    private void addConflict(ArchiveInfo archiveInfo, ResourceInfo resourceInfo, ArchiveInfo hostingArchive) {
-        hostingArchive.addConflict(archiveInfo, resourceInfo);
+    private void addConflict(ArchiveInfo thisArchive, ArchiveInfo thatArchive, ResourceInfo conflictingResource) {
+        final String conflictingArchiveKey = thatArchive.getKey();
+        ConflictingArchive conflictingArchive = findConflictingArchiveByKey(thisArchive, conflictingArchiveKey);
+        if (conflictingArchive == null) {
+            conflictingArchive = new ConflictingArchive();
+            conflictingArchive.setConflictingArchive(thatArchive);
+            thisArchive.getConflictingArchives().add(conflictingArchive);
+        }
+        conflictingArchive.addResource(conflictingResource);
+    }
+
+    private static ConflictingArchive findConflictingArchiveByKey(ArchiveInfo thisArchive, String key) {
+        for (ConflictingArchive conflictingArchive : thisArchive.getConflictingArchives()) {
+            if (key.equals(conflictingArchive.getArchiveInfo().getKey())) {
+                return conflictingArchive;
+            }
+        }
+        return null;
     }
 
     public Set<ArchiveInfo> getExploredArchives() {
-        return exploredArchives;
+        return archiveInfoDao.getAllArchives();
     }
 
     public List<ArchiveInfo> getConflictingArchives() {
         final List<ArchiveInfo> conflictingArchives = new ArrayList<ArchiveInfo>();
-        for (ArchiveInfo archive : exploredArchives) {
-            if (! archive.getConflicts().isEmpty()) {
+        for (ArchiveInfo archive : archiveInfoDao.getAllArchives()) {
+            if (! archive.getConflictingArchives().isEmpty()) {
                 conflictingArchives.add(archive);
             }
         }
@@ -111,17 +128,17 @@ public class ClassConflictDetector {
         for (ArchiveInfo cai : sortedConflictingArchives) {
             output.consumeLine("");
             output.consumeLine(String.format("File '%s' (%d classes):", cai.getKey(), cai.getClassCount()));
-            final List<Conflict> sortedConflicts = new ArrayList<Conflict>(cai.getConflicts());
-            Collections.sort(sortedConflicts, new Comparator<Conflict>() {
-                public int compare(Conflict o1, Conflict o2) {
-                    return o1.getOtherArchive().getKey().compareTo(o2.getOtherArchive().getKey());
+            final List<ConflictingArchive> sortedConflicts = new ArrayList<ConflictingArchive>(cai.getConflictingArchives());
+            Collections.sort(sortedConflicts, new Comparator<ConflictingArchive>() {
+                public int compare(ConflictingArchive o1, ConflictingArchive o2) {
+                    return o1.getArchiveInfo().getKey().compareTo(o2.getArchiveInfo().getKey());
                 }
             });
-            for (Conflict conflict : sortedConflicts) {
-                final List<ResourceInfo> conflictResources = conflict.getResources();
+            for (ConflictingArchive conflictingArchive : sortedConflicts) {
+                final List<ResourceInfo> conflictResources = conflictingArchive.getResources();
                 final int conflictResourceCount = conflictResources.size();
                 totalConflicts += conflictResourceCount;
-                output.consumeLine(String.format("%8d class conflicts with '%s'", conflictResourceCount, conflict.getOtherArchive().getKey()));
+                output.consumeLine(String.format("%8d class conflicts with '%s'", conflictResourceCount, conflictingArchive.getArchiveInfo().getKey()));
                 if (previewThreshold == 0) continue;
                 int cnt = 0;
                 for (ResourceInfo resource : conflictResources) {
