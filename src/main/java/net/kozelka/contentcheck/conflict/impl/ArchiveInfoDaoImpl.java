@@ -27,17 +27,17 @@ class ArchiveInfoDaoImpl implements ArchiveInfoDao {
 
 
     //
-    private final Map<String, ResourceInfo> exploredResources = new LinkedHashMap<String, ResourceInfo>();
+    private final Map<String, ResourceInfo> resources = new LinkedHashMap<String, ResourceInfo>();
 
     @Override
     public ResourceInfo saveResource(ResourceInfo resourceInfo) {
-        exploredResources.put(resourceInfo.getKey(), resourceInfo);
+        resources.put(resourceInfo.getUri(), resourceInfo);
         return resourceInfo;
     }
 
     @Override
     public ResourceInfo findResourceByKey(String key) {
-        return exploredResources.get(key);
+        return resources.get(key);
     }
 
 }

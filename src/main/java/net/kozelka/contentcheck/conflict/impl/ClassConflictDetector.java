@@ -52,9 +52,9 @@ public class ClassConflictDetector {
         ResourceInfo resourceInfo = archiveInfoDao.findResourceByKey(key);
         if (resourceInfo == null) {
             resourceInfo = new ResourceInfo();
-            resourceInfo.setKey(key);
+            resourceInfo.setUri(key);
             resourceInfo.setHash("crc:" + entry.getCrc());
-            archiveInfoDao.saveResource(resourceInfo);
+            resourceInfo = archiveInfoDao.saveResource(resourceInfo);
         }
         addHostingArchive(archiveInfo, resourceInfo);
     }
@@ -148,7 +148,7 @@ public class ClassConflictDetector {
                         output.consumeLine("                ...");
                         break;
                     }
-                    output.consumeLine(String.format("                %s", resource.getKey()));
+                    output.consumeLine(String.format("                %s", resource.getUri()));
                 }
             }
         }

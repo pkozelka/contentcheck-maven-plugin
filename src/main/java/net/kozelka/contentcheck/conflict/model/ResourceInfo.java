@@ -7,7 +7,7 @@ import java.util.List;
  * @author Petr Kozelka
  */
 public class ResourceInfo {
-    private String key;
+    private String uri;
     private final List<ArchiveInfo> hostingArchives = new ArrayList<ArchiveInfo>();
     private String hash;
 
@@ -15,12 +15,12 @@ public class ResourceInfo {
     public ResourceInfo() {
     }
 
-    public String getKey() {
-        return key;
+    public String getUri() {
+        return uri;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     public List<ArchiveInfo> getHostingArchives() {
