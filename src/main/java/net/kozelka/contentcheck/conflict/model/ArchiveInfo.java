@@ -4,7 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Representats one classpath element, typically an archive
+ * Represents one classpath element, typically an archive
  * @todo get rid of #conflictingArchives here; it should be computed
  * @author Petr Kozelka
  */
