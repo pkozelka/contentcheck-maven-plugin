@@ -48,6 +48,6 @@ public class ArchivaWarTest {
         final int totalConflicts = ConflictCheckResponsePrinter.printResults(response, 2, new DefaultConsumer());
         Assert.assertEquals("Total conflicts", 290, totalConflicts);
         Assert.assertEquals("Total entries", 235, response.getExploredArchiveCount());
-        Assert.assertEquals("Conflicting archives", 17, response.getConflictingArchives().size());
+        Assert.assertEquals("Archive conflicts", 18, response.getArchiveConflicts().size());
     }
 }

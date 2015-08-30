@@ -1,8 +1,5 @@
 package net.kozelka.contentcheck.conflict.model;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 /**
  * Represents one classpath element, typically an archive
  * @todo get rid of #archiveConflicts here; it should be computed
@@ -11,7 +8,6 @@ import java.util.Set;
 public class ArchiveInfo {
     private String key;
     private int classCount;
-    private Set<ArchiveConflict> archiveConflicts = new LinkedHashSet<ArchiveConflict>();
 
     public ArchiveInfo() {
     }
@@ -36,10 +32,6 @@ public class ArchiveInfo {
      */
     public int getClassCount() {
         return classCount;
-    }
-
-    public Set<ArchiveConflict> getArchiveConflicts() {
-        return archiveConflicts;
     }
 
     @Override

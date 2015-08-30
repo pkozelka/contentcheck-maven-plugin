@@ -1,10 +1,10 @@
 package net.kozelka.contentcheck.conflict.impl;
 
-import net.kozelka.contentcheck.conflict.api.ConflictDao;
-import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
-
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.kozelka.contentcheck.conflict.api.ConflictDao;
+import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
 
 /**
  * @author Petr Kozelka
@@ -20,5 +20,10 @@ public class ConflictDaoImpl implements ConflictDao {
         }
         conflicts.put(key, conflict);
         return conflict;
+    }
+
+    @Override
+    public Collection<? extends ArchiveConflict> getAll() {
+        return conflicts.values();
     }
 }

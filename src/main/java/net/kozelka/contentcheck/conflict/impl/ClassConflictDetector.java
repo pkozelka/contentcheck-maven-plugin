@@ -3,11 +3,11 @@ package net.kozelka.contentcheck.conflict.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import net.kozelka.contentcheck.conflict.api.ArchiveInfoDao;
 import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
+import net.kozelka.contentcheck.conflict.api.ConflictDao;
 import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
@@ -21,6 +21,7 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  */
 public class ClassConflictDetector {
     private final ArchiveInfoDao archiveInfoDao = new ArchiveInfoDaoImpl();
+    private final ConflictDao conflictDao = new ConflictDaoImpl();
 
     private ArchiveInfo exploreArchive(ZipInputStream zis, String archiveName) throws IOException {
 //        System.out.println("exploreArchive: " + archiveName);
@@ -58,24 +59,11 @@ public class ClassConflictDetector {
     }
 
     private void addConflict(ArchiveInfo thisArchive, ArchiveInfo thatArchive, ResourceInfo conflictingResource) {
-        final String conflictingArchiveKey = thatArchive.getKey();
-        ArchiveConflict archiveConflict = findConflictingArchiveByKey(thisArchive, conflictingArchiveKey);
-        if (archiveConflict == null) {
-            archiveConflict = new ArchiveConflict();
-            archiveConflict.setThisArchive(thisArchive);
-            archiveConflict.setThatArchive(thatArchive);
-            thisArchive.getArchiveConflicts().add(archiveConflict);
-        }
+        ArchiveConflict archiveConflict = new ArchiveConflict();
+        archiveConflict.setThisArchive(thisArchive);
+        archiveConflict.setThatArchive(thatArchive);
+        archiveConflict = conflictDao.save(archiveConflict);
         archiveConflict.addResource(conflictingResource);
-    }
-
-    private static ArchiveConflict findConflictingArchiveByKey(ArchiveInfo thisArchive, String key) {
-        for (ArchiveConflict archiveConflict : thisArchive.getArchiveConflicts()) {
-            if (key.equals(archiveConflict.getThatArchive().getKey())) {
-                return archiveConflict;
-            }
-        }
-        return null;
     }
 
     public ConflictCheckResponse exploreWar(File war) throws IOException {
@@ -97,12 +85,7 @@ public class ClassConflictDetector {
         ci.walk();
 
         // fill response
-        final List<ArchiveInfo> conflictingArchives = response.getConflictingArchives();
-        for (ArchiveInfo archive : archiveInfoDao.getAllArchives()) {
-            if (! archive.getArchiveConflicts().isEmpty()) {
-                conflictingArchives.add(archive);
-            }
-        }
+        response.getArchiveConflicts().addAll(conflictDao.getAll());
         return response;
     }
 

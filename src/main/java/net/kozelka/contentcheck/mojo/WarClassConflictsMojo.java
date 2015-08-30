@@ -1,16 +1,15 @@
 package net.kozelka.contentcheck.mojo;
 
-import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
-import net.kozelka.contentcheck.conflict.impl.ConflictCheckResponsePrinter;
-import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
-import net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
+import net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
+import net.kozelka.contentcheck.conflict.impl.ConflictCheckResponsePrinter;
+import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -59,9 +58,9 @@ public class WarClassConflictsMojo extends AbstractMojo {
         try {
             final ClassConflictDetector ccd = new ClassConflictDetector();
             final ConflictCheckResponse response = ccd.exploreWar(sourceFile);
-            final List<ArchiveInfo> conflictingArchives = response.getConflictingArchives();
+            final List<ArchiveConflict> archiveConflicts = response.getArchiveConflicts();
             final int totalConflicts;
-            if (conflictingArchives.isEmpty()) {
+            if (archiveConflicts.isEmpty()) {
                 totalConflicts = 0;
                 getLog().info("No conflicts detected.");
             } else {
@@ -71,7 +70,10 @@ public class WarClassConflictsMojo extends AbstractMojo {
                         getLog().error(line);
                     }
                 });
-                final String errorMessage = String.format("Found %d conflicts in %d archives in %s", totalConflicts, conflictingArchives.size(), sourceFile);
+                final String errorMessage = String.format("Found %d conflicting resources in %d archive conflicts in %s",
+                    totalConflicts,
+                    archiveConflicts.size(),
+                    sourceFile);
                 getLog().error(errorMessage);
                 if (totalConflicts > toleratedConflictCount) {
                     throw new MojoFailureException(errorMessage);
