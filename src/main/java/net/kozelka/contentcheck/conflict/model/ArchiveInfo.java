@@ -2,7 +2,6 @@ package net.kozelka.contentcheck.conflict.model;
 
 /**
  * Represents one classpath element, typically an archive
- * @todo get rid of #archiveConflicts here; it should be computed
  * @author Petr Kozelka
  */
 public class ArchiveInfo {

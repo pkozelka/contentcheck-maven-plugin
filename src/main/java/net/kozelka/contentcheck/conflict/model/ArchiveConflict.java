@@ -7,7 +7,6 @@ import java.util.List;
  * Hold information about conflicting resources between two archives.
  * One instance represents pointer from one archive to another (conflicting) one, and keeps all resources on which a conflict is detected.
  *
- *  @todo: this will be an internal linking, not an explicit entity
  * @author Petr Kozelka
  */
 public class ArchiveConflict {

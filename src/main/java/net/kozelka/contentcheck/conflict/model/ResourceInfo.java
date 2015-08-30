@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Represents one resource in the classpath element - for instance, a class file.
+ * @todo consider moving hostingArchives to ArchiveInfo
  */
 public class ResourceInfo {
     private String uri;
