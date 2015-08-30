@@ -25,38 +25,38 @@ public class ClassConflictDetector {
 
     private ArchiveInfo exploreArchive(ZipInputStream zis, String archiveName) throws IOException {
 //        System.out.println("exploreArchive: " + archiveName);
-        final ArchiveInfo archiveInfo = new ArchiveInfo();
-        archiveInfo.setKey(archiveName);
+        final ArchiveInfo archive = new ArchiveInfo();
+        archive.setKey(archiveName);
         ZipEntry entry = zis.getNextEntry();
         int classCount = 0;
         while (entry != null) {
             final String entryName = entry.getName();
             if (entryName.endsWith(".class")) {
-                processClassResource(archiveInfo, entry);
+                processClassResource(archive, entry);
                 classCount ++;
             }
             //
             zis.closeEntry();
             entry = zis.getNextEntry();
         }
-        archiveInfo.setClassCount(classCount);
-        return archiveInfoDao.saveArchive(archiveInfo);
+        archive.setClassCount(classCount);
+        return archiveInfoDao.saveArchive(archive);
     }
 
-    private void processClassResource(ArchiveInfo archiveInfo, ZipEntry entry) {
-        ResourceInfo resourceInfo = new ResourceInfo();
-        resourceInfo.setUri(entry.getName());
-        resourceInfo.setHash("crc:" + entry.getCrc());
-        resourceInfo = archiveInfoDao.saveResource(resourceInfo);
+    private void processClassResource(ArchiveInfo archive, ZipEntry entry) {
+        ResourceInfo resource = new ResourceInfo();
+        resource.setUri(entry.getName());
+        resource.setHash("crc:" + entry.getCrc());
+        resource = archiveInfoDao.saveResource(resource);
 
-        archiveInfo.addResource(resourceInfo);
+        archive.addResource(resource);
         //TODO following prepares the results and should be probably moved elsewhere
-        for (ArchiveInfo hostingArchive : resourceInfo.getHostingArchives()) {
-            addConflict(hostingArchive, archiveInfo, resourceInfo);
-            addConflict(archiveInfo, hostingArchive, resourceInfo);
+        for (ArchiveInfo hostingArchive : resource.getHostingArchives()) {
+            addConflict(hostingArchive, archive, resource);
+            addConflict(archive, hostingArchive, resource);
         }
         //
-        resourceInfo.getHostingArchives().add(archiveInfo);
+        resource.getHostingArchives().add(archive);
     }
 
     private void addConflict(ArchiveInfo thisArchive, ArchiveInfo thatArchive, ResourceInfo conflictingResource) {
