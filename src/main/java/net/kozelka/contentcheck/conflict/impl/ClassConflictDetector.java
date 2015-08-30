@@ -28,18 +28,15 @@ public class ClassConflictDetector {
         final ArchiveInfo archive = new ArchiveInfo();
         archive.setKey(archiveName);
         ZipEntry entry = zis.getNextEntry();
-        int classCount = 0;
         while (entry != null) {
             final String entryName = entry.getName();
             if (entryName.endsWith(".class")) {
                 processClassResource(archive, entry);
-                classCount ++;
             }
             //
             zis.closeEntry();
             entry = zis.getNextEntry();
         }
-        archive.setClassCount(classCount);
         return archiveInfoDao.saveArchive(archive);
     }
 

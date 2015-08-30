@@ -1,6 +1,7 @@
 package net.kozelka.contentcheck.conflict.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -10,6 +11,7 @@ import java.util.List;
 public class ArchiveInfo {
     private String key;
     private int classCount;
+    private int resourceCount;
     private final List<ResourceInfo> resources = new ArrayList<ResourceInfo>();
 
     public ArchiveInfo() {
@@ -57,7 +59,7 @@ public class ArchiveInfo {
      * @see #addResource(ResourceInfo)
      */
     public List<ResourceInfo> getResources() {
-        return resources;
+        return Collections.unmodifiableList(resources);
     }
 
     /**
@@ -66,5 +68,18 @@ public class ArchiveInfo {
      */
     public void addResource(ResourceInfo resource) {
         resources.add(resource);
+        resourceCount++;
+        final String name = resource.getUri();
+        if (name.endsWith(".class")) {
+            classCount++;
+        }
+    }
+
+    public int getResourceCount() {
+        return resourceCount;
+    }
+
+    public void setResourceCount(int resourceCount) {
+        this.resourceCount = resourceCount;
     }
 }
