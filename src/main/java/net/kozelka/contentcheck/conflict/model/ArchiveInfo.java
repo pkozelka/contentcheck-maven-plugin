@@ -1,5 +1,8 @@
 package net.kozelka.contentcheck.conflict.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents one classpath element, typically an archive
  * @author Petr Kozelka
@@ -7,6 +10,7 @@ package net.kozelka.contentcheck.conflict.model;
 public class ArchiveInfo {
     private String key;
     private int classCount;
+    private final List<ResourceInfo> resources = new ArrayList<ResourceInfo>();
 
     public ArchiveInfo() {
     }
@@ -46,5 +50,21 @@ public class ArchiveInfo {
     @Override
     public int hashCode() {
         return key != null ? key.hashCode() : 0;
+    }
+
+    /**
+     * @return (read-only) list of resources in the archive
+     * @see #addResource(ResourceInfo)
+     */
+    public List<ResourceInfo> getResources() {
+        return resources;
+    }
+
+    /**
+     * Adds resource to the list of archive resources.
+     * @param resource -
+     */
+    public void addResource(ResourceInfo resource) {
+        resources.add(resource);
     }
 }

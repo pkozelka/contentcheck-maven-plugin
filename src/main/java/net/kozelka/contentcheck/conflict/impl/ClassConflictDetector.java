@@ -49,6 +49,7 @@ public class ClassConflictDetector {
         resourceInfo.setHash("crc:" + entry.getCrc());
         resourceInfo = archiveInfoDao.saveResource(resourceInfo);
 
+        archiveInfo.addResource(resourceInfo);
         //TODO following prepares the results and should be probably moved elsewhere
         for (ArchiveInfo hostingArchive : resourceInfo.getHostingArchives()) {
             addConflict(hostingArchive, archiveInfo, resourceInfo);
