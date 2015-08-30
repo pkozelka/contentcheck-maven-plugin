@@ -29,8 +29,7 @@ public class ClassConflictDetector {
         archive.setKey(archiveName);
         ZipEntry entry = zis.getNextEntry();
         while (entry != null) {
-            final String entryName = entry.getName();
-            if (entryName.endsWith(".class")) {
+            if (!entry.isDirectory()) {
                 processClassResource(archive, entry);
             }
             //
@@ -47,12 +46,14 @@ public class ClassConflictDetector {
         resource = archiveInfoDao.saveResource(resource);
 
         archive.addResource(resource);
-        //TODO following prepares the results and should be probably moved elsewhere
-        for (ArchiveInfo hostingArchive : resource.getHostingArchives()) {
-            addConflict(hostingArchive, archive, resource);
-            addConflict(archive, hostingArchive, resource);
+        final String entryName = entry.getName();
+        if (entryName.endsWith(".class")) {
+            //TODO this prepares results, and should be probably moved elsewhere
+            for (ArchiveInfo hostingArchive : resource.getHostingArchives()) {
+                addConflict(hostingArchive, archive, resource);
+                addConflict(archive, hostingArchive, resource);
+            }
         }
-        //
         resource.getHostingArchives().add(archive);
     }
 
