@@ -1,6 +1,7 @@
 package net.kozelka.contentcheck.mojo;
 
 import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
+import net.kozelka.contentcheck.conflict.impl.ConflictCheckResponsePrinter;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
 import org.apache.maven.plugin.AbstractMojo;
@@ -64,7 +65,7 @@ public class WarClassConflictsMojo extends AbstractMojo {
                 totalConflicts = 0;
                 getLog().info("No conflicts detected.");
             } else {
-                totalConflicts = ccd.printResults(response, previewThreshold, new StreamConsumer() {
+                totalConflicts = ConflictCheckResponsePrinter.printResults(response, previewThreshold, new StreamConsumer() {
                     @Override
                     public void consumeLine(String line) {
                         getLog().error(line);
