@@ -7,6 +7,7 @@ import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
 import net.kozelka.contentcheck.conflict.impl.ConflictCheckResponsePrinter;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
+import net.kozelka.contentcheck.conflict.util.ArchiveLoader;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.introspection.VendorFilter;
 import org.codehaus.plexus.util.cli.DefaultConsumer;
@@ -46,7 +47,7 @@ public class ArchivaWarTest {
     @Test
     public void classConflicts() throws Exception {
         final ClassConflictDetector ccd = new ClassConflictDetector();
-        final List<ArchiveInfo> archives = ccd.loadWar(archivaWar);
+        final List<ArchiveInfo> archives = ArchiveLoader.loadWar(archivaWar);
         final ConflictCheckResponse response = ccd.findConflicts(archives);
         final int totalConflicts = ConflictCheckResponsePrinter.printResults(response, 2, new DefaultConsumer());
         Assert.assertEquals("Total conflicts", 290, totalConflicts);
