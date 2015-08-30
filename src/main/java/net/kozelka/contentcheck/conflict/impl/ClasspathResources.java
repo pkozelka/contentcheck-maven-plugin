@@ -9,6 +9,7 @@ import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 
 /**
  * Collects classpath and registers all resource conflicts during that
+ *
  * @author Petr Kozelka
  */
 class ClasspathResources {

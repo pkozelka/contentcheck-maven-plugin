@@ -13,6 +13,7 @@ import net.kozelka.contentcheck.introspection.ContentIntrospector;
 
 /**
  * Utilities helping to load archive information from the filesystem
+ *
  * @author Petr Kozelka
  */
 public class ArchiveLoader {

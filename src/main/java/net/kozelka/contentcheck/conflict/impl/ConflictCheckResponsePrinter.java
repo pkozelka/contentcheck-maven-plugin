@@ -9,6 +9,8 @@ import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 
 /**
+ * Prints the {@link ConflictCheckResponse results} of {@link ClassConflictDetector#findConflicts(Collection) conflict detection} into console
+ *
  * @author Petr Kozelka
  */
 public class ConflictCheckResponsePrinter {

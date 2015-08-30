@@ -7,9 +7,6 @@ public class ResourceInfo {
     private String uri;
     private String hash;
 
-    public ResourceInfo() {
-    }
-
     public String getUri() {
         return uri;
     }

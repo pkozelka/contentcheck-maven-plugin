@@ -14,9 +14,6 @@ public class ArchiveInfo {
     private int resourceCount;
     private final List<ResourceInfo> resources = new ArrayList<ResourceInfo>();
 
-    public ArchiveInfo() {
-    }
-
     /**
      * @return name of the archive, in presentation-specific form
      */
