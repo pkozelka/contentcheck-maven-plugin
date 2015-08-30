@@ -54,7 +54,7 @@ public class ConflictCheckResponsePrinter {
         output.consumeLine(String.format("Total: %d conflicts affect %d of %d archives.",
                 totalConflicts,
                 sortedArchiveConflicts.size(),
-                response.getExploredArchiveCount()));
+                response.getExploredArchives().size()));
         return totalConflicts;
     }
 }

@@ -3,6 +3,9 @@ package net.kozelka.contentcheck.conflict.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import net.kozelka.contentcheck.conflict.api.ArchiveInfoDao;
@@ -23,14 +26,14 @@ public class ClassConflictDetector {
     private final ArchiveInfoDao archiveInfoDao = new ArchiveInfoDaoImpl();
     private final ConflictDao conflictDao = new ConflictDaoImpl();
 
-    private ArchiveInfo exploreArchive(ZipInputStream zis, String archiveName) throws IOException {
-//        System.out.println("exploreArchive: " + archiveName);
+    private ArchiveInfo loadInnerArchive(ZipInputStream zis, String archiveName) throws IOException {
+//        System.out.println("loadInnerArchive: " + archiveName);
         final ArchiveInfo archive = new ArchiveInfo();
         archive.setKey(archiveName);
         ZipEntry entry = zis.getNextEntry();
         while (entry != null) {
             if (!entry.isDirectory()) {
-                processClassResource(archive, entry);
+                processResource(archive, entry);
             }
             //
             zis.closeEntry();
@@ -39,7 +42,7 @@ public class ClassConflictDetector {
         return archiveInfoDao.saveArchive(archive);
     }
 
-    private void processClassResource(ArchiveInfo archive, ZipEntry entry) {
+    private void processResource(ArchiveInfo archive, ZipEntry entry) {
         ResourceInfo resource = new ResourceInfo();
         resource.setUri(entry.getName());
         resource.setHash("crc:" + entry.getCrc());
@@ -48,7 +51,7 @@ public class ClassConflictDetector {
         archive.addResource(resource);
         final String entryName = entry.getName();
         if (entryName.endsWith(".class")) {
-            //TODO this prepares results, and should be probably moved elsewhere
+            //TODO this prepares results, and will be moved to #findConflicts()
             for (ArchiveInfo hostingArchive : resource.getHostingArchives()) {
                 addConflict(hostingArchive, archive, resource);
                 addConflict(archive, hostingArchive, resource);
@@ -65,25 +68,28 @@ public class ClassConflictDetector {
         archiveConflict.addResource(conflictingResource);
     }
 
-    public ConflictCheckResponse exploreWar(File war) throws IOException {
+    public List<ArchiveInfo> loadWar(File war) throws IOException {
+        final List<ArchiveInfo> archives = new ArrayList<ArchiveInfo>();
         final ContentIntrospector ci = new ContentIntrospector();
         ci.setSourceFile(war);
-        final ConflictCheckResponse response = new ConflictCheckResponse();
         ci.setEntryContentFilter(new ContentIntrospector.EntryContentFilter() {
             @Override
             public boolean accept(String entryName, InputStream entryContentStream) throws IOException {
                 if (entryName.startsWith("WEB-INF/lib/") && entryName.endsWith(".jar")) {
                     final ZipInputStream zis = new ZipInputStream(entryContentStream);
-                    ClassConflictDetector.this.exploreArchive(zis, entryName);
-                    response.incrementExploredArchiveCount();
+                    archives.add(loadInnerArchive(zis, entryName));
                 }
                 //TODO: add support for WEB-INF/classes as another resource
                 return false;
             }
         });
         ci.walk();
-
-        // fill response
+        return archives;
+    }
+    public ConflictCheckResponse findConflicts(Collection<ArchiveInfo> archives) {
+        // TODO: the conflict lookup should happen here!
+        final ConflictCheckResponse response = new ConflictCheckResponse();
+        response.getExploredArchives().addAll(archives);
         response.getArchiveConflicts().addAll(conflictDao.getAll());
         return response;
     }
@@ -96,7 +102,8 @@ public class ClassConflictDetector {
         System.out.println("Detecting conflict in " + war);
         System.out.println("Class preview threshold: " + previewThreshold);
         final ClassConflictDetector ccd = new ClassConflictDetector();
-        final ConflictCheckResponse response = ccd.exploreWar(war);
+        final List<ArchiveInfo> archives = ccd.loadWar(war);
+        final ConflictCheckResponse response = ccd.findConflicts(archives);
         ConflictCheckResponsePrinter.printResults(response, previewThreshold, new StreamConsumer() {
             @Override
             public void consumeLine(String line) {

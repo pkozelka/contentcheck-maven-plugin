@@ -2,9 +2,11 @@ package net.kozelka.contentcheck;
 
 import java.io.File;
 
+import java.util.List;
 import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
 import net.kozelka.contentcheck.conflict.impl.ConflictCheckResponsePrinter;
+import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.introspection.VendorFilter;
 import org.codehaus.plexus.util.cli.DefaultConsumer;
@@ -44,10 +46,11 @@ public class ArchivaWarTest {
     @Test
     public void classConflicts() throws Exception {
         final ClassConflictDetector ccd = new ClassConflictDetector();
-        final ConflictCheckResponse response = ccd.exploreWar(archivaWar);
+        final List<ArchiveInfo> archives = ccd.loadWar(archivaWar);
+        final ConflictCheckResponse response = ccd.findConflicts(archives);
         final int totalConflicts = ConflictCheckResponsePrinter.printResults(response, 2, new DefaultConsumer());
         Assert.assertEquals("Total conflicts", 290, totalConflicts);
-        Assert.assertEquals("Total entries", 235, response.getExploredArchiveCount());
+        Assert.assertEquals("Total entries", 235, response.getExploredArchives().size());
         Assert.assertEquals("Archive conflicts", 18, response.getArchiveConflicts().size());
     }
 }

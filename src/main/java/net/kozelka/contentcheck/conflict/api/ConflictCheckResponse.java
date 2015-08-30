@@ -3,6 +3,7 @@ package net.kozelka.contentcheck.conflict.api;
 import java.util.ArrayList;
 import java.util.List;
 import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
+import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 
 /**
  * Represents the results of conflict checking.
@@ -10,22 +11,14 @@ import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
  */
 public class ConflictCheckResponse {
 
-    private int exploredArchiveCount;
+    private final List<ArchiveInfo> exploredArchives = new ArrayList<ArchiveInfo>();
     private final List<ArchiveConflict> archiveConflicts = new ArrayList<ArchiveConflict>();
-
-    public int getExploredArchiveCount() {
-        return exploredArchiveCount;
-    }
-
-    public void setExploredArchiveCount(int exploredArchiveCount) {
-        this.exploredArchiveCount = exploredArchiveCount;
-    }
-
-    public void incrementExploredArchiveCount() {
-        exploredArchiveCount++;
-    }
 
     public List<ArchiveConflict> getArchiveConflicts() {
         return archiveConflicts;
+    }
+
+    public List<ArchiveInfo> getExploredArchives() {
+        return exploredArchives;
     }
 }
