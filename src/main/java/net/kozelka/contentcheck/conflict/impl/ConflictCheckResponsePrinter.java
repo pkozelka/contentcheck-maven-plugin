@@ -2,7 +2,7 @@ package net.kozelka.contentcheck.conflict.impl;
 
 import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
-import net.kozelka.contentcheck.conflict.model.ConflictingArchive;
+import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 
@@ -26,17 +26,17 @@ public class ConflictCheckResponsePrinter {
         for (ArchiveInfo cai : sortedConflictingArchives) {
             output.consumeLine("");
             output.consumeLine(String.format("File '%s' (%d classes):", cai.getKey(), cai.getClassCount()));
-            final List<ConflictingArchive> sortedConflicts = new ArrayList<ConflictingArchive>(cai.getConflictingArchives());
-            Collections.sort(sortedConflicts, new Comparator<ConflictingArchive>() {
-                public int compare(ConflictingArchive o1, ConflictingArchive o2) {
-                    return o1.getArchiveInfo().getKey().compareTo(o2.getArchiveInfo().getKey());
+            final List<ArchiveConflict> sortedConflicts = new ArrayList<ArchiveConflict>(cai.getArchiveConflicts());
+            Collections.sort(sortedConflicts, new Comparator<ArchiveConflict>() {
+                public int compare(ArchiveConflict o1, ArchiveConflict o2) {
+                    return o1.getThatArchive().getKey().compareTo(o2.getThatArchive().getKey());
                 }
             });
-            for (ConflictingArchive conflictingArchive : sortedConflicts) {
-                final List<ResourceInfo> conflictResources = conflictingArchive.getResources();
+            for (ArchiveConflict archiveConflict : sortedConflicts) {
+                final List<ResourceInfo> conflictResources = archiveConflict.getResources();
                 final int conflictResourceCount = conflictResources.size();
                 totalConflicts += conflictResourceCount;
-                output.consumeLine(String.format("%8d class conflicts with '%s'", conflictResourceCount, conflictingArchive.getArchiveInfo().getKey()));
+                output.consumeLine(String.format("%8d class conflicts with '%s'", conflictResourceCount, archiveConflict.getThatArchive().getKey()));
                 if (previewThreshold == 0) continue;
                 int cnt = 0;
                 for (ResourceInfo resource : conflictResources) {

@@ -8,8 +8,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import net.kozelka.contentcheck.conflict.api.ArchiveInfoDao;
 import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
+import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
-import net.kozelka.contentcheck.conflict.model.ConflictingArchive;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.codehaus.plexus.util.cli.StreamConsumer;
@@ -59,19 +59,20 @@ public class ClassConflictDetector {
 
     private void addConflict(ArchiveInfo thisArchive, ArchiveInfo thatArchive, ResourceInfo conflictingResource) {
         final String conflictingArchiveKey = thatArchive.getKey();
-        ConflictingArchive conflictingArchive = findConflictingArchiveByKey(thisArchive, conflictingArchiveKey);
-        if (conflictingArchive == null) {
-            conflictingArchive = new ConflictingArchive();
-            conflictingArchive.setConflictingArchive(thatArchive);
-            thisArchive.getConflictingArchives().add(conflictingArchive);
+        ArchiveConflict archiveConflict = findConflictingArchiveByKey(thisArchive, conflictingArchiveKey);
+        if (archiveConflict == null) {
+            archiveConflict = new ArchiveConflict();
+            archiveConflict.setThisArchive(thisArchive);
+            archiveConflict.setThatArchive(thatArchive);
+            thisArchive.getArchiveConflicts().add(archiveConflict);
         }
-        conflictingArchive.addResource(conflictingResource);
+        archiveConflict.addResource(conflictingResource);
     }
 
-    private static ConflictingArchive findConflictingArchiveByKey(ArchiveInfo thisArchive, String key) {
-        for (ConflictingArchive conflictingArchive : thisArchive.getConflictingArchives()) {
-            if (key.equals(conflictingArchive.getArchiveInfo().getKey())) {
-                return conflictingArchive;
+    private static ArchiveConflict findConflictingArchiveByKey(ArchiveInfo thisArchive, String key) {
+        for (ArchiveConflict archiveConflict : thisArchive.getArchiveConflicts()) {
+            if (key.equals(archiveConflict.getThatArchive().getKey())) {
+                return archiveConflict;
             }
         }
         return null;
@@ -98,7 +99,7 @@ public class ClassConflictDetector {
         // fill response
         final List<ArchiveInfo> conflictingArchives = response.getConflictingArchives();
         for (ArchiveInfo archive : archiveInfoDao.getAllArchives()) {
-            if (! archive.getConflictingArchives().isEmpty()) {
+            if (! archive.getArchiveConflicts().isEmpty()) {
                 conflictingArchives.add(archive);
             }
         }

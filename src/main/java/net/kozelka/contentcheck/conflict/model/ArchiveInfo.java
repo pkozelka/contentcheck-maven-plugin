@@ -5,13 +5,13 @@ import java.util.Set;
 
 /**
  * Represents one classpath element, typically an archive
- * @todo get rid of #conflictingArchives here; it should be computed
+ * @todo get rid of #archiveConflicts here; it should be computed
  * @author Petr Kozelka
  */
 public class ArchiveInfo {
     private String key;
     private int classCount;
-    private Set<ConflictingArchive> conflictingArchives = new LinkedHashSet<ConflictingArchive>();
+    private Set<ArchiveConflict> archiveConflicts = new LinkedHashSet<ArchiveConflict>();
 
     public ArchiveInfo() {
     }
@@ -38,8 +38,8 @@ public class ArchiveInfo {
         return classCount;
     }
 
-    public Set<ConflictingArchive> getConflictingArchives() {
-        return conflictingArchives;
+    public Set<ArchiveConflict> getArchiveConflicts() {
+        return archiveConflicts;
     }
 
     @Override

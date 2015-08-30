@@ -10,13 +10,10 @@ import java.util.List;
  *  @todo: this will be an internal linking, not an explicit entity
  * @author Petr Kozelka
  */
-public class ConflictingArchive {
-    private ArchiveInfo archiveInfo;
+public class ArchiveConflict {
+    private ArchiveInfo thisArchive;
+    private ArchiveInfo thatArchive;
     private final List<ResourceInfo> resources = new ArrayList<ResourceInfo>();
-
-    public void setConflictingArchive(ArchiveInfo archiveInfo) {
-        this.archiveInfo = archiveInfo;
-    }
 
     public void addResource(ResourceInfo ri) {
         resources.add(ri);
@@ -25,14 +22,26 @@ public class ConflictingArchive {
     /**
      * @return the conflicting archive
      */
-    public ArchiveInfo getArchiveInfo() {
-        return archiveInfo;
+    public ArchiveInfo getThatArchive() {
+        return thatArchive;
+    }
+
+    public void setThatArchive(ArchiveInfo thatArchive) {
+        this.thatArchive = thatArchive;
     }
 
     /**
-     * @return all conflicting resources in the {@link #getArchiveInfo() archiveInfo}
+     * @return all conflicting resources in the {@link #getThatArchive() thatArchive}
      */
     public List<ResourceInfo> getResources() {
         return resources;
+    }
+
+    public ArchiveInfo getThisArchive() {
+        return thisArchive;
+    }
+
+    public void setThisArchive(ArchiveInfo thisArchive) {
+        this.thisArchive = thisArchive;
     }
 }
