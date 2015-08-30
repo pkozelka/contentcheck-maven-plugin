@@ -1,7 +1,6 @@
 package net.kozelka.contentcheck.conflict.api;
 
 import java.util.Collection;
-import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
 
 /**
  * @author Petr Kozelka
@@ -15,7 +14,7 @@ public interface ConflictDao {
      * @param conflict the new instance, candidate for saving
      * @return existing instance with the same pair of conflicting archives, or the new one
      */
-    ArchiveConflict save(ArchiveConflict conflict);
+    ConflictCheckResponse.ArchiveConflict save(ConflictCheckResponse.ArchiveConflict conflict);
 
-    Collection<? extends ArchiveConflict> getAll();
+    Collection<? extends ConflictCheckResponse.ArchiveConflict> getAll();
 }

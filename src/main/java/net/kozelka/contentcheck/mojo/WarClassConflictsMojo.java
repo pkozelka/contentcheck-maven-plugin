@@ -6,7 +6,6 @@ import java.util.List;
 import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
 import net.kozelka.contentcheck.conflict.impl.ConflictCheckResponsePrinter;
-import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -60,7 +59,7 @@ public class WarClassConflictsMojo extends AbstractMojo {
             final ClassConflictDetector ccd = new ClassConflictDetector();
             final List<ArchiveInfo> archives = ccd.loadWar(sourceFile);
             final ConflictCheckResponse response = ccd.findConflicts(archives);
-            final List<ArchiveConflict> archiveConflicts = response.getArchiveConflicts();
+            final List<ConflictCheckResponse.ArchiveConflict> archiveConflicts = response.getArchiveConflicts();
             final int totalConflicts;
             if (archiveConflicts.isEmpty()) {
                 totalConflicts = 0;

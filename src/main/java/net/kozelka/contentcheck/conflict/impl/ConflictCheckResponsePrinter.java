@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
-import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 
@@ -14,9 +13,9 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  */
 public class ConflictCheckResponsePrinter {
     public static int printResults(ConflictCheckResponse response, int previewThreshold, StreamConsumer output) {
-        final List<ArchiveConflict> sortedArchiveConflicts = new ArrayList<ArchiveConflict>(response.getArchiveConflicts());
-        Collections.sort(sortedArchiveConflicts, new Comparator<ArchiveConflict>() {
-            public int compare(ArchiveConflict o1, ArchiveConflict o2) {
+        final List<ConflictCheckResponse.ArchiveConflict> sortedArchiveConflicts = new ArrayList<ConflictCheckResponse.ArchiveConflict>(response.getArchiveConflicts());
+        Collections.sort(sortedArchiveConflicts, new Comparator<ConflictCheckResponse.ArchiveConflict>() {
+            public int compare(ConflictCheckResponse.ArchiveConflict o1, ConflictCheckResponse.ArchiveConflict o2) {
                 int rv = o1.getThisArchive().getKey().compareTo(o2.getThisArchive().getKey());
                 if (rv == 0) {
                     rv = o1.getThatArchive().getKey().compareTo(o2.getThatArchive().getKey());
@@ -27,7 +26,7 @@ public class ConflictCheckResponsePrinter {
         int totalConflicts = 0;
 
         String previousThis = "-";
-        for (ArchiveConflict archiveConflict : sortedArchiveConflicts) {
+        for (ConflictCheckResponse.ArchiveConflict archiveConflict : sortedArchiveConflicts) {
             final String thisArchiveKey = archiveConflict.getThisArchive().getKey();
             if (!thisArchiveKey.equals(previousThis)) {
                 output.consumeLine("");

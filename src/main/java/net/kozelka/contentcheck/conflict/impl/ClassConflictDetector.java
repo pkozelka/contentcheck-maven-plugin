@@ -11,7 +11,6 @@ import java.util.zip.ZipInputStream;
 import net.kozelka.contentcheck.conflict.api.ArchiveInfoDao;
 import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
 import net.kozelka.contentcheck.conflict.api.ConflictDao;
-import net.kozelka.contentcheck.conflict.model.ArchiveConflict;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
@@ -49,19 +48,10 @@ public class ClassConflictDetector {
         resource = archiveInfoDao.saveResource(resource);
 
         archive.addResource(resource);
-        final String entryName = entry.getName();
-        if (entryName.endsWith(".class")) {
-            //TODO this prepares results, and will be moved to #findConflicts()
-            for (ArchiveInfo hostingArchive : resource.getHostingArchives()) {
-                addConflict(hostingArchive, archive, resource);
-                addConflict(archive, hostingArchive, resource);
-            }
-        }
-        resource.getHostingArchives().add(archive);
     }
 
     private void addConflict(ArchiveInfo thisArchive, ArchiveInfo thatArchive, ResourceInfo conflictingResource) {
-        ArchiveConflict archiveConflict = new ArchiveConflict();
+        ConflictCheckResponse.ArchiveConflict archiveConflict = new ConflictCheckResponse.ArchiveConflict();
         archiveConflict.setThisArchive(thisArchive);
         archiveConflict.setThatArchive(thatArchive);
         archiveConflict = conflictDao.save(archiveConflict);
@@ -86,8 +76,21 @@ public class ClassConflictDetector {
         ci.walk();
         return archives;
     }
+
     public ConflictCheckResponse findConflicts(Collection<ArchiveInfo> archives) {
-        // TODO: the conflict lookup should happen here!
+        for (ArchiveInfo archive : archives) {
+            for (ResourceInfo resource : archive.getResources()) {
+                final String resourceName = resource.getUri();
+                if (!resourceName.endsWith(".class")) continue;
+
+                for (ArchiveInfo hostingArchive : resource.getHostingArchives()) {
+                    addConflict(hostingArchive, archive, resource);
+                    addConflict(archive, hostingArchive, resource);
+                }
+                resource.getHostingArchives().add(archive);
+            }
+        }
+        // prepare response
         final ConflictCheckResponse response = new ConflictCheckResponse();
         response.getExploredArchives().addAll(archives);
         response.getArchiveConflicts().addAll(conflictDao.getAll());
