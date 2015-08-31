@@ -26,10 +26,11 @@ class ClasspathResources {
             resourcesByUri.put(resourceUri, rwo);
         } else {
             for (ArchiveInfo candidate : rwo.allCandidates) {
-                final String hisHash = findResourceByUri(candidate, resourceUri).getHash();
+                final ResourceInfo hisResource = findResourceByUri(candidate, resourceUri);
+                final String hisHash = hisResource.getHash();
                 final boolean isDuplicate =  myHash.equals(hisHash);
-                addConflict(archive, candidate, resource, isDuplicate);
-                addConflict(candidate, archive, resource, isDuplicate);
+                conflictCollector.addOverlap(candidate, archive, resource, isDuplicate);
+                conflictCollector.addOverlap(archive, candidate, resource, isDuplicate);
             }
         }
         rwo.addCandidate(myHash, archive);
@@ -42,10 +43,6 @@ class ClasspathResources {
             }
         }
         return null;
-    }
-
-    private void addConflict(ArchiveInfo archive, ArchiveInfo candidate, ResourceInfo resource, boolean isDuplicate) {
-        final ConflictCheckResponse.ArchiveConflict ac = conflictCollector.addOverlap(candidate, archive, resource, isDuplicate);
     }
 
     public Collection<? extends ConflictCheckResponse.ArchiveConflict> getConflicts() {
