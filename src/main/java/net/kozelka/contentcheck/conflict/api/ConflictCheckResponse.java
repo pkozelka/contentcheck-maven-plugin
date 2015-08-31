@@ -7,6 +7,7 @@ import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 
 /**
  * Represents the results of conflict checking.
+ *
  * @author Petr Kozelka
  */
 public class ConflictCheckResponse {
@@ -23,18 +24,18 @@ public class ConflictCheckResponse {
     }
 
     /**
-     * Holds information about conflicting resources between two archives.
-     * One instance represents pointer from one archive to another (conflicting) one, and keeps all resources on which a conflict is detected.
+     * Holds information about overlaping resources between two archives.
+     * One instance represents pointer from one archive to another (conflicting) one, and keeps all resources on which an overlap is detected.
      *
      * @author Petr Kozelka
      */
     public static class ArchiveConflict {
         private ArchiveInfo thisArchive;
         private ArchiveInfo thatArchive;
-        private final List<ResourceInfo> resources = new ArrayList<ResourceInfo>();
+        private final List<ResourceInfo> overlapingResources = new ArrayList<ResourceInfo>();
 
         public void addResource(ResourceInfo ri) {
-            resources.add(ri);
+            overlapingResources.add(ri);
         }
 
         /**
@@ -48,19 +49,19 @@ public class ConflictCheckResponse {
             this.thatArchive = thatArchive;
         }
 
-        /**
-         * @return all conflicting resources in the {@link #getThatArchive() thatArchive}
-         */
-        public List<ResourceInfo> getResources() {
-            return resources;
-        }
-
         public ArchiveInfo getThisArchive() {
             return thisArchive;
         }
 
         public void setThisArchive(ArchiveInfo thisArchive) {
             this.thisArchive = thisArchive;
+        }
+
+        /**
+         * @return all overlaping resources between {@link #getThisArchive() thisArchive} and {@link #getThatArchive() thatArchive}
+         */
+        public List<ResourceInfo> getOverlapingResources() {
+            return overlapingResources;
         }
     }
 }

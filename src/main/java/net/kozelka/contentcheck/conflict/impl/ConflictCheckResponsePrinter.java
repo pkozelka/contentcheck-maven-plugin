@@ -36,7 +36,7 @@ public class ConflictCheckResponsePrinter {
                 previousThis = thisArchiveKey;
             }
 
-            final List<ResourceInfo> conflictResources = archiveConflict.getResources();
+            final List<ResourceInfo> conflictResources = archiveConflict.getOverlapingResources();
             final int conflictResourceCount = conflictResources.size();
             totalConflicts += conflictResourceCount;
             output.consumeLine(String.format("%8d class conflicts with '%s'", conflictResourceCount, archiveConflict.getThatArchive().getKey()));
