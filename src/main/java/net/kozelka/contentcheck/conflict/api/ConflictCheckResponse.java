@@ -58,11 +58,17 @@ public class ConflictCheckResponse {
         /**
          * Adds a resource on which an overlap was detected.
          * Each overlap is either {@link #addDuplicate(ResourceInfo) duplicate} or {@link #addConflict(ResourceInfo) conflict};
-         * the caller is responsible for calling proper method to indicate this.
+         * the caller is responsible for deciding which of them is it.
          * @param resource -
+         * @param isDuplicate true for a <b>duplicate</b>, false for a <b>serious conflict</b>
          */
-        public void addOverlap(ResourceInfo resource) {
+        public void addOverlap(ResourceInfo resource, boolean isDuplicate) {
             overlapingResources.add(resource);
+            if (isDuplicate) {
+                duplicateResources.add(resource);
+            } else {
+                conflictingResources.add(resource);
+            }
         }
 
         /**
@@ -72,25 +78,8 @@ public class ConflictCheckResponse {
             return overlapingResources;
         }
 
-        /**
-         * Adds a resource on which an conflict was detected.
-         * @param resource -
-         */
-        public void addConflict(ResourceInfo resource) {
-            conflictingResources.add(resource);
-        }
-
-
         public List<ResourceInfo> getConflictingResources() {
             return conflictingResources;
-        }
-
-        /**
-         * Adds a resource on which an duplication was detected.
-         * @param resource -
-         */
-        public void addDuplicate(ResourceInfo resource) {
-            duplicateResources.add(resource);
         }
 
         public List<ResourceInfo> getDuplicateResources() {

@@ -45,12 +45,7 @@ class ClasspathResources {
     }
 
     private void addConflict(ArchiveInfo archive, ArchiveInfo candidate, ResourceInfo resource, boolean isDuplicate) {
-        final ConflictCheckResponse.ArchiveConflict ac = conflictCollector.addConflict(candidate, archive, resource);
-        if (isDuplicate) {
-            ac.addDuplicate(resource);
-        } else {
-            ac.addConflict(resource);
-        }
+        final ConflictCheckResponse.ArchiveConflict ac = conflictCollector.addOverlap(candidate, archive, resource, isDuplicate);
     }
 
     public Collection<? extends ConflictCheckResponse.ArchiveConflict> getConflicts() {

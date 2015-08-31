@@ -30,12 +30,12 @@ class ConflictCollector {
         return conflicts.values();
     }
 
-    public ConflictCheckResponse.ArchiveConflict addConflict(ArchiveInfo thisArchive, ArchiveInfo thatArchive, ResourceInfo conflictingResource) {
+    public ConflictCheckResponse.ArchiveConflict addOverlap(ArchiveInfo thisArchive, ArchiveInfo thatArchive, ResourceInfo conflictingResource, boolean isDuplicate) {
         ConflictCheckResponse.ArchiveConflict archiveConflict = new ConflictCheckResponse.ArchiveConflict();
         archiveConflict.setThisArchive(thisArchive);
         archiveConflict.setThatArchive(thatArchive);
         archiveConflict = save(archiveConflict);
-        archiveConflict.addOverlap(conflictingResource);
+        archiveConflict.addOverlap(conflictingResource, isDuplicate);
         return archiveConflict;
     }
 
