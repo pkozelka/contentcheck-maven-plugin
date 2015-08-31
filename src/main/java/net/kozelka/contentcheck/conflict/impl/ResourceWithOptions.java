@@ -11,7 +11,7 @@ import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
  *
  * @author Petr Kozelka
  */
-class ResourceWithOptions {
+public class ResourceWithOptions {
     String uri;
     final Map<String, List<ArchiveInfo>> candidatesByHash = new HashMap<String, List<ArchiveInfo>>();
     final List<ArchiveInfo> allCandidates = new ArrayList<ArchiveInfo>();

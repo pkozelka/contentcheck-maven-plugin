@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
+import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 
 /**
- * Prints the {@link ConflictCheckResponse results} of {@link ClassConflictDetector#findConflicts(Collection) conflict detection} into console
+ * Prints the {@link ConflictCheckResponse results} of {@link ClassConflictDetector#findConflicts() conflict detection} into console
  *
  * @author Petr Kozelka
  */
@@ -60,6 +62,16 @@ public class ConflictCheckResponsePrinter {
                 totalConflicts,
                 sortedArchiveConflicts.size(),
                 response.getExploredArchives().size()));
+
+        for (ResourceWithOptions rwo : response.getResources()) {
+            if (! rwo.hasConflicts()) continue;
+            output.consumeLine(rwo.uri);
+            for (Map.Entry<String, List<ArchiveInfo>> entry : rwo.candidatesByHash.entrySet()) {
+                output.consumeLine(String.format("  - %s: %s", entry.getKey(), entry.getValue()));
+
+            }
+
+        }
         return totalConflicts;
     }
 }

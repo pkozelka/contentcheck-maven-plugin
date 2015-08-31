@@ -48,4 +48,8 @@ class ClasspathResources {
     public Collection<? extends ConflictCheckResponse.ArchiveConflict> getConflicts() {
         return conflictCollector.getAll();
     }
+
+    public Collection<ResourceWithOptions> getResources() {
+        return resourcesByUri.values();
+    }
 }

@@ -2,6 +2,7 @@ package net.kozelka.contentcheck.conflict.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.kozelka.contentcheck.conflict.impl.ResourceWithOptions;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 
@@ -14,6 +15,7 @@ public class ConflictCheckResponse {
 
     private final List<ArchiveInfo> exploredArchives = new ArrayList<ArchiveInfo>();
     private final List<ArchiveConflict> archiveConflicts = new ArrayList<ArchiveConflict>();
+    private final List<ResourceWithOptions> resources = new ArrayList<ResourceWithOptions>();
 
     public List<ArchiveConflict> getArchiveConflicts() {
         return archiveConflicts;
@@ -21,6 +23,10 @@ public class ConflictCheckResponse {
 
     public List<ArchiveInfo> getExploredArchives() {
         return exploredArchives;
+    }
+
+    public List<ResourceWithOptions> getResources() {
+        return resources;
     }
 
     /**

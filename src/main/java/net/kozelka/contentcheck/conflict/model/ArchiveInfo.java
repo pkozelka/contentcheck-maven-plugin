@@ -79,4 +79,9 @@ public class ArchiveInfo {
     public void setResourceCount(int resourceCount) {
         this.resourceCount = resourceCount;
     }
+
+    @Override
+    public String toString() {
+        return key;
+    }
 }

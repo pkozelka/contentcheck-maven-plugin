@@ -30,6 +30,7 @@ public class ClassConflictDetector {
         final ConflictCheckResponse response = new ConflictCheckResponse();
         response.getExploredArchives().addAll(archives);
         response.getArchiveConflicts().addAll(cpr.getConflicts());
+        response.getResources().addAll(cpr.getResources());
         return response;
     }
 

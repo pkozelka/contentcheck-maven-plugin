@@ -66,12 +66,13 @@ public class WarClassConflictsMojo extends AbstractMojo {
                 totalConflicts = 0;
                 getLog().info("No conflicts detected.");
             } else {
-                totalConflicts = ConflictCheckResponsePrinter.printResults(response, previewThreshold, new StreamConsumer() {
+                final StreamConsumer consumer = new StreamConsumer() {
                     @Override
                     public void consumeLine(String line) {
                         getLog().error(line);
                     }
-                });
+                };
+                totalConflicts = ConflictCheckResponsePrinter.printResults(response, previewThreshold, consumer);
                 final String errorMessage = String.format("Found %d conflicting resources in %d archive conflicts in %s",
                     totalConflicts,
                     archiveConflicts.size(),

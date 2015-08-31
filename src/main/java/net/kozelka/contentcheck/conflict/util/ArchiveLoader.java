@@ -54,7 +54,7 @@ public class ArchiveLoader {
     private static void processResource(ArchiveInfo archive, ZipEntry entry) {
         final ResourceInfo resource = new ResourceInfo();
         resource.setUri(entry.getName());
-        resource.setHash("crc:" + entry.getCrc());
+        resource.setHash(String.format("crc=%s&sz=%s", entry.getCrc(), entry.getSize()));
         archive.addResource(resource);
     }
 }
