@@ -39,7 +39,11 @@ public class ConflictCheckResponsePrinter {
             final List<ResourceInfo> conflictResources = archiveConflict.getOverlapingResources();
             final int conflictResourceCount = conflictResources.size();
             totalConflicts += conflictResourceCount;
-            output.consumeLine(String.format("%8d class conflicts with '%s'", conflictResourceCount, archiveConflict.getThatArchive().getKey()));
+            output.consumeLine(String.format("%8d classes overlap (%d conflicts, %d duplicates) with '%s'",
+                conflictResourceCount,
+                archiveConflict.getConflictingResources().size(),
+                archiveConflict.getDuplicateResources().size(),
+                archiveConflict.getThatArchive().getKey()));
             if (previewThreshold == 0) continue;
             int cnt = 0;
             for (ResourceInfo resource : conflictResources) {
