@@ -18,6 +18,7 @@ class ClasspathResources {
 
     public void addResource(ResourceInfo resource, ArchiveInfo archive) {
         final String resourceUri = resource.getUri();
+        final String myHash = resource.getHash();
         ResourceWithOptions rwo = resourcesByUri.get(resourceUri);
         if (rwo == null) {
             rwo = new ResourceWithOptions();
@@ -25,11 +26,31 @@ class ClasspathResources {
             resourcesByUri.put(resourceUri, rwo);
         } else {
             for (ArchiveInfo candidate : rwo.allCandidates) {
-                conflictCollector.addConflict(candidate, archive, resource);
-                conflictCollector.addConflict(archive, candidate, resource);
+                final String hisHash = findResourceByUri(candidate, resourceUri).getHash();
+                final boolean isDuplicate =  myHash.equals(hisHash);
+                addConflict(archive, candidate, resource, isDuplicate);
+                addConflict(candidate, archive, resource, isDuplicate);
             }
         }
-        rwo.addCandidate(resource.getHash(), archive);
+        rwo.addCandidate(myHash, archive);
+    }
+
+    static ResourceInfo findResourceByUri(ArchiveInfo archive, String resourceUri) {
+        for (ResourceInfo resource : archive.getResources()) {
+            if (resource.getUri().equals(resourceUri)) {
+                return resource;
+            }
+        }
+        return null;
+    }
+
+    private void addConflict(ArchiveInfo archive, ArchiveInfo candidate, ResourceInfo resource, boolean isDuplicate) {
+        final ConflictCheckResponse.ArchiveConflict ac = conflictCollector.addConflict(candidate, archive, resource);
+        if (isDuplicate) {
+            ac.addDuplicate(resource);
+        } else {
+            ac.addConflict(resource);
+        }
     }
 
     public Collection<? extends ConflictCheckResponse.ArchiveConflict> getConflicts() {

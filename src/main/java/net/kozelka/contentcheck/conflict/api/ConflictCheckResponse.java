@@ -33,10 +33,8 @@ public class ConflictCheckResponse {
         private ArchiveInfo thisArchive;
         private ArchiveInfo thatArchive;
         private final List<ResourceInfo> overlapingResources = new ArrayList<ResourceInfo>();
-
-        public void addResource(ResourceInfo ri) {
-            overlapingResources.add(ri);
-        }
+        private final List<ResourceInfo> conflictingResources = new ArrayList<ResourceInfo>();
+        private final List<ResourceInfo> duplicateResources = new ArrayList<ResourceInfo>();
 
         /**
          * @return the conflicting archive
@@ -58,10 +56,45 @@ public class ConflictCheckResponse {
         }
 
         /**
-         * @return all overlaping resources between {@link #getThisArchive() thisArchive} and {@link #getThatArchive() thatArchive}
+         * Adds a resource on which an overlap was detected.
+         * Each overlap is either {@link #addDuplicate(ResourceInfo) duplicate} or {@link #addConflict(ResourceInfo) conflict};
+         * the caller is responsible for calling proper method to indicate this.
+         * @param resource -
+         */
+        public void addOverlap(ResourceInfo resource) {
+            overlapingResources.add(resource);
+        }
+
+        /**
+         * @return overlaping resources between {@link #getThisArchive() thisArchive} and {@link #getThatArchive() thatArchive}
          */
         public List<ResourceInfo> getOverlapingResources() {
             return overlapingResources;
+        }
+
+        /**
+         * Adds a resource on which an conflict was detected.
+         * @param resource -
+         */
+        public void addConflict(ResourceInfo resource) {
+            conflictingResources.add(resource);
+        }
+
+
+        public List<ResourceInfo> getConflictingResources() {
+            return conflictingResources;
+        }
+
+        /**
+         * Adds a resource on which an duplication was detected.
+         * @param resource -
+         */
+        public void addDuplicate(ResourceInfo resource) {
+            duplicateResources.add(resource);
+        }
+
+        public List<ResourceInfo> getDuplicateResources() {
+            return duplicateResources;
         }
     }
 }
