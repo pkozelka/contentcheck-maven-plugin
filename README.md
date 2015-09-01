@@ -1,6 +1,9 @@
 # Maven Content Check Plugin
 
-[![Build Status](https://travis-ci.org/pkozelka/contentcheck-maven-plugin.png?branch=master)](https://travis-ci.org/pkozelka/contentcheck-maven-plugin)
+[![TravisCI Status](https://travis-ci.org/pkozelka/contentcheck-maven-plugin.png?branch=master)](https://travis-ci.org/pkozelka/contentcheck-maven-plugin)
+
+[![Codeship Status](https://codeship.com/projects/b3d55ae0-f6b0-0132-cdf6-4e1088c82680/status?branch=master)](https://codeship.com/projects/86152)
+
 
 Protects your WAR against
 
