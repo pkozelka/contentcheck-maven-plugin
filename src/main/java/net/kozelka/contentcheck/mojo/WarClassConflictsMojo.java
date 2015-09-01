@@ -43,9 +43,10 @@ public class WarClassConflictsMojo extends AbstractMojo {
     int previewThreshold;
 
     /**
-     * How many conflicts are we tolerating.
+     * How many overlaps are we tolerating.
      * Useful to ensure that the number is not growing, when you cannot fix everything.
      * @todo replace this with include/exclude lists
+     * @todo deprecate and use name like "toleratedOverlapCount"
      */
     @Parameter(defaultValue = "0")
     int toleratedConflictCount;
@@ -56,15 +57,17 @@ public class WarClassConflictsMojo extends AbstractMojo {
             return;
         }
 
+        // todo let's deprecate the old name, in favor of this more precise one
+        final int toleratedOverlapCount = toleratedConflictCount;
+        //
         try {
             final ClassConflictDetector ccd = new ClassConflictDetector();
             final List<ArchiveInfo> archives = ArchiveLoader.loadWar(sourceFile);
             final ConflictCheckResponse response = ccd.findConflicts(archives);
             final List<ConflictCheckResponse.ArchiveConflict> archiveConflicts = response.getArchiveConflicts();
-            final int totalConflicts;
+            final int totalOverlaps = response.getTotalOverlaps();
             if (archiveConflicts.isEmpty()) {
-                totalConflicts = 0;
-                getLog().info("No conflicts detected.");
+                getLog().info("No overlaps detected.");
             } else {
                 final StreamConsumer consumer = new StreamConsumer() {
                     @Override
@@ -72,18 +75,18 @@ public class WarClassConflictsMojo extends AbstractMojo {
                         getLog().error(line);
                     }
                 };
-                totalConflicts = ConflictCheckResponsePrinter.printResults(response, previewThreshold, consumer);
-                final String errorMessage = String.format("Found %d conflicting resources in %d archive conflicts in %s",
-                    totalConflicts,
+                ConflictCheckResponsePrinter.printResults(response, previewThreshold, consumer);
+                final String errorMessage = String.format("Found %d overlapping resources in %d archive conflicts in %s",
+                    totalOverlaps,
                     archiveConflicts.size(),
                     sourceFile);
                 getLog().error(errorMessage);
-                if (totalConflicts > toleratedConflictCount) {
+                if (totalOverlaps > toleratedOverlapCount) {
                     throw new MojoFailureException(errorMessage);
                 }
             }
-            if (totalConflicts < toleratedConflictCount) {
-                getLog().warn(String.format("We currently tolerate %d conflicts; please reduce the tolerance to prevent growing conflicts", toleratedConflictCount));
+            if (totalOverlaps < toleratedOverlapCount) {
+                getLog().warn(String.format("We currently tolerate %d overlaps; please reduce the tolerance to prevent growing mess", toleratedOverlapCount));
             }
         } catch (IOException e) {
             throw new MojoExecutionException(sourceFile.getAbsolutePath(), e);

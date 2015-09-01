@@ -31,6 +31,12 @@ public class ClassConflictDetector {
         response.getExploredArchives().addAll(archives);
         response.getArchiveConflicts().addAll(cpr.getConflicts());
         response.getResources().addAll(cpr.getResources());
+        // count: involved jars, class overlaps (duplications, conflicts),
+        int totalOverlaps = 0;
+        for (ConflictCheckResponse.ArchiveConflict archiveConflict : cpr.getConflicts()) {
+            totalOverlaps += archiveConflict.getOverlapingResources().size();
+        }
+        response.setTotalOverlaps(totalOverlaps);
         return response;
     }
 

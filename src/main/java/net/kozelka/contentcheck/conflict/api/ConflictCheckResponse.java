@@ -16,6 +16,7 @@ public class ConflictCheckResponse {
     private final List<ArchiveInfo> exploredArchives = new ArrayList<ArchiveInfo>();
     private final List<ArchiveConflict> archiveConflicts = new ArrayList<ArchiveConflict>();
     private final List<ResourceWithOptions> resources = new ArrayList<ResourceWithOptions>();
+    private int totalOverlaps;
 
     public List<ArchiveConflict> getArchiveConflicts() {
         return archiveConflicts;
@@ -27,6 +28,14 @@ public class ConflictCheckResponse {
 
     public List<ResourceWithOptions> getResources() {
         return resources;
+    }
+
+    public void setTotalOverlaps(int totalOverlaps) {
+        this.totalOverlaps = totalOverlaps;
+    }
+
+    public int getTotalOverlaps() {
+        return totalOverlaps;
     }
 
     /**

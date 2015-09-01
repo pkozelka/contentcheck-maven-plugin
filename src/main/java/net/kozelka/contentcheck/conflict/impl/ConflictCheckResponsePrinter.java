@@ -16,7 +16,7 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  * @author Petr Kozelka
  */
 public class ConflictCheckResponsePrinter {
-    public static int printResults(ConflictCheckResponse response, int previewThreshold, StreamConsumer output) {
+    public static void printResults(ConflictCheckResponse response, int previewThreshold, StreamConsumer output) {
         final List<ConflictCheckResponse.ArchiveConflict> sortedArchiveConflicts = new ArrayList<ConflictCheckResponse.ArchiveConflict>(response.getArchiveConflicts());
         Collections.sort(sortedArchiveConflicts, new Comparator<ConflictCheckResponse.ArchiveConflict>() {
             public int compare(ConflictCheckResponse.ArchiveConflict o1, ConflictCheckResponse.ArchiveConflict o2) {
@@ -27,7 +27,6 @@ public class ConflictCheckResponsePrinter {
                 return rv;
             }
         });
-        int totalConflicts = 0;
 
         String previousThis = "-";
         for (ConflictCheckResponse.ArchiveConflict archiveConflict : sortedArchiveConflicts) {
@@ -40,7 +39,6 @@ public class ConflictCheckResponsePrinter {
 
             final List<ResourceInfo> conflictResources = archiveConflict.getOverlapingResources();
             final int conflictResourceCount = conflictResources.size();
-            totalConflicts += conflictResourceCount;
             output.consumeLine(String.format("%8d classes overlap (%d conflicts, %d duplicates) with '%s'",
                 conflictResourceCount,
                 archiveConflict.getConflictingResources().size(),
@@ -58,8 +56,8 @@ public class ConflictCheckResponsePrinter {
             }
         }
         output.consumeLine("-------------------------------------------------");
-        output.consumeLine(String.format("Total: %d conflicts affect %d of %d archives.",
-                totalConflicts,
+        output.consumeLine(String.format("Total: %d overlaps affect %d of %d archives.",
+                response.getTotalOverlaps(),
                 sortedArchiveConflicts.size(),
                 response.getExploredArchives().size()));
 
@@ -72,6 +70,5 @@ public class ConflictCheckResponsePrinter {
             }
 
         }
-        return totalConflicts;
     }
 }
