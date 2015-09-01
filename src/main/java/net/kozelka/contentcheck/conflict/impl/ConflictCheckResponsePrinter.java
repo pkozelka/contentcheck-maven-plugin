@@ -69,8 +69,8 @@ public class ConflictCheckResponsePrinter {
 
         for (ResourceWithOptions rwo : response.getResources()) {
             if (! rwo.hasConflicts()) continue;
-            output.consumeLine(rwo.uri);
-            for (Map.Entry<String, List<ArchiveInfo>> entry : rwo.candidatesByHash.entrySet()) {
+            output.consumeLine(rwo.getUri());
+            for (Map.Entry<String, List<ArchiveInfo>> entry : rwo.getCandidatesByHash().entrySet()) {
                 output.consumeLine(String.format("  - %s: %s", entry.getKey(), entry.getValue()));
 
             }

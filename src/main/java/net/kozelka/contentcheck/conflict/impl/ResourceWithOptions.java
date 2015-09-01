@@ -12,9 +12,9 @@ import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
  * @author Petr Kozelka
  */
 public class ResourceWithOptions {
-    String uri;
-    final Map<String, List<ArchiveInfo>> candidatesByHash = new HashMap<String, List<ArchiveInfo>>();
-    final List<ArchiveInfo> allCandidates = new ArrayList<ArchiveInfo>();
+    private String uri;
+    private final Map<String, List<ArchiveInfo>> candidatesByHash = new HashMap<String, List<ArchiveInfo>>();
+    private final List<ArchiveInfo> allCandidates = new ArrayList<ArchiveInfo>();
 
     void addCandidate(String hash, ArchiveInfo archive) {
         allCandidates.add(archive);
@@ -33,5 +33,21 @@ public class ResourceWithOptions {
 
     boolean hasOverlaps() {
         return allCandidates.size() > 1;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public List<ArchiveInfo> getAllCandidates() {
+        return allCandidates;
+    }
+
+    public Map<String, List<ArchiveInfo>> getCandidatesByHash() {
+        return candidatesByHash;
     }
 }

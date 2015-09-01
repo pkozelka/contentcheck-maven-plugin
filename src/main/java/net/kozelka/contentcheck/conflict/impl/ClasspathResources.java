@@ -22,10 +22,10 @@ class ClasspathResources {
         ResourceWithOptions rwo = resourcesByUri.get(resourceUri);
         if (rwo == null) {
             rwo = new ResourceWithOptions();
-            rwo.uri = resourceUri;
+            rwo.setUri(resourceUri);
             resourcesByUri.put(resourceUri, rwo);
         } else {
-            for (ArchiveInfo candidate : rwo.allCandidates) {
+            for (ArchiveInfo candidate : rwo.getAllCandidates()) {
                 final ResourceInfo hisResource = findResourceByUri(candidate, resourceUri);
                 final String hisHash = hisResource.getHash();
                 final boolean isDuplicate =  myHash.equals(hisHash);
