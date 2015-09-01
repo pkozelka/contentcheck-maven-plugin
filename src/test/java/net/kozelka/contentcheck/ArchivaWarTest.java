@@ -49,7 +49,9 @@ public class ArchivaWarTest {
         final ClassConflictDetector ccd = new ClassConflictDetector();
         final List<ArchiveInfo> archives = ArchiveLoader.loadWar(archivaWar);
         final ConflictCheckResponse response = ccd.findConflicts(archives);
-        ConflictCheckResponsePrinter.printResults(response, 2, new DefaultConsumer());
+        final ConflictCheckResponsePrinter printer = new ConflictCheckResponsePrinter();
+        printer.setOutput(new DefaultConsumer());
+        printer.printResults(response, 2);
         Assert.assertEquals("Total overlaps", 290, response.getTotalOverlaps());
         Assert.assertEquals("Total entries", 235, response.getExploredArchives().size());
         Assert.assertEquals("Archive conflicts", 18, response.getArchiveConflicts().size());

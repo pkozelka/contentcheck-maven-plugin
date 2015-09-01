@@ -16,7 +16,13 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  * @author Petr Kozelka
  */
 public class ConflictCheckResponsePrinter {
-    public static void printResults(ConflictCheckResponse response, int previewThreshold, StreamConsumer output) {
+    private StreamConsumer output;
+
+    public void setOutput(StreamConsumer output) {
+        this.output = output;
+    }
+
+    public void printResults(ConflictCheckResponse response, int previewThreshold) {
         final List<ConflictCheckResponse.ArchiveConflict> sortedArchiveConflicts = new ArrayList<ConflictCheckResponse.ArchiveConflict>(response.getArchiveConflicts());
         Collections.sort(sortedArchiveConflicts, new Comparator<ConflictCheckResponse.ArchiveConflict>() {
             public int compare(ConflictCheckResponse.ArchiveConflict o1, ConflictCheckResponse.ArchiveConflict o2) {

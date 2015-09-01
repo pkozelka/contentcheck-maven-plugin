@@ -81,13 +81,14 @@ public class WarClassConflictsMojo extends AbstractMojo {
             if (archiveConflicts.isEmpty()) {
                 getLog().info("No overlaps detected.");
             } else {
-                final StreamConsumer consumer = new StreamConsumer() {
+                final ConflictCheckResponsePrinter printer = new ConflictCheckResponsePrinter();
+                printer.setOutput(new StreamConsumer() {
                     @Override
                     public void consumeLine(String line) {
                         getLog().error(line);
                     }
-                };
-                ConflictCheckResponsePrinter.printResults(response, previewThreshold, consumer);
+                });
+                printer.printResults(response, previewThreshold);
                 final String errorMessage = String.format("Found %d overlapping resources in %d archive conflicts in %s",
                     totalOverlaps,
                     archiveConflicts.size(),

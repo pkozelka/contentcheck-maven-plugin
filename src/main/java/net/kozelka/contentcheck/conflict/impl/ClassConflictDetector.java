@@ -50,11 +50,13 @@ public class ClassConflictDetector {
         final ClassConflictDetector ccd = new ClassConflictDetector();
         final List<ArchiveInfo> archives = ArchiveLoader.loadWar(war);
         final ConflictCheckResponse response = ccd.findConflicts(archives);
-        ConflictCheckResponsePrinter.printResults(response, previewThreshold, new StreamConsumer() {
+        final ConflictCheckResponsePrinter printer = new ConflictCheckResponsePrinter();
+        printer.setOutput(new StreamConsumer() {
             @Override
             public void consumeLine(String line) {
                 System.out.println(line);
             }
         });
+        printer.printResults(response, previewThreshold);
     }
 }
