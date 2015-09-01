@@ -33,7 +33,7 @@
                         </goals>
                         <configuration>
                             <sourceFile>../../test-classes/archiva-webapp.war</sourceFile>
-                            <toleratedConflictCount>290</toleratedConflictCount>
+                            <toleratedOverlapCount>290</toleratedOverlapCount>
                         </configuration>
                     </execution>
                 </executions>

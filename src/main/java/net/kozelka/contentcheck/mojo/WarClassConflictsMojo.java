@@ -46,19 +46,31 @@ public class WarClassConflictsMojo extends AbstractMojo {
      * How many overlaps are we tolerating.
      * Useful to ensure that the number is not growing, when you cannot fix everything.
      * @todo replace this with include/exclude lists
-     * @todo deprecate and use name like "toleratedOverlapCount"
      */
     @Parameter(defaultValue = "0")
+    int toleratedOverlapCount;
+
+    /**
+     * @deprecated Use {@link #toleratedOverlapCount} instead.
+     */
+    @Deprecated
+    @Parameter(defaultValue = "-1")
     int toleratedConflictCount;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (skip) {
-            getLog().info("Content checking is skipped.");
+            getLog().info("Content conflict checking is skipped.");
             return;
         }
 
-        // todo let's deprecate the old name, in favor of this more precise one
-        final int toleratedOverlapCount = toleratedConflictCount;
+        if (toleratedConflictCount > -1) {
+            getLog().warn("Parameter 'toleratedConflictCount' is deprecated - use 'toleratedOverlapCount' instead");
+            if (toleratedOverlapCount > 0) {
+                getLog().warn("Parameter 'toleratedConflictCount' is just a deprecated variant of 'toleratedOverlapCount'. You specified both, using only the latter.");
+            } else {
+                toleratedOverlapCount = toleratedConflictCount;
+            }
+        }
         //
         try {
             final ClassConflictDetector ccd = new ClassConflictDetector();
