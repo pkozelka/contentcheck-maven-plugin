@@ -13,9 +13,9 @@
 <a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> java.io.File;
 <a class="jxr_linenumber" name="4" href="#4">4</a>   
 <a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> java.util.List;
-<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
-<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
-<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.conflict.impl.ConflictCheckResponsePrinter;
+<a class="jxr_linenumber" name="6" href="#6">6</a>   <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.conflict.api.ClassConflictReport;
+<a class="jxr_linenumber" name="7" href="#7">7</a>   <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.conflict.impl.ClassConflictAnalyzer;
+<a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.conflict.impl.ClassConflictPrinter;
 <a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 <a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.conflict.util.ArchiveLoader;
 <a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.introspection.ContentIntrospector;
@@ -56,17 +56,18 @@
 <a class="jxr_linenumber" name="46" href="#46">46</a>  
 <a class="jxr_linenumber" name="47" href="#47">47</a>      @Test
 <a class="jxr_linenumber" name="48" href="#48">48</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> classConflicts() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="49" href="#49">49</a>          <strong class="jxr_keyword">final</strong> ClassConflictDetector ccd = <strong class="jxr_keyword">new</strong> ClassConflictDetector();
+<a class="jxr_linenumber" name="49" href="#49">49</a>          <strong class="jxr_keyword">final</strong> ClassConflictAnalyzer ccd = <strong class="jxr_keyword">new</strong> ClassConflictAnalyzer();
 <a class="jxr_linenumber" name="50" href="#50">50</a>          <strong class="jxr_keyword">final</strong> List&lt;ArchiveInfo&gt; archives = ArchiveLoader.loadWar(archivaWar);
-<a class="jxr_linenumber" name="51" href="#51">51</a>          <strong class="jxr_keyword">final</strong> ConflictCheckResponse response = ccd.findConflicts(archives);
-<a class="jxr_linenumber" name="52" href="#52">52</a>          <strong class="jxr_keyword">final</strong> ConflictCheckResponsePrinter printer = <strong class="jxr_keyword">new</strong> ConflictCheckResponsePrinter();
-<a class="jxr_linenumber" name="53" href="#53">53</a>          printer.setOutput(<strong class="jxr_keyword">new</strong> DefaultConsumer());
-<a class="jxr_linenumber" name="54" href="#54">54</a>          printer.printResults(response, 2);
-<a class="jxr_linenumber" name="55" href="#55">55</a>          Assert.assertEquals(<span class="jxr_string">"Total overlaps"</span>, 290, response.getTotalOverlaps());
-<a class="jxr_linenumber" name="56" href="#56">56</a>          Assert.assertEquals(<span class="jxr_string">"Total entries"</span>, 235, response.getExploredArchives().size());
-<a class="jxr_linenumber" name="57" href="#57">57</a>          Assert.assertEquals(<span class="jxr_string">"Archive conflicts"</span>, 18, response.getArchiveConflicts().size());
-<a class="jxr_linenumber" name="58" href="#58">58</a>      }
-<a class="jxr_linenumber" name="59" href="#59">59</a>  }
+<a class="jxr_linenumber" name="51" href="#51">51</a>          <strong class="jxr_keyword">final</strong> ClassConflictReport response = ccd.analyze(archives);
+<a class="jxr_linenumber" name="52" href="#52">52</a>          <strong class="jxr_keyword">final</strong> ClassConflictPrinter printer = <strong class="jxr_keyword">new</strong> ClassConflictPrinter();
+<a class="jxr_linenumber" name="53" href="#53">53</a>          printer.setPreviewThreshold(2);
+<a class="jxr_linenumber" name="54" href="#54">54</a>          printer.setOutput(<strong class="jxr_keyword">new</strong> DefaultConsumer());
+<a class="jxr_linenumber" name="55" href="#55">55</a>          printer.print(response);
+<a class="jxr_linenumber" name="56" href="#56">56</a>          Assert.assertEquals(<span class="jxr_string">"Total overlaps"</span>, 290, response.getTotalOverlaps());
+<a class="jxr_linenumber" name="57" href="#57">57</a>          Assert.assertEquals(<span class="jxr_string">"Total entries"</span>, 235, response.getExploredArchives().size());
+<a class="jxr_linenumber" name="58" href="#58">58</a>          Assert.assertEquals(<span class="jxr_string">"Archive conflicts"</span>, 18, response.getArchiveConflicts().size());
+<a class="jxr_linenumber" name="59" href="#59">59</a>      }
+<a class="jxr_linenumber" name="60" href="#60">60</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>
