@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
+import net.kozelka.contentcheck.conflict.api.ResourceWithOptions;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 

@@ -1,4 +1,4 @@
-package net.kozelka.contentcheck.conflict.impl;
+package net.kozelka.contentcheck.conflict.api;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,12 +11,12 @@ import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
  *
  * @author Petr Kozelka
  */
-public class ResourceWithOptions {
+public final class ResourceWithOptions {
     private String uri;
     private final Map<String, List<ArchiveInfo>> candidatesByHash = new HashMap<String, List<ArchiveInfo>>();
     private final List<ArchiveInfo> allCandidates = new ArrayList<ArchiveInfo>();
 
-    void addCandidate(String hash, ArchiveInfo archive) {
+    public void addCandidate(String hash, ArchiveInfo archive) {
         allCandidates.add(archive);
         //
         List<ArchiveInfo> candidates = candidatesByHash.get(hash);
@@ -27,11 +27,11 @@ public class ResourceWithOptions {
         candidates.add(archive);
     }
 
-    boolean hasConflicts() {
+    public boolean hasConflicts() {
         return candidatesByHash.size() > 1;
     }
 
-    boolean hasOverlaps() {
+    public boolean hasOverlaps() {
         return allCandidates.size() > 1;
     }
 

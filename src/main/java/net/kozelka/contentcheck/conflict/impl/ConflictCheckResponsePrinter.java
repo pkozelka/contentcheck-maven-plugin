@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
+import net.kozelka.contentcheck.conflict.api.ResourceWithOptions;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 import org.codehaus.plexus.util.cli.StreamConsumer;
