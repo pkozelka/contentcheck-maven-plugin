@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
+import net.kozelka.contentcheck.conflict.api.ArchiveConflict;
+import net.kozelka.contentcheck.conflict.api.ClassConflictReport;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 import net.kozelka.contentcheck.conflict.util.ArchiveLoader;
@@ -14,9 +15,9 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  * Detects class conflicts inside given set of classpath elements.
  * @author Petr Kozelka
  */
-public class ClassConflictDetector {
+public class ClassConflictAnalyzer {
 
-    public ConflictCheckResponse findConflicts(Collection<ArchiveInfo> archives) {
+    public ClassConflictReport analyze(Collection<ArchiveInfo> archives) {
         final ClasspathResources cpr = new ClasspathResources();
         for (ArchiveInfo archive : archives) {
             for (ResourceInfo resource : archive.getResources()) {
@@ -26,18 +27,18 @@ public class ClassConflictDetector {
                 cpr.addResource(resource, archive);
             }
         }
-        // prepare response
-        final ConflictCheckResponse response = new ConflictCheckResponse();
-        response.getExploredArchives().addAll(archives);
-        response.getArchiveConflicts().addAll(cpr.getConflicts());
-        response.getResources().addAll(cpr.getResources());
+        // prepare report
+        final ClassConflictReport report = new ClassConflictReport();
+        report.getExploredArchives().addAll(archives);
+        report.getArchiveConflicts().addAll(cpr.getConflicts());
+        report.getResources().addAll(cpr.getResources());
         // count: involved jars, class overlaps (duplications, conflicts),
         int totalOverlaps = 0;
-        for (ConflictCheckResponse.ArchiveConflict archiveConflict : cpr.getConflicts()) {
+        for (ArchiveConflict archiveConflict : cpr.getConflicts()) {
             totalOverlaps += archiveConflict.getOverlapingResources().size();
         }
-        response.setTotalOverlaps(totalOverlaps);
-        return response;
+        report.setTotalOverlaps(totalOverlaps);
+        return report;
     }
 
     //TODO: move this to cli
@@ -47,10 +48,10 @@ public class ClassConflictDetector {
 
         System.out.println("Detecting conflict in " + war);
         System.out.println("Class preview threshold: " + previewThreshold);
-        final ClassConflictDetector ccd = new ClassConflictDetector();
+        final ClassConflictAnalyzer analyzer = new ClassConflictAnalyzer();
         final List<ArchiveInfo> archives = ArchiveLoader.loadWar(war);
-        final ConflictCheckResponse response = ccd.findConflicts(archives);
-        final ConflictCheckResponsePrinter printer = new ConflictCheckResponsePrinter();
+        final ClassConflictReport report = analyzer.analyze(archives);
+        final ClassConflictPrinter printer = new ClassConflictPrinter();
         printer.setPreviewThreshold(previewThreshold);
         printer.setOutput(new StreamConsumer() {
             @Override
@@ -58,6 +59,6 @@ public class ClassConflictDetector {
                 System.out.println(line);
             }
         });
-        printer.printResults(response);
+        printer.print(report);
     }
 }

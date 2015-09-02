@@ -5,18 +5,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
+import net.kozelka.contentcheck.conflict.api.ArchiveConflict;
+import net.kozelka.contentcheck.conflict.api.ClassConflictReport;
 import net.kozelka.contentcheck.conflict.api.ResourceWithOptions;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 
 /**
- * Prints the {@link ConflictCheckResponse results} of {@link ClassConflictDetector#findConflicts() conflict detection} into console
+ * Prints the {@link ClassConflictReport results} of {@link ClassConflictAnalyzer#findConflicts() conflict detection} into console
  *
  * @author Petr Kozelka
  */
-public class ConflictCheckResponsePrinter {
+public class ClassConflictPrinter {
     private StreamConsumer output;
     private int previewThreshold = -1;
 
@@ -28,10 +29,10 @@ public class ConflictCheckResponsePrinter {
         this.previewThreshold = previewThreshold;
     }
 
-    public void printResults(ConflictCheckResponse response) {
-        final List<ConflictCheckResponse.ArchiveConflict> sortedArchiveConflicts = new ArrayList<ConflictCheckResponse.ArchiveConflict>(response.getArchiveConflicts());
-        Collections.sort(sortedArchiveConflicts, new Comparator<ConflictCheckResponse.ArchiveConflict>() {
-            public int compare(ConflictCheckResponse.ArchiveConflict o1, ConflictCheckResponse.ArchiveConflict o2) {
+    public void print(ClassConflictReport report) {
+        final List<ArchiveConflict> sortedArchiveConflicts = new ArrayList<ArchiveConflict>(report.getArchiveConflicts());
+        Collections.sort(sortedArchiveConflicts, new Comparator<ArchiveConflict>() {
+            public int compare(ArchiveConflict o1, ArchiveConflict o2) {
                 int rv = o1.getThisArchive().getKey().compareTo(o2.getThisArchive().getKey());
                 if (rv == 0) {
                     rv = o1.getThatArchive().getKey().compareTo(o2.getThatArchive().getKey());
@@ -41,7 +42,7 @@ public class ConflictCheckResponsePrinter {
         });
 
         String previousThis = "-";
-        for (ConflictCheckResponse.ArchiveConflict archiveConflict : sortedArchiveConflicts) {
+        for (ArchiveConflict archiveConflict : sortedArchiveConflicts) {
             final String thisArchiveKey = archiveConflict.getThisArchive().getKey();
             if (!thisArchiveKey.equals(previousThis)) {
                 output.consumeLine("");
@@ -69,11 +70,11 @@ public class ConflictCheckResponsePrinter {
         }
         output.consumeLine("-------------------------------------------------");
         output.consumeLine(String.format("Total: %d overlaps affect %d of %d archives.",
-                response.getTotalOverlaps(),
-                sortedArchiveConflicts.size(),
-                response.getExploredArchives().size()));
+            report.getTotalOverlaps(),
+            sortedArchiveConflicts.size(),
+            report.getExploredArchives().size()));
 
-        for (ResourceWithOptions rwo : response.getResources()) {
+        for (ResourceWithOptions rwo : report.getResources()) {
             if (! rwo.hasConflicts()) continue;
             output.consumeLine(rwo.getUri());
             for (Map.Entry<String, List<ArchiveInfo>> entry : rwo.getCandidatesByHash().entrySet()) {

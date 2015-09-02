@@ -3,7 +3,7 @@ package net.kozelka.contentcheck.conflict.impl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
+import net.kozelka.contentcheck.conflict.api.ArchiveConflict;
 import net.kozelka.contentcheck.conflict.api.ResourceWithOptions;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
@@ -46,7 +46,7 @@ class ClasspathResources {
         return null;
     }
 
-    public Collection<? extends ConflictCheckResponse.ArchiveConflict> getConflicts() {
+    public Collection<? extends ArchiveConflict> getConflicts() {
         return conflictCollector.getAll();
     }
 

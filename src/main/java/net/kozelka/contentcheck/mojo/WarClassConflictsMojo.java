@@ -3,9 +3,10 @@ package net.kozelka.contentcheck.mojo;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
-import net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
-import net.kozelka.contentcheck.conflict.impl.ConflictCheckResponsePrinter;
+import net.kozelka.contentcheck.conflict.api.ArchiveConflict;
+import net.kozelka.contentcheck.conflict.api.ClassConflictReport;
+import net.kozelka.contentcheck.conflict.impl.ClassConflictAnalyzer;
+import net.kozelka.contentcheck.conflict.impl.ClassConflictPrinter;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.util.ArchiveLoader;
 import org.apache.maven.plugin.AbstractMojo;
@@ -73,15 +74,15 @@ public class WarClassConflictsMojo extends AbstractMojo {
         }
         //
         try {
-            final ClassConflictDetector ccd = new ClassConflictDetector();
+            final ClassConflictAnalyzer ccd = new ClassConflictAnalyzer();
             final List<ArchiveInfo> archives = ArchiveLoader.loadWar(sourceFile);
-            final ConflictCheckResponse response = ccd.findConflicts(archives);
-            final List<ConflictCheckResponse.ArchiveConflict> archiveConflicts = response.getArchiveConflicts();
+            final ClassConflictReport response = ccd.analyze(archives);
+            final List<ArchiveConflict> archiveConflicts = response.getArchiveConflicts();
             final int totalOverlaps = response.getTotalOverlaps();
             if (archiveConflicts.isEmpty()) {
                 getLog().info("No overlaps detected.");
             } else {
-                final ConflictCheckResponsePrinter printer = new ConflictCheckResponsePrinter();
+                final ClassConflictPrinter printer = new ClassConflictPrinter();
                 printer.setPreviewThreshold(previewThreshold);
                 printer.setOutput(new StreamConsumer() {
                     @Override
@@ -89,7 +90,7 @@ public class WarClassConflictsMojo extends AbstractMojo {
                         getLog().error(line);
                     }
                 });
-                printer.printResults(response);
+                printer.print(response);
                 final String errorMessage = String.format("Found %d overlapping resources in %d archive conflicts in %s",
                     totalOverlaps,
                     archiveConflicts.size(),

@@ -3,9 +3,9 @@ package net.kozelka.contentcheck;
 import java.io.File;
 
 import java.util.List;
-import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
-import net.kozelka.contentcheck.conflict.impl.ClassConflictDetector;
-import net.kozelka.contentcheck.conflict.impl.ConflictCheckResponsePrinter;
+import net.kozelka.contentcheck.conflict.api.ClassConflictReport;
+import net.kozelka.contentcheck.conflict.impl.ClassConflictAnalyzer;
+import net.kozelka.contentcheck.conflict.impl.ClassConflictPrinter;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.util.ArchiveLoader;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
@@ -46,13 +46,13 @@ public class ArchivaWarTest {
 
     @Test
     public void classConflicts() throws Exception {
-        final ClassConflictDetector ccd = new ClassConflictDetector();
+        final ClassConflictAnalyzer ccd = new ClassConflictAnalyzer();
         final List<ArchiveInfo> archives = ArchiveLoader.loadWar(archivaWar);
-        final ConflictCheckResponse response = ccd.findConflicts(archives);
-        final ConflictCheckResponsePrinter printer = new ConflictCheckResponsePrinter();
+        final ClassConflictReport response = ccd.analyze(archives);
+        final ClassConflictPrinter printer = new ClassConflictPrinter();
         printer.setPreviewThreshold(2);
         printer.setOutput(new DefaultConsumer());
-        printer.printResults(response);
+        printer.print(response);
         Assert.assertEquals("Total overlaps", 290, response.getTotalOverlaps());
         Assert.assertEquals("Total entries", 235, response.getExploredArchives().size());
         Assert.assertEquals("Archive conflicts", 18, response.getArchiveConflicts().size());

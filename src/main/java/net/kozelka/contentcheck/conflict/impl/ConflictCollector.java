@@ -3,22 +3,22 @@ package net.kozelka.contentcheck.conflict.impl;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import net.kozelka.contentcheck.conflict.api.ConflictCheckResponse;
+import net.kozelka.contentcheck.conflict.api.ArchiveConflict;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 
 /**
- * Collects unique {@link net.kozelka.contentcheck.conflict.api.ConflictCheckResponse.ArchiveConflict conflicts}
+ * Collects unique {@link ArchiveConflict conflicts}
  * between pairs of {@link ArchiveInfo archives}.
  *
  * @author Petr Kozelka
  */
 class ConflictCollector {
-    private final Map<String, ConflictCheckResponse.ArchiveConflict> conflicts = new LinkedHashMap<String, ConflictCheckResponse.ArchiveConflict>();
+    private final Map<String, ArchiveConflict> conflicts = new LinkedHashMap<String, ArchiveConflict>();
 
-    ConflictCheckResponse.ArchiveConflict save(ConflictCheckResponse.ArchiveConflict conflict) {
+    ArchiveConflict save(ArchiveConflict conflict) {
         final String key = conflict.getThisArchive().getKey() + "::" + conflict.getThatArchive().getKey();
-        final ConflictCheckResponse.ArchiveConflict existingConflict = conflicts.get(key);
+        final ArchiveConflict existingConflict = conflicts.get(key);
         if (existingConflict != null) {
             return existingConflict;
         }
@@ -26,12 +26,12 @@ class ConflictCollector {
         return conflict;
     }
 
-    public Collection<? extends ConflictCheckResponse.ArchiveConflict> getAll() {
+    public Collection<? extends ArchiveConflict> getAll() {
         return conflicts.values();
     }
 
-    public ConflictCheckResponse.ArchiveConflict addOverlap(ArchiveInfo thisArchive, ArchiveInfo thatArchive, ResourceInfo conflictingResource, boolean isDuplicate) {
-        ConflictCheckResponse.ArchiveConflict archiveConflict = new ConflictCheckResponse.ArchiveConflict();
+    public ArchiveConflict addOverlap(ArchiveInfo thisArchive, ArchiveInfo thatArchive, ResourceInfo conflictingResource, boolean isDuplicate) {
+        ArchiveConflict archiveConflict = new ArchiveConflict();
         archiveConflict.setThisArchive(thisArchive);
         archiveConflict.setThatArchive(thatArchive);
         archiveConflict = save(archiveConflict);
