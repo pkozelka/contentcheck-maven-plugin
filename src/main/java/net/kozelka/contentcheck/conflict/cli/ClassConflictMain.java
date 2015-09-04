@@ -16,7 +16,7 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  * @author Petr Kozelka
  */
 public class ClassConflictMain {
-    public static void main(String[] args) throws IOException {
+    public static void main(String ... args) throws IOException {
         final int previewThreshold = 5;
         final File war = new File(args[0]);
 
