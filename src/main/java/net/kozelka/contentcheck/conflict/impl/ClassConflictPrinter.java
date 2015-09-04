@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import net.kozelka.contentcheck.conflict.api.ArchiveConflict;
 import net.kozelka.contentcheck.conflict.api.ClassConflictReport;
-import net.kozelka.contentcheck.conflict.api.ResourceWithOptions;
-import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.model.ResourceInfo;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 
@@ -73,15 +70,5 @@ public class ClassConflictPrinter {
             report.getTotalOverlaps(),
             sortedArchiveConflicts.size(),
             report.getExploredArchives().size()));
-
-        for (ResourceWithOptions rwo : report.getResources()) {
-            if (! rwo.hasConflicts()) continue;
-            output.consumeLine(rwo.getUri());
-            for (Map.Entry<String, List<ArchiveInfo>> entry : rwo.getCandidatesByHash().entrySet()) {
-                output.consumeLine(String.format("  - %s: %s", entry.getKey(), entry.getValue()));
-
-            }
-
-        }
     }
 }
