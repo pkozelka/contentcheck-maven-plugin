@@ -108,7 +108,7 @@ public class ContentIntrospector {
         return totalCnt;
     }
 
-    public static interface EntryContentFilter {
+    public interface EntryContentFilter {
         /**
          * Decides if given entry can be accepted, based on its name and content.
          * @param entryName -
@@ -119,7 +119,7 @@ public class ContentIntrospector {
         boolean accept(String entryName, InputStream entryContentStream) throws IOException;
     }
 
-    public static interface Events {
+    public interface Events {
         void readingSourceFile(File sourceFile);
 
         void skippingEntryNotMatching(String entry);

@@ -119,7 +119,7 @@ public class ContentChecker {
         }
     }
 
-    public static interface Events {
+    public interface Events {
         void summary(File sourceFile, int checkedCount, int totalCount);
 
         void duplicate(File listingFile, String line);
