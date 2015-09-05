@@ -1,6 +1,7 @@
-package net.kozelka.contentcheck;
+package net.kozelka.contentcheck.expect.api;
 
 import java.util.Set;
+import net.kozelka.contentcheck.expect.model.CheckerEntry;
 
 /**
  * This class represents a captured output from content check.

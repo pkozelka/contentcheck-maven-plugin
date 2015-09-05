@@ -1,19 +1,18 @@
-package net.kozelka.contentcheck;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+package net.kozelka.contentcheck.expect.impl;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-
+import net.kozelka.contentcheck.expect.api.CheckerOutput;
+import net.kozelka.contentcheck.expect.model.CheckerEntry;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 public class CheckerOutputTest {
-    
+
     private CheckerOutput output;
-    
+
     @Before
     public void setUp() {
         final Set<CheckerEntry> approvedEntries = new LinkedHashSet<CheckerEntry>() {
@@ -24,7 +23,6 @@ public class CheckerOutputTest {
                 add(urientry("x-1.2.*.jar"));
             }
         };
-
         final Set<String> sourceContent = new LinkedHashSet<String>() {
             {
                 add("a.jar");
@@ -32,7 +30,6 @@ public class CheckerOutputTest {
                 add("x-1.2.3.jar");
             }
         };
-        
         this.output = ContentChecker.compareEntries(approvedEntries, sourceContent);
     }
 
@@ -44,31 +41,31 @@ public class CheckerOutputTest {
 
     @Test
     public void testGetAllowedEntries() {
-        assertThat(output.getApprovedEntries(), notNullValue());
-        assertThat(output.getApprovedEntries().size(), is(4));
+        Assert.assertThat(output.getApprovedEntries(), CoreMatchers.notNullValue());
+        Assert.assertThat(output.getApprovedEntries().size(), CoreMatchers.is(4));
     }
 
     @Test
     public void testGetSourceEntries() {
-        assertThat(output.getActualEntries(), notNullValue());
-        assertThat(output.getActualEntries().size(), is(3));
+        Assert.assertThat(output.getActualEntries(), CoreMatchers.notNullValue());
+        Assert.assertThat(output.getActualEntries().size(), CoreMatchers.is(3));
     }
 
     @Test
     public void testDiffUnexpectedEntries() {
         final Set<String> unexpectedEntries = output.getUnexpectedEntries();
-        assertThat(unexpectedEntries, notNullValue());
-        assertThat("Wrong count of unexpected entries.", unexpectedEntries.size(), is(1));
-        assertThat("Concrete unexpected entry is missing.", unexpectedEntries.contains("d.jar"), is(true));
+        Assert.assertThat(unexpectedEntries, CoreMatchers.notNullValue());
+        Assert.assertThat("Wrong count of unexpected entries.", unexpectedEntries.size(), CoreMatchers.is(1));
+        Assert.assertThat("Concrete unexpected entry is missing.", unexpectedEntries.contains("d.jar"), CoreMatchers.is(true));
     }
 
     @Test
     public void testDiffMissingEntries() {
         final Set<CheckerEntry> missingEntries = output.getMissingEntries();
-        assertThat(missingEntries, notNullValue());
-        assertThat("Wrong count of missing entries.", missingEntries.size(), is(2));
-        assertThat(ContentChecker.entrysetContainsUri(missingEntries, "b.jar"), is(true));
-        assertThat(ContentChecker.entrysetContainsUri(missingEntries, "c.jar"), is(true));
+        Assert.assertThat(missingEntries, CoreMatchers.notNullValue());
+        Assert.assertThat("Wrong count of missing entries.", missingEntries.size(), CoreMatchers.is(2));
+        Assert.assertThat(ContentChecker.entrysetContainsUri(missingEntries, "b.jar"), CoreMatchers.is(true));
+        Assert.assertThat(ContentChecker.entrysetContainsUri(missingEntries, "c.jar"), CoreMatchers.is(true));
     }
 
 }

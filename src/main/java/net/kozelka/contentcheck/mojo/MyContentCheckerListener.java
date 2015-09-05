@@ -1,6 +1,6 @@
 package net.kozelka.contentcheck.mojo;
 
-import net.kozelka.contentcheck.ContentChecker;
+import net.kozelka.contentcheck.expect.impl.ContentChecker;
 import org.apache.maven.plugin.logging.Log;
 import java.io.File;
 

@@ -8,6 +8,8 @@ import net.kozelka.contentcheck.conflict.impl.ClassConflictAnalyzer;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictPrinter;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.util.ArchiveLoader;
+import net.kozelka.contentcheck.expect.api.CheckerOutput;
+import net.kozelka.contentcheck.expect.impl.ContentChecker;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.introspection.VendorFilter;
 import org.codehaus.plexus.util.cli.DefaultConsumer;

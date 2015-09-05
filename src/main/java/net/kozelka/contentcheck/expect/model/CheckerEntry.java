@@ -1,4 +1,4 @@
-package net.kozelka.contentcheck;
+package net.kozelka.contentcheck.expect.model;
 
 /**
  * Abstraction that allows to specify various entry styles in the `approved-content.txt`.

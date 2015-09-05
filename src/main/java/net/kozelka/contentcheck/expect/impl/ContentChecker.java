@@ -1,4 +1,4 @@
-package net.kozelka.contentcheck;
+package net.kozelka.contentcheck.expect.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.kozelka.contentcheck.expect.model.CheckerEntry;
+import net.kozelka.contentcheck.expect.api.CheckerOutput;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.util.EventSink;
 import org.codehaus.plexus.util.SelectorUtils;

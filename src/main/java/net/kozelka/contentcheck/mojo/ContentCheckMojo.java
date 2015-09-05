@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-import net.kozelka.contentcheck.CheckerEntry;
-import net.kozelka.contentcheck.ContentChecker;
-import net.kozelka.contentcheck.CheckerOutput;
+import net.kozelka.contentcheck.expect.model.CheckerEntry;
+import net.kozelka.contentcheck.expect.impl.ContentChecker;
+import net.kozelka.contentcheck.expect.api.CheckerOutput;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
