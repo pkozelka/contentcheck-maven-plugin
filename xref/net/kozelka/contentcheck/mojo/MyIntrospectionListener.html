@@ -26,35 +26,34 @@
 <a class="jxr_linenumber" name="16" href="#16">16</a>          <strong class="jxr_keyword">this</strong>.log = log;
 <a class="jxr_linenumber" name="17" href="#17">17</a>      }
 <a class="jxr_linenumber" name="18" href="#18">18</a>  
-<a class="jxr_linenumber" name="19" href="#19">19</a>      @Override <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> readingSourceFile(File sourceFile) {
+<a class="jxr_linenumber" name="19" href="#19">19</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> readingSourceFile(File sourceFile) {
 <a class="jxr_linenumber" name="20" href="#20">20</a>          log.info(<span class="jxr_string">"Reading source file: "</span> + sourceFile);
 <a class="jxr_linenumber" name="21" href="#21">21</a>      }
 <a class="jxr_linenumber" name="22" href="#22">22</a>  
-<a class="jxr_linenumber" name="23" href="#23">23</a>      @Override <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> skippingEntryNotMatching(String entry) {
+<a class="jxr_linenumber" name="23" href="#23">23</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> skippingEntryNotMatching(String entry) {
 <a class="jxr_linenumber" name="24" href="#24">24</a>          log.debug(String.format(<span class="jxr_string">"Skipping '%s' (not matching)"</span>, entry));
 <a class="jxr_linenumber" name="25" href="#25">25</a>      }
 <a class="jxr_linenumber" name="26" href="#26">26</a>  
-<a class="jxr_linenumber" name="27" href="#27">27</a>      @Override <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> skippingEntryOwnModule(String entry) {
+<a class="jxr_linenumber" name="27" href="#27">27</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> skippingEntryOwnModule(String entry) {
 <a class="jxr_linenumber" name="28" href="#28">28</a>          log.info(String.format(<span class="jxr_string">"Skipping '%s' (vendor archive)"</span>, entry));
 <a class="jxr_linenumber" name="29" href="#29">29</a>      }
 <a class="jxr_linenumber" name="30" href="#30">30</a>  
-<a class="jxr_linenumber" name="31" href="#31">31</a>      @Override <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> cannotCheckManifest(String jarPath, Exception e) {
+<a class="jxr_linenumber" name="31" href="#31">31</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> cannotCheckManifest(String jarPath, Exception e) {
 <a class="jxr_linenumber" name="32" href="#32">32</a>          log.warn(<span class="jxr_string">"Cannot check MANIFEST.MF file in JAR archive "</span> + jarPath, e);
 <a class="jxr_linenumber" name="33" href="#33">33</a>      }
 <a class="jxr_linenumber" name="34" href="#34">34</a>  
-<a class="jxr_linenumber" name="35" href="#35">35</a>      @Override <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> cannotClose(String jarPath, IOException e) {
+<a class="jxr_linenumber" name="35" href="#35">35</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> cannotClose(String jarPath, IOException e) {
 <a class="jxr_linenumber" name="36" href="#36">36</a>          log.warn(<span class="jxr_string">"Cannot close temporary JAR file "</span> + jarPath,e);
 <a class="jxr_linenumber" name="37" href="#37">37</a>      }
 <a class="jxr_linenumber" name="38" href="#38">38</a>  
-<a class="jxr_linenumber" name="39" href="#39">39</a>      @Override <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> checkingInTmpfile(String jarPath, File tempFile) {
+<a class="jxr_linenumber" name="39" href="#39">39</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> checkingInTmpfile(String jarPath, File tempFile) {
 <a class="jxr_linenumber" name="40" href="#40">40</a>          log.debug(<span class="jxr_string">"Checking "</span> + jarPath + <span class="jxr_string">" to be a vendor archive, using tempfile "</span> + tempFile);
 <a class="jxr_linenumber" name="41" href="#41">41</a>      }
 <a class="jxr_linenumber" name="42" href="#42">42</a>  
-<a class="jxr_linenumber" name="43" href="#43">43</a>      @Override
-<a class="jxr_linenumber" name="44" href="#44">44</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> processEntry(String entryName) {
-<a class="jxr_linenumber" name="45" href="#45">45</a>          log.debug(<span class="jxr_string">"Found: "</span> + entryName);
-<a class="jxr_linenumber" name="46" href="#46">46</a>      }
-<a class="jxr_linenumber" name="47" href="#47">47</a>  }
+<a class="jxr_linenumber" name="43" href="#43">43</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> processEntry(String entryName) {
+<a class="jxr_linenumber" name="44" href="#44">44</a>          log.debug(<span class="jxr_string">"Found: "</span> + entryName);
+<a class="jxr_linenumber" name="45" href="#45">45</a>      }
+<a class="jxr_linenumber" name="46" href="#46">46</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

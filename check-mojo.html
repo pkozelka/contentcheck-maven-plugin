@@ -7,7 +7,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="Date-Revision-yyyymmdd" content="20150902" />
+    <meta name="Date-Revision-yyyymmdd" content="20150906" />
     <meta http-equiv="Content-Language" content="en" />
     <title>contentcheck-maven-plugin - 
     contentcheck:check</title>
@@ -95,8 +95,6 @@
 </li>
                                   <li>      <a href="cobertura/index.html"  title="Cobertura Test Coverage">Cobertura Test Coverage</a>
 </li>
-                                  <li>      <a href="pmd.html"  title="PMD">PMD</a>
-</li>
                                   <li>      <a href="findbugs.html"  title="FindBugs Report">FindBugs Report</a>
 </li>
                                   <li>      <a href="changes-report.html"  title="Changes Report">Changes Report</a>
@@ -162,7 +160,7 @@
         
                 
                     
-                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2015-09-02</li>
+                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2015-09-06</li>
               <li id="projectVersion" class="pull-right">
                     Version: 1.0-SNAPSHOT
         </li>
@@ -349,18 +347,6 @@ determined by a value (<tt>vendorId</tt>) in its manifest key
           
 <tr class="a">
             
-<td><b><a href="#skipPOMPackaging">skipPOMPackaging</a></b></td>
-            
-<td><tt>boolean</tt></td>
-            
-<td><tt>1.0.0</tt></td>
-            
-<td>If true, modules with POM packaging are skipped (excluded from the
-content check).<br /><b>Default value is</b>: <tt>false</tt>.<br /></td>
-          </tr>
-          
-<tr class="b">
-            
 <td><b><a href="#sourceFile">sourceFile</a></b></td>
             
 <td><tt>File</tt></td>
@@ -370,7 +356,7 @@ content check).<br /><b>Default value is</b>: <tt>false</tt>.<br /></td>
 <td>The archive file or directory to be checked.<br /><b>Default value is</b>: <tt>${project.build.directory}/${project.build.finalName}.${project.packaging}</tt>.<br /><b>User property is</b>: <tt>source.file</tt>.</td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#vendorId">vendorId</a></b></td>
             
@@ -552,21 +538,6 @@ determined by a value (<tt>vendorId</tt>) in its manifest key
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>User Property</b>: <tt>contentcheck.skip</tt></li>
-          
-<li><b>Default</b>: <tt>false</tt></li>
-        </ul><hr />
-<p><b><a name="skipPOMPackaging">skipPOMPackaging</a>:</b></p>
-        
-<div>If true, modules with POM packaging are skipped (excluded from the
-content check).</div>
-        
-<ul>
-          
-<li><b>Type</b>: <tt>boolean</tt></li>
-          
-<li><b>Since</b>: <tt>1.0.0</tt></li>
-          
-<li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>Default</b>: <tt>false</tt></li>
         </ul><hr />

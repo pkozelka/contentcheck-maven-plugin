@@ -46,45 +46,44 @@
 <a class="jxr_linenumber" name="36" href="#36">36</a>      @Parameter(defaultValue = <span class="jxr_string">"false"</span>, property = <span class="jxr_string">"overwriteExistingListing"</span>)
 <a class="jxr_linenumber" name="37" href="#37">37</a>      <strong class="jxr_keyword">boolean</strong> overwriteExistingListing;
 <a class="jxr_linenumber" name="38" href="#38">38</a>  
-<a class="jxr_linenumber" name="39" href="#39">39</a>      @Override
-<a class="jxr_linenumber" name="40" href="#40">40</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> execute() <strong class="jxr_keyword">throws</strong> MojoExecutionException, MojoFailureException {
-<a class="jxr_linenumber" name="41" href="#41">41</a>          <strong class="jxr_keyword">if</strong>(!overwriteExistingListing &amp;&amp; contentListing.exists()) {
-<a class="jxr_linenumber" name="42" href="#42">42</a>              <em class="jxr_comment">//TODO: use alternate output file (like target/contentcheck-maven-plugin/approved-content.txt) and fail after finishing the generation (issue #15)</em>
-<a class="jxr_linenumber" name="43" href="#43">43</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(String.format(<span class="jxr_string">"Content listing file '%s' already exists. Please set overwriteExistingListing property in plugin configuration or delete this listing file."</span>, contentListing.getPath()));
-<a class="jxr_linenumber" name="44" href="#44">44</a>          }
-<a class="jxr_linenumber" name="45" href="#45">45</a>  
-<a class="jxr_linenumber" name="46" href="#46">46</a>          <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="47" href="#47">47</a>              <strong class="jxr_keyword">if</strong> (ignoreVendorArchives) {
-<a class="jxr_linenumber" name="48" href="#48">48</a>                  getLog().warn(String.format(<span class="jxr_string">"Archives of vendor '%s', indicated by manifest entry '%s', will not be added to the list"</span>, vendorId, manifestVendorEntry));
-<a class="jxr_linenumber" name="49" href="#49">49</a>              }
-<a class="jxr_linenumber" name="50" href="#50">50</a>              <strong class="jxr_keyword">final</strong> <a href="../../../../net/kozelka/contentcheck/introspection/ContentIntrospector.html">ContentIntrospector</a> introspector = ContentIntrospector.create(<strong class="jxr_keyword">new</strong> <a href="../../../../net/kozelka/contentcheck/mojo/MyIntrospectionListener.html">MyIntrospectionListener</a>(getLog()),
-<a class="jxr_linenumber" name="51" href="#51">51</a>                      ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-<a class="jxr_linenumber" name="52" href="#52">52</a>              introspector.setSourceFile(sourceFile);
-<a class="jxr_linenumber" name="53" href="#53">53</a>              <strong class="jxr_keyword">final</strong> List&lt;String&gt; sourceEntries = <strong class="jxr_keyword">new</strong> ArrayList&lt;String&gt;();
-<a class="jxr_linenumber" name="54" href="#54">54</a>              <strong class="jxr_keyword">final</strong> ContentIntrospector.Events collector = <strong class="jxr_keyword">new</strong> ContentIntrospector.ContentCollector(sourceEntries);
-<a class="jxr_linenumber" name="55" href="#55">55</a>              introspector.getEvents().addListener(collector);
-<a class="jxr_linenumber" name="56" href="#56">56</a>              <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> count = introspector.walk();
-<a class="jxr_linenumber" name="57" href="#57">57</a>              Collections.sort(sourceEntries);
-<a class="jxr_linenumber" name="58" href="#58">58</a>              getLog().info(String.format(<span class="jxr_string">"The source contains %d entries, but only %d matches the plugin configuration criteria."</span>, count, sourceEntries.size()));
-<a class="jxr_linenumber" name="59" href="#59">59</a>              <em class="jxr_comment">//TODO: explain/display the criteria</em>
-<a class="jxr_linenumber" name="60" href="#60">60</a>  
-<a class="jxr_linenumber" name="61" href="#61">61</a>              contentListing.getParentFile().mkdirs();
-<a class="jxr_linenumber" name="62" href="#62">62</a>              <strong class="jxr_keyword">final</strong> FileWriter writer = <strong class="jxr_keyword">new</strong> FileWriter(contentListing);
-<a class="jxr_linenumber" name="63" href="#63">63</a>              <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="64" href="#64">64</a>                  writer.write(String.format(<span class="jxr_string">"#%n# Edit this file to approve or unpraprove individual libraries; will be checked by contentcheck-maven-plugin.%n#%n"</span>));
-<a class="jxr_linenumber" name="65" href="#65">65</a>                  <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> String entryName : sourceEntries) {
-<a class="jxr_linenumber" name="66" href="#66">66</a>                      writer.write(String.format(<span class="jxr_string">"%s%n"</span>, entryName));
-<a class="jxr_linenumber" name="67" href="#67">67</a>                  }
-<a class="jxr_linenumber" name="68" href="#68">68</a>              } <strong class="jxr_keyword">finally</strong> {
-<a class="jxr_linenumber" name="69" href="#69">69</a>                  writer.close();
-<a class="jxr_linenumber" name="70" href="#70">70</a>              }
-<a class="jxr_linenumber" name="71" href="#71">71</a>              getLog().info(String.format(<span class="jxr_string">"The listing file '%s' has been successfully generated."</span>, contentListing));
-<a class="jxr_linenumber" name="72" href="#72">72</a>          } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="73" href="#73">73</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(e.getMessage(), e);
-<a class="jxr_linenumber" name="74" href="#74">74</a>          }
-<a class="jxr_linenumber" name="75" href="#75">75</a>      }
-<a class="jxr_linenumber" name="76" href="#76">76</a>  
-<a class="jxr_linenumber" name="77" href="#77">77</a>  }
+<a class="jxr_linenumber" name="39" href="#39">39</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> execute() <strong class="jxr_keyword">throws</strong> MojoExecutionException, MojoFailureException {
+<a class="jxr_linenumber" name="40" href="#40">40</a>          <strong class="jxr_keyword">if</strong>(!overwriteExistingListing &amp;&amp; contentListing.exists()) {
+<a class="jxr_linenumber" name="41" href="#41">41</a>              <em class="jxr_comment">//TODO: use alternate output file (like target/contentcheck-maven-plugin/approved-content.txt) and fail after finishing the generation (issue #15)</em>
+<a class="jxr_linenumber" name="42" href="#42">42</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(String.format(<span class="jxr_string">"Content listing file '%s' already exists. Please set overwriteExistingListing property in plugin configuration or delete this listing file."</span>, contentListing.getPath()));
+<a class="jxr_linenumber" name="43" href="#43">43</a>          }
+<a class="jxr_linenumber" name="44" href="#44">44</a>  
+<a class="jxr_linenumber" name="45" href="#45">45</a>          <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="46" href="#46">46</a>              <strong class="jxr_keyword">if</strong> (ignoreVendorArchives) {
+<a class="jxr_linenumber" name="47" href="#47">47</a>                  getLog().warn(String.format(<span class="jxr_string">"Archives of vendor '%s', indicated by manifest entry '%s', will not be added to the list"</span>, vendorId, manifestVendorEntry));
+<a class="jxr_linenumber" name="48" href="#48">48</a>              }
+<a class="jxr_linenumber" name="49" href="#49">49</a>              <strong class="jxr_keyword">final</strong> <a href="../../../../net/kozelka/contentcheck/introspection/ContentIntrospector.html">ContentIntrospector</a> introspector = ContentIntrospector.create(<strong class="jxr_keyword">new</strong> <a href="../../../../net/kozelka/contentcheck/mojo/MyIntrospectionListener.html">MyIntrospectionListener</a>(getLog()),
+<a class="jxr_linenumber" name="50" href="#50">50</a>                      ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+<a class="jxr_linenumber" name="51" href="#51">51</a>              introspector.setSourceFile(sourceFile);
+<a class="jxr_linenumber" name="52" href="#52">52</a>              <strong class="jxr_keyword">final</strong> List&lt;String&gt; sourceEntries = <strong class="jxr_keyword">new</strong> ArrayList&lt;String&gt;();
+<a class="jxr_linenumber" name="53" href="#53">53</a>              <strong class="jxr_keyword">final</strong> ContentIntrospector.Events collector = <strong class="jxr_keyword">new</strong> ContentIntrospector.ContentCollector(sourceEntries);
+<a class="jxr_linenumber" name="54" href="#54">54</a>              introspector.getEvents().addListener(collector);
+<a class="jxr_linenumber" name="55" href="#55">55</a>              <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> count = introspector.walk();
+<a class="jxr_linenumber" name="56" href="#56">56</a>              Collections.sort(sourceEntries);
+<a class="jxr_linenumber" name="57" href="#57">57</a>              getLog().info(String.format(<span class="jxr_string">"The source contains %d entries, but only %d matches the plugin configuration criteria."</span>, count, sourceEntries.size()));
+<a class="jxr_linenumber" name="58" href="#58">58</a>              <em class="jxr_comment">//TODO: explain/display the criteria</em>
+<a class="jxr_linenumber" name="59" href="#59">59</a>  
+<a class="jxr_linenumber" name="60" href="#60">60</a>              contentListing.getParentFile().mkdirs();
+<a class="jxr_linenumber" name="61" href="#61">61</a>              <strong class="jxr_keyword">final</strong> FileWriter writer = <strong class="jxr_keyword">new</strong> FileWriter(contentListing);
+<a class="jxr_linenumber" name="62" href="#62">62</a>              <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="63" href="#63">63</a>                  writer.write(String.format(<span class="jxr_string">"#%n# Edit this file to approve or unpraprove individual libraries; will be checked by contentcheck-maven-plugin.%n#%n"</span>));
+<a class="jxr_linenumber" name="64" href="#64">64</a>                  <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> String entryName : sourceEntries) {
+<a class="jxr_linenumber" name="65" href="#65">65</a>                      writer.write(String.format(<span class="jxr_string">"%s%n"</span>, entryName));
+<a class="jxr_linenumber" name="66" href="#66">66</a>                  }
+<a class="jxr_linenumber" name="67" href="#67">67</a>              } <strong class="jxr_keyword">finally</strong> {
+<a class="jxr_linenumber" name="68" href="#68">68</a>                  writer.close();
+<a class="jxr_linenumber" name="69" href="#69">69</a>              }
+<a class="jxr_linenumber" name="70" href="#70">70</a>              getLog().info(String.format(<span class="jxr_string">"The listing file '%s' has been successfully generated."</span>, contentListing));
+<a class="jxr_linenumber" name="71" href="#71">71</a>          } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="72" href="#72">72</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(e.getMessage(), e);
+<a class="jxr_linenumber" name="73" href="#73">73</a>          }
+<a class="jxr_linenumber" name="74" href="#74">74</a>      }
+<a class="jxr_linenumber" name="75" href="#75">75</a>  
+<a class="jxr_linenumber" name="76" href="#76">76</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

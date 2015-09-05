@@ -10,7 +10,7 @@
 
 <a class="jxr_linenumber" name="1" href="#1">1</a>   <strong class="jxr_keyword">package</strong> net.kozelka.contentcheck.mojo;
 <a class="jxr_linenumber" name="2" href="#2">2</a>   
-<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.ContentChecker;
+<a class="jxr_linenumber" name="3" href="#3">3</a>   <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.expect.impl.ContentChecker;
 <a class="jxr_linenumber" name="4" href="#4">4</a>   <strong class="jxr_keyword">import</strong> org.apache.maven.plugin.logging.Log;
 <a class="jxr_linenumber" name="5" href="#5">5</a>   <strong class="jxr_keyword">import</strong> java.io.File;
 <a class="jxr_linenumber" name="6" href="#6">6</a>   
@@ -24,16 +24,16 @@
 <a class="jxr_linenumber" name="14" href="#14">14</a>          <strong class="jxr_keyword">this</strong>.log = log;
 <a class="jxr_linenumber" name="15" href="#15">15</a>      }
 <a class="jxr_linenumber" name="16" href="#16">16</a>  
-<a class="jxr_linenumber" name="17" href="#17">17</a>      @Override <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> summary(File sourceFile, <strong class="jxr_keyword">int</strong> checkedCount, <strong class="jxr_keyword">int</strong> totalCount) {
+<a class="jxr_linenumber" name="17" href="#17">17</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> summary(File sourceFile, <strong class="jxr_keyword">int</strong> checkedCount, <strong class="jxr_keyword">int</strong> totalCount) {
 <a class="jxr_linenumber" name="18" href="#18">18</a>          log.info(String.format(<span class="jxr_string">"'%s' contains %d checked and %d total files"</span>, sourceFile, checkedCount, totalCount));
 <a class="jxr_linenumber" name="19" href="#19">19</a>  
 <a class="jxr_linenumber" name="20" href="#20">20</a>      }
 <a class="jxr_linenumber" name="21" href="#21">21</a>  
-<a class="jxr_linenumber" name="22" href="#22">22</a>      @Override <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> duplicate(File listingFile, String line) {
+<a class="jxr_linenumber" name="22" href="#22">22</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> duplicate(File listingFile, String line) {
 <a class="jxr_linenumber" name="23" href="#23">23</a>          log.warn(<span class="jxr_string">"The listing file "</span> + listingFile + <span class="jxr_string">"  defines duplicate entry "</span> + line);
 <a class="jxr_linenumber" name="24" href="#24">24</a>      }
 <a class="jxr_linenumber" name="25" href="#25">25</a>  
-<a class="jxr_linenumber" name="26" href="#26">26</a>      @Override <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> contentListingSummary(File listingFile, <strong class="jxr_keyword">int</strong> pathCount, <strong class="jxr_keyword">int</strong> totalCount) {
+<a class="jxr_linenumber" name="26" href="#26">26</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> contentListingSummary(File listingFile, <strong class="jxr_keyword">int</strong> pathCount, <strong class="jxr_keyword">int</strong> totalCount) {
 <a class="jxr_linenumber" name="27" href="#27">27</a>          log.info(String.format(<span class="jxr_string">"Content listing file '%s' contains %d paths on %d total lines"</span>, listingFile, pathCount, totalCount));
 <a class="jxr_linenumber" name="28" href="#28">28</a>      }
 <a class="jxr_linenumber" name="29" href="#29">29</a>  }
