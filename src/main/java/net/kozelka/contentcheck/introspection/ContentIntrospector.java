@@ -142,30 +142,23 @@ public class ContentIntrospector {
             this.actualEntries = actualEntries;
         }
 
-        @Override
         public void readingSourceFile(File sourceFile) {}
 
-        @Override
         public void skippingEntryNotMatching(String entry) {
         }
 
-        @Override
         public void skippingEntryOwnModule(String entry) {
         }
 
-        @Override
         public void cannotCheckManifest(String jarPath, Exception e) {
         }
 
-        @Override
         public void cannotClose(String jarPath, IOException e) {
         }
 
-        @Override
         public void checkingInTmpfile(String jarPath, File tempFile) {
         }
 
-        @Override
         public void processEntry(String entryName) {
             actualEntries.add(entryName);
         }

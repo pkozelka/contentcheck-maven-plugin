@@ -28,7 +28,6 @@ public class ClassConflictMain {
         final ClassConflictPrinter printer = new ClassConflictPrinter();
         printer.setPreviewThreshold(previewThreshold);
         printer.setOutput(new StreamConsumer() {
-            @Override
             public void consumeLine(String line) {
                 System.out.println(line);
             }

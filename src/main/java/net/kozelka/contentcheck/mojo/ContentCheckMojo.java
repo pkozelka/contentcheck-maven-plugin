@@ -47,7 +47,7 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
      */
     @Parameter(defaultValue = "Found unexpected file: %s")
     String msgUnexpected;
-    
+
     /**
      * If true, stops the build when there is any file missing.
      */
@@ -66,7 +66,6 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
     @Parameter(defaultValue = "false")
     boolean skipPOMPackaging;
 
-    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         if (skip) {

@@ -182,7 +182,6 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
     /**
      * Artifact resolving and the rest of Maven repo magic taken from <a href="http://maven.apache.org/plugins/maven-project-info-reports-plugin/index.html">Maven Project Info Reports Plugin</a>.
      */
-    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         final File src = sourceFile.exists() ? sourceFile : defaultBundleForPOMPacking;
         if(!src.exists()) {

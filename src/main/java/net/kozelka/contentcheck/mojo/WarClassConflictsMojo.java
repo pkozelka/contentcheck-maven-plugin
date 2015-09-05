@@ -86,7 +86,6 @@ public class WarClassConflictsMojo extends AbstractMojo {
                 final ClassConflictPrinter printer = new ClassConflictPrinter();
                 printer.setPreviewThreshold(previewThreshold);
                 final StreamConsumer output = new StreamConsumer() {
-                    @Override
                     public void consumeLine(String line) {
                         getLog().error(line);
                     }

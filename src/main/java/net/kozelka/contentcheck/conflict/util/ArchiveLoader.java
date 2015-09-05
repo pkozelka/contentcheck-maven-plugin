@@ -22,7 +22,6 @@ public class ArchiveLoader {
         final ContentIntrospector ci = new ContentIntrospector();
         ci.setSourceFile(war);
         ci.setEntryContentFilter(new ContentIntrospector.EntryContentFilter() {
-            @Override
             public boolean accept(String entryName, InputStream entryContentStream) throws IOException {
                 if (entryName.startsWith("WEB-INF/lib/") && entryName.endsWith(".jar")) {
                     final ZipInputStream zis = new ZipInputStream(entryContentStream);

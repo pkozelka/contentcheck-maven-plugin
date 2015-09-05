@@ -16,31 +16,30 @@ public class MyIntrospectionListener implements ContentIntrospector.Events {
         this.log = log;
     }
 
-    @Override public void readingSourceFile(File sourceFile) {
+    public void readingSourceFile(File sourceFile) {
         log.info("Reading source file: " + sourceFile);
     }
 
-    @Override public void skippingEntryNotMatching(String entry) {
+    public void skippingEntryNotMatching(String entry) {
         log.debug(String.format("Skipping '%s' (not matching)", entry));
     }
 
-    @Override public void skippingEntryOwnModule(String entry) {
+    public void skippingEntryOwnModule(String entry) {
         log.info(String.format("Skipping '%s' (vendor archive)", entry));
     }
 
-    @Override public void cannotCheckManifest(String jarPath, Exception e) {
+    public void cannotCheckManifest(String jarPath, Exception e) {
         log.warn("Cannot check MANIFEST.MF file in JAR archive " + jarPath, e);
     }
 
-    @Override public void cannotClose(String jarPath, IOException e) {
+    public void cannotClose(String jarPath, IOException e) {
         log.warn("Cannot close temporary JAR file " + jarPath,e);
     }
 
-    @Override public void checkingInTmpfile(String jarPath, File tempFile) {
+    public void checkingInTmpfile(String jarPath, File tempFile) {
         log.debug("Checking " + jarPath + " to be a vendor archive, using tempfile " + tempFile);
     }
 
-    @Override
     public void processEntry(String entryName) {
         log.debug("Found: " + entryName);
     }
