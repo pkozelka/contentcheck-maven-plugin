@@ -8,9 +8,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.util.EventSink;
+import org.codehaus.plexus.util.SelectorUtils;
 
 /**
- * The content checker implementation. 
+ * The content checker implementation.
  */
 public class ContentChecker {
 
@@ -34,11 +35,9 @@ public class ContentChecker {
 
     /**
      * Checks a content of {@code sourceFile} according to an allowed content defined by {@code listingFile}.
-     * 
-     * @param listingFile a file that defines allowed content
      *
+     * @param listingFile a file that defines allowed content
      * @return the result of source check
-     * 
      * @throws IOException if something very bad happen
      */
     public CheckerOutput check(final File listingFile) throws IOException{
@@ -53,12 +52,16 @@ public class ContentChecker {
         return compareEntries(approvedEntries, actualEntries);
     }
 
+    static boolean match(String approvedPattern, String actual) {
+        return SelectorUtils.matchPath(approvedPattern, actual);
+    }
+
     static CheckerOutput compareEntries(Set<CheckerEntry> approvedEntries, Set<String> actualEntries) {
         final Set<String> unexpectedEntries = new LinkedHashSet<String>(actualEntries.size());
         for (String actual : actualEntries) {
             boolean found = false;
             for (CheckerEntry approved : approvedEntries) {
-                if (approved.match(actual)) {
+                if (match(approved.getUri(), actual)) {
                     found = true;
                     break;
                 }
@@ -76,7 +79,7 @@ public class ContentChecker {
         for (CheckerEntry approved : approvedEntries) {
             boolean found = false;
             for (String actual : actualEntries) {
-                if (approved.match(actual)) {
+                if (match(approved.getUri(), actual)) {
                     found = true;
                     break;
                 }

@@ -1,7 +1,5 @@
 package net.kozelka.contentcheck;
 
-import org.codehaus.plexus.util.SelectorUtils;
-
 /**
  * Abstraction that allows to specify various entry styles in the `approved-content.txt`.
  * The idea is to have support for uri, uriPattern, Maven GAV, GA(v) etc.
@@ -17,10 +15,6 @@ public class CheckerEntry {
 
     public void setUri(String uri) {
         this.uri = uri;
-    }
-
-    public boolean match(String actual) {
-        return SelectorUtils.matchPath(this.uri, actual);
     }
 
     @Override
