@@ -3,7 +3,7 @@ package net.kozelka.contentcheck.mojo;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,16 +28,14 @@ public class LicenseShow {
             license.setUrl((String) jsonLicense.get("url"));
             final List<String> fileNames = (List<String>) jsonLicense.get("files");
             for (String fileName : fileNames) {
-                fileToLicenseMapping.put(fileName, Arrays.asList(license));
+                fileToLicenseMapping.put(fileName, Collections.singletonList(license));
             }
         }
         return fileToLicenseMapping;
     }
 
-    static interface LicenseOutput {
-
-        abstract void output(final Map<String, List<License>> licensesPerFile) throws IOException;
-
+    interface LicenseOutput {
+        void output(final Map<String, List<License>> licensesPerFile) throws IOException;
     }
 
     public static class CsvOutput implements LicenseOutput {
@@ -76,7 +74,7 @@ public class LicenseShow {
             if(s == null) {
                 return "";
             }
-            return s.replaceAll("\\,", " ");
+            return s.replaceAll(",", " ");
         }
     }
 }

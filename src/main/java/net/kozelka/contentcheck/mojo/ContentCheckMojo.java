@@ -60,12 +60,6 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
     @Parameter(defaultValue = "true")
     boolean failOnUnexpected;
 
-    /**
-     * If true, modules with POM packaging are skipped (excluded from the content check).
-     */
-    @Parameter(defaultValue = "false")
-    boolean skipPOMPackaging;
-
     public void execute() throws MojoExecutionException, MojoFailureException {
 
         if (skip) {
