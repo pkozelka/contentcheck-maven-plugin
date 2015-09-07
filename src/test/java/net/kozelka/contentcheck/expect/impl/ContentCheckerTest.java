@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import net.kozelka.contentcheck.SupportUtils;
+import net.kozelka.contentcheck.expect.TestUtils;
 import net.kozelka.contentcheck.expect.api.ApproverReport;
+import net.kozelka.contentcheck.expect.model.ActualEntry;
 import net.kozelka.contentcheck.expect.model.ApprovedEntry;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.introspection.VendorFilter;
@@ -36,9 +38,13 @@ public class ContentCheckerTest {
                 VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME,
                 SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         final ApproverReport approverReport = checker.check(listingFile);
-        final Set<String> diffUnexpectedEntries = approverReport.getUnexpectedEntries();
-        Assert.assertThat("Missing entry WEB-INF/lib/a.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/a.jar"), CoreMatchers.is(true));
-        Assert.assertThat("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/c.jar"), CoreMatchers.is(true));
+        final Set<ActualEntry> diffUnexpectedEntries = approverReport.getUnexpectedEntries();
+        Assert.assertThat("Missing entry WEB-INF/lib/a.jar in the collection of unexpected entries.",
+            TestUtils.contains(diffUnexpectedEntries, "WEB-INF/lib/a.jar"),
+            CoreMatchers.is(true));
+        Assert.assertThat("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.",
+            TestUtils.contains(diffUnexpectedEntries, "WEB-INF/lib/c.jar"),
+            CoreMatchers.is(true));
     }
 
     @Test
@@ -47,9 +53,11 @@ public class ContentCheckerTest {
         final File directoryToBeChecked = SupportUtils.getFile("test");
         final ContentChecker checker = createContentChecker(directoryToBeChecked, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         final ApproverReport approverReport = checker.check(listingFile);
-        final Set<String> diffUnexpectedEntries = approverReport.getUnexpectedEntries();
-        Assert.assertTrue("Missing entry WEB-INF/lib/a.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/a.jar"));
-        Assert.assertTrue("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/c.jar"));
+        final Set<ActualEntry> diffUnexpectedEntries = approverReport.getUnexpectedEntries();
+        Assert.assertTrue("Missing entry WEB-INF/lib/a.jar in the collection of unexpected entries.",
+            TestUtils.contains(diffUnexpectedEntries, "WEB-INF/lib/a.jar"));
+        Assert.assertTrue("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.",
+            TestUtils.contains(diffUnexpectedEntries, "WEB-INF/lib/c.jar"));
         Assert.assertThat("Incorrect number of unexpected entries", diffUnexpectedEntries.size(), CoreMatchers.is(2));
     }
 
@@ -59,9 +67,13 @@ public class ContentCheckerTest {
         final File archiveFile = SupportUtils.getFile("test.war");
         final ContentChecker checker = createContentChecker(archiveFile, true, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         final ApproverReport approverReport = checker.check(listingFile);
-        final Set<String> diffUnexpectedEntries = approverReport.getUnexpectedEntries();
-        Assert.assertThat("Entry WEB-INF/lib/a.jar must not be in the collection of unexpected entries, because it's a vendor archive.", diffUnexpectedEntries.contains("WEB-INF/lib/a.jar"), CoreMatchers.is(false));
-        Assert.assertThat("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/c.jar"), CoreMatchers.is(true));
+        final Set<ActualEntry> diffUnexpectedEntries = approverReport.getUnexpectedEntries();
+        Assert.assertThat("Entry WEB-INF/lib/a.jar must not be in the collection of unexpected entries, because it's a vendor archive.",
+            TestUtils.contains(diffUnexpectedEntries, "WEB-INF/lib/a.jar"),
+            CoreMatchers.is(false));
+        Assert.assertThat("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.",
+            TestUtils.contains(diffUnexpectedEntries, "WEB-INF/lib/c.jar"),
+            CoreMatchers.is(true));
     }
 
     @Test
@@ -71,11 +83,18 @@ public class ContentCheckerTest {
         final ContentChecker checker = createContentChecker(archiveFile, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, "WEB-INF/**/*");
         final ApproverReport approverReport = checker.check(listingFile);
         final Set<ApprovedEntry> diffMissingEntries = approverReport.getMissingEntries();
-        final Set<String> diffUnexpectedEntries = approverReport.getUnexpectedEntries();
+        final Set<ActualEntry> diffUnexpectedEntries = approverReport.getUnexpectedEntries();
 
-        Assert.assertThat("Entry WEB-INF/testfile.txt is reported as missing but should not.", diffMissingEntries.contains("WEB-INF/testfile.txt"), CoreMatchers.is(false));
-        Assert.assertThat("Missing entry WEB-INF/lib/a.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/a.jar"), CoreMatchers.is(true));
-        Assert.assertThat("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.", diffUnexpectedEntries.contains("WEB-INF/lib/c.jar"), CoreMatchers.is(true));
+        Assert.assertThat("Entry WEB-INF/testfile.txt is reported as missing but should not.",
+            ContentChecker.entrysetContainsUri(diffMissingEntries, "WEB-INF/testfile.txt"),
+            CoreMatchers.is(false));
+
+        Assert.assertThat("Missing entry WEB-INF/lib/a.jar in the collection of unexpected entries.",
+            TestUtils.contains(diffUnexpectedEntries, "WEB-INF/lib/a.jar"),
+            CoreMatchers.is(true));
+        Assert.assertThat("Missing entry WEB-INF/lib/c.jar in the collection of unexpected entries.",
+            TestUtils.contains(diffUnexpectedEntries, "WEB-INF/lib/c.jar"),
+            CoreMatchers.is(true));
     }
 
     @Test
@@ -84,8 +103,10 @@ public class ContentCheckerTest {
         final File archiveFile = SupportUtils.getFile("test.war");
         final ContentChecker checker = createContentChecker(archiveFile, true, SupportUtils.VENDOR1, "Producer", SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         final ApproverReport approverReport = checker.check(listingFile);
-        final Set<String> diffUnexpectedEntries = approverReport.getUnexpectedEntries();
-        Assert.assertThat("Entry WEB-INF/lib/c.jar must not be in the collection of unexpected entries, because it's a vendor archive.", diffUnexpectedEntries.contains("WEB-INF/lib/c.jar"), CoreMatchers.is(false));
+        final Set<ActualEntry> diffUnexpectedEntries = approverReport.getUnexpectedEntries();
+        Assert.assertThat("Entry WEB-INF/lib/c.jar must not be in the collection of unexpected entries, because it's a vendor archive.",
+            TestUtils.contains(diffUnexpectedEntries, "WEB-INF/lib/c.jar"),
+            CoreMatchers.is(false));
     }
 
     @Test
@@ -95,7 +116,9 @@ public class ContentCheckerTest {
         final ContentChecker checker = createContentChecker(archiveFile, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         final ApproverReport approverReport = checker.check(listingFile);
         final Set<ApprovedEntry> diffMissingEntries = approverReport.getMissingEntries();
-        Assert.assertThat("Missing entry WEB-INF/lib/d.jar in the collection of missing entries.", ContentChecker.entrysetContainsUri(diffMissingEntries, "WEB-INF/lib/d.jar"), CoreMatchers.is(true));
+        Assert.assertThat("Missing entry WEB-INF/lib/d.jar in the collection of missing entries.",
+            ContentChecker.entrysetContainsUri(diffMissingEntries, "WEB-INF/lib/d.jar"),
+            CoreMatchers.is(true));
     }
 
     @Test
@@ -120,7 +143,9 @@ public class ContentCheckerTest {
         final ContentChecker checker = new ContentChecker();
         final File listingFile = SupportUtils.getFile("content-empty-lines-test.txt");
         final Set<ApprovedEntry> entries = checker.readApprovedContent(listingFile);
-        Assert.assertThat("Unexpecting count of entries. Whitespaces and empty lines must be ignored.", entries.size(), CoreMatchers.is(0));
+        Assert.assertThat("Unexpecting count of entries. Whitespaces and empty lines must be ignored.",
+            entries.size(),
+            CoreMatchers.is(0));
     }
 
     @Test
@@ -129,8 +154,12 @@ public class ContentCheckerTest {
         final File archiveFile = SupportUtils.getFile("test.ear");
         final ContentChecker checker = createContentChecker(archiveFile, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         final ApproverReport approverReport = checker.check(listingFile);
-        Assert.assertThat("Default file matching pattern (All JARs) is broken, there are reported missing entries but shouldn't.", approverReport.getMissingEntries().isEmpty(), CoreMatchers.is(true));
-        Assert.assertThat("Default file matching pattern (All JARs) is broken, there are reported unexpected entries but shouldn't.", approverReport.getUnexpectedEntries().isEmpty(), CoreMatchers.is(true));
+        Assert.assertThat("Default file matching pattern (All JARs) is broken, there are reported missing entries but shouldn't.",
+            approverReport.getMissingEntries().isEmpty(),
+            CoreMatchers.is(true));
+        Assert.assertThat("Default file matching pattern (All JARs) is broken, there are reported unexpected entries but shouldn't.",
+            approverReport.getUnexpectedEntries().isEmpty(),
+            CoreMatchers.is(true));
     }
 
     private ContentChecker createContentChecker(File sourceFile, boolean ignoreVendorArchives, String vendor, String vendorManifestEntryName, String checkFilesPattern) {

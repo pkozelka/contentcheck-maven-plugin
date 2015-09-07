@@ -5,7 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import net.kozelka.contentcheck.expect.impl.ContentCollector;
+import net.kozelka.contentcheck.expect.model.ActualEntry;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -49,11 +52,15 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
             final ContentIntrospector introspector = ContentIntrospector.create(new MyIntrospectionListener(getLog()),
                     ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             introspector.setSourceFile(sourceFile);
-            final List<String> sourceEntries = new ArrayList<String>();
-            final ContentIntrospector.Events collector = new ContentIntrospector.ContentCollector(sourceEntries);
+            final List<ActualEntry> sourceEntries = new ArrayList<ActualEntry>();
+            final ContentIntrospector.Events collector = new ContentCollector(sourceEntries);
             introspector.getEvents().addListener(collector);
             final int count = introspector.walk();
-            Collections.sort(sourceEntries);
+            Collections.sort(sourceEntries, new Comparator<ActualEntry>() {
+                public int compare(ActualEntry o1, ActualEntry o2) {
+                    return o1.getUri().compareTo(o2.getUri());
+                }
+            });
             getLog().info(String.format("The source contains %d entries, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));
             //TODO: explain/display the criteria
 
@@ -61,8 +68,8 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
             final FileWriter writer = new FileWriter(contentListing);
             try {
                 writer.write(String.format("#%n# Edit this file to approve or unpraprove individual libraries; will be checked by contentcheck-maven-plugin.%n#%n"));
-                for (final String entryName : sourceEntries) {
-                    writer.write(String.format("%s%n", entryName));
+                for (final ActualEntry actualEntry : sourceEntries) {
+                    writer.write(String.format("%s%n", actualEntry));
                 }
             } finally {
                 writer.close();

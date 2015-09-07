@@ -9,6 +9,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import net.kozelka.contentcheck.expect.impl.ContentCollector;
+import net.kozelka.contentcheck.expect.model.ActualEntry;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -194,10 +196,10 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         try {
             final ContentIntrospector introspector = ContentIntrospector.create(new MyIntrospectionListener(getLog()),
                     ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-            final Set<String> archiveEntries = new LinkedHashSet<String>();
+            final Set<ActualEntry> archiveEntries = new LinkedHashSet<ActualEntry>();
             introspector.setSourceFile(src);
             //TODO: instead of collecting, put the dependency comparison right inside
-            final ContentIntrospector.ContentCollector collector = new ContentIntrospector.ContentCollector(archiveEntries);
+            final ContentCollector collector = new ContentCollector(archiveEntries);
             introspector.getEvents().addListener(collector);
             introspector.walk();
             introspector.getEvents().removeListener(collector);
@@ -221,7 +223,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
             }
 
             getLog().info("Comparing the archive content with Maven project artifacts");
-            for(String archiveEntry : archiveEntries) {
+            for(ActualEntry archiveEntry : archiveEntries) {
                 List<License> licenses = null; //these licenses will be associated with the given archive entry
 
                 for (MavenProject mavenProject : mavenProjectForDependencies) {
@@ -229,7 +231,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
                     final String artifactId = mavenProject.getArtifactId();
                     final String version = mavenProject.getVersion();
                     final String jarName = artifactId + "-" + version + ".jar"; //guess jar name
-                    if(archiveEntry.endsWith(jarName)) {
+                    if(archiveEntry.getUri().endsWith(jarName)) {
                         @SuppressWarnings("unchecked")
                         final List<License> _licenses = mavenProject.getLicenses();
                         licenses = _licenses == null || _licenses.size() == 0 ? null : _licenses  ;
@@ -237,21 +239,21 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
                     }
                 }
 
-                final List<License> licensesMappingFile = additionalLicenseInformation.get(FileUtils.filename(archiveEntry));
+                final List<License> licensesMappingFile = additionalLicenseInformation.get(FileUtils.filename(archiveEntry.getUri()));
 
                 if(licenses == null && licensesMappingFile == null) {//misising license information
                     getLog().debug(String.format("Cannot resolve license information for archive entry %s neither from the POM file nor the file for license mapping", archiveEntry));
                     //archive entry must be present even if there is no a matching Maven Project
-                    entries.put(archiveEntry, Collections.<License>emptyList());
+                    entries.put(archiveEntry.getUri(), Collections.<License>emptyList());
                 } else if(licenses != null && licensesMappingFile != null) {//licenses specified in both - POM and license mapping file
                     getLog().warn(String.format("The license information for file %s are defined in the POM file and also in the file for license mapping. Using license information from the the file for license mapping.", archiveEntry));
-                    entries.put(archiveEntry, licensesMappingFile); //mapping manually specified licenses precedes licenses from POM
+                    entries.put(archiveEntry.getUri(), licensesMappingFile); //mapping manually specified licenses precedes licenses from POM
                 } else if (licenses != null) {//license information in POM
-                    entries.put(archiveEntry, licenses);//license
+                    entries.put(archiveEntry.getUri(), licenses);//license
                 } else {
                     //license information in mapping file
                     //put additional license information to the object that holds this information
-                    entries.put(archiveEntry, licensesMappingFile);
+                    entries.put(archiveEntry.getUri(), licensesMappingFile);
                 }
             }
 

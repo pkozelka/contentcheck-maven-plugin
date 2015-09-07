@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.kozelka.contentcheck.expect.model.ActualEntry;
 import net.kozelka.contentcheck.expect.model.ApprovedEntry;
 import net.kozelka.contentcheck.expect.api.ApproverReport;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
@@ -44,8 +45,8 @@ public class ContentChecker {
      */
     public ApproverReport check(final File listingFile) throws IOException{
         final Set<ApprovedEntry> approvedEntries = readApprovedContent(listingFile);
-        final Set<String> actualEntries = new LinkedHashSet<String>();
-        final ContentIntrospector.Events collector = new ContentIntrospector.ContentCollector(actualEntries);
+        final Set<ActualEntry> actualEntries = new LinkedHashSet<ActualEntry>();
+        final ContentIntrospector.Events collector = new ContentCollector(actualEntries);
         introspector.getEvents().addListener(collector);
         final int totalCount = introspector.walk();
         introspector.getEvents().removeListener(collector);
@@ -58,12 +59,12 @@ public class ContentChecker {
         return SelectorUtils.matchPath(approvedPattern, actual);
     }
 
-    static ApproverReport compareEntries(Set<ApprovedEntry> approvedEntries, Set<String> actualEntries) {
-        final Set<String> unexpectedEntries = new LinkedHashSet<String>(actualEntries.size());
-        for (String actual : actualEntries) {
+    static ApproverReport compareEntries(Set<ApprovedEntry> approvedEntries, Set<ActualEntry> actualEntries) {
+        final Set<ActualEntry> unexpectedEntries = new LinkedHashSet<ActualEntry>(actualEntries.size());
+        for (ActualEntry actual : actualEntries) {
             boolean found = false;
             for (ApprovedEntry approved : approvedEntries) {
-                if (match(approved.getUri(), actual)) {
+                if (match(approved.getUri(), actual.getUri())) {
                     found = true;
                     break;
                 }
@@ -80,8 +81,8 @@ public class ContentChecker {
         final Set<ApprovedEntry> missingEntries = new LinkedHashSet<ApprovedEntry>(approvedEntries.size());
         for (ApprovedEntry approved : approvedEntries) {
             boolean found = false;
-            for (String actual : actualEntries) {
-                if (match(approved.getUri(), actual)) {
+            for (ActualEntry actual : actualEntries) {
+                if (match(approved.getUri(), actual.getUri())) {
                     found = true;
                     break;
                 }

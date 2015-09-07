@@ -2,7 +2,9 @@ package net.kozelka.contentcheck.expect.impl;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
+import net.kozelka.contentcheck.expect.TestUtils;
 import net.kozelka.contentcheck.expect.api.ApproverReport;
+import net.kozelka.contentcheck.expect.model.ActualEntry;
 import net.kozelka.contentcheck.expect.model.ApprovedEntry;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -23,11 +25,11 @@ public class ApproverReportTest {
                 add(urientry("x-1.2.*.jar"));
             }
         };
-        final Set<String> sourceContent = new LinkedHashSet<String>() {
+        final Set<ActualEntry> sourceContent = new LinkedHashSet<ActualEntry>() {
             {
-                add("a.jar");
-                add("d.jar");
-                add("x-1.2.3.jar");
+                add(TestUtils.newActualEntry("a.jar"));
+                add(TestUtils.newActualEntry("d.jar"));
+                add(TestUtils.newActualEntry("x-1.2.3.jar"));
             }
         };
         this.output = ContentChecker.compareEntries(approvedEntries, sourceContent);
@@ -53,10 +55,10 @@ public class ApproverReportTest {
 
     @Test
     public void testDiffUnexpectedEntries() {
-        final Set<String> unexpectedEntries = output.getUnexpectedEntries();
+        final Set<ActualEntry> unexpectedEntries = output.getUnexpectedEntries();
         Assert.assertThat(unexpectedEntries, CoreMatchers.notNullValue());
         Assert.assertThat("Wrong count of unexpected entries.", unexpectedEntries.size(), CoreMatchers.is(1));
-        Assert.assertThat("Concrete unexpected entry is missing.", unexpectedEntries.contains("d.jar"), CoreMatchers.is(true));
+        Assert.assertThat("Concrete unexpected entry is missing.", TestUtils.contains(unexpectedEntries, "d.jar"), CoreMatchers.is(true));
     }
 
     @Test

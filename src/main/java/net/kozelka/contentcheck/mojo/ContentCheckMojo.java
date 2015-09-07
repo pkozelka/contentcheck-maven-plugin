@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import net.kozelka.contentcheck.expect.model.ActualEntry;
 import net.kozelka.contentcheck.expect.model.ApprovedEntry;
 import net.kozelka.contentcheck.expect.impl.ContentChecker;
 import net.kozelka.contentcheck.expect.api.ApproverReport;
@@ -91,9 +92,9 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
                 log(failOnMissing, String.format(msgMissing, missing));
             }
             // report unexpected entries
-            final Set<String> unexpectedEntries = output.getUnexpectedEntries();
-            for (String entry : unexpectedEntries) {
-                log(failOnUnexpected, String.format(msgUnexpected, entry));
+            final Set<ActualEntry> unexpectedEntries = output.getUnexpectedEntries();
+            for (ActualEntry actualEntry : unexpectedEntries) {
+                log(failOnUnexpected, String.format(msgUnexpected, actualEntry.getUri()));
             }
             // error summary
             if (missingEntries.size() > 0) {

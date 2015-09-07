@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import net.kozelka.contentcheck.util.EventSink;
 import org.codehaus.plexus.util.SelectorUtils;
 
@@ -135,32 +134,4 @@ public class ContentIntrospector {
         void processEntry(String entryName);
     }
 
-    public static class ContentCollector implements Events {
-        private final Collection<String> actualEntries;
-
-        public ContentCollector(Collection<String> actualEntries) {
-            this.actualEntries = actualEntries;
-        }
-
-        public void readingSourceFile(File sourceFile) {}
-
-        public void skippingEntryNotMatching(String entry) {
-        }
-
-        public void skippingEntryOwnModule(String entry) {
-        }
-
-        public void cannotCheckManifest(String jarPath, Exception e) {
-        }
-
-        public void cannotClose(String jarPath, IOException e) {
-        }
-
-        public void checkingInTmpfile(String jarPath, File tempFile) {
-        }
-
-        public void processEntry(String entryName) {
-            actualEntries.add(entryName);
-        }
-    }
 }
