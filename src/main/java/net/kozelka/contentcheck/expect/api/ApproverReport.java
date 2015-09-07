@@ -1,24 +1,24 @@
 package net.kozelka.contentcheck.expect.api;
 
 import java.util.Set;
-import net.kozelka.contentcheck.expect.model.CheckerEntry;
+import net.kozelka.contentcheck.expect.model.ApprovedEntry;
 
 /**
  * This class represents a captured output from content check.
  */
-public class CheckerOutput {
-    private final Set<CheckerEntry> approvedEntries;
+public class ApproverReport {
+    private final Set<ApprovedEntry> approvedEntries;
     private final Set<String> actualEntries;
     private Set<String> unexpectedEntries;
-    private Set<CheckerEntry> missingEntries;
+    private Set<ApprovedEntry> missingEntries;
 
-    public CheckerOutput(Set<CheckerEntry> approvedEntries, Set<String> archiveContent) {
+    public ApproverReport(Set<ApprovedEntry> approvedEntries, Set<String> archiveContent) {
         super();
         this.approvedEntries = approvedEntries;
         this.actualEntries = archiveContent;
     }
 
-    public Set<CheckerEntry> getApprovedEntries() {
+    public Set<ApprovedEntry> getApprovedEntries() {
         return approvedEntries;
     }
 
@@ -40,11 +40,11 @@ public class CheckerOutput {
     /**
      * @return the set of entries that should be in present in the source, but they are not.
      */
-    public Set<CheckerEntry> getMissingEntries() {
+    public Set<ApprovedEntry> getMissingEntries() {
         return missingEntries;
     }
 
-    public void setMissingEntries(Set<CheckerEntry> missingEntries) {
+    public void setMissingEntries(Set<ApprovedEntry> missingEntries) {
         this.missingEntries = missingEntries;
     }
 }

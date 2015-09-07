@@ -2,20 +2,20 @@ package net.kozelka.contentcheck.expect.impl;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.kozelka.contentcheck.expect.api.CheckerOutput;
-import net.kozelka.contentcheck.expect.model.CheckerEntry;
+import net.kozelka.contentcheck.expect.api.ApproverReport;
+import net.kozelka.contentcheck.expect.model.ApprovedEntry;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CheckerOutputTest {
+public class ApproverReportTest {
 
-    private CheckerOutput output;
+    private ApproverReport output;
 
     @Before
     public void setUp() {
-        final Set<CheckerEntry> approvedEntries = new LinkedHashSet<CheckerEntry>() {
+        final Set<ApprovedEntry> approvedEntries = new LinkedHashSet<ApprovedEntry>() {
             {
                 add(urientry("a.jar"));
                 add(urientry("b.jar"));
@@ -33,8 +33,8 @@ public class CheckerOutputTest {
         this.output = ContentChecker.compareEntries(approvedEntries, sourceContent);
     }
 
-    private static CheckerEntry urientry(String uri) {
-        final CheckerEntry result = new CheckerEntry();
+    private static ApprovedEntry urientry(String uri) {
+        final ApprovedEntry result = new ApprovedEntry();
         result.setUri(uri);
         return result;
     }
@@ -61,7 +61,7 @@ public class CheckerOutputTest {
 
     @Test
     public void testDiffMissingEntries() {
-        final Set<CheckerEntry> missingEntries = output.getMissingEntries();
+        final Set<ApprovedEntry> missingEntries = output.getMissingEntries();
         Assert.assertThat(missingEntries, CoreMatchers.notNullValue());
         Assert.assertThat("Wrong count of missing entries.", missingEntries.size(), CoreMatchers.is(2));
         Assert.assertThat(ContentChecker.entrysetContainsUri(missingEntries, "b.jar"), CoreMatchers.is(true));

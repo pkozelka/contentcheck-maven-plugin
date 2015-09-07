@@ -5,7 +5,7 @@ package net.kozelka.contentcheck.expect.model;
  * The idea is to have support for uri, uriPattern, Maven GAV, GA(v) etc.
  * @author Petr Kozelka
  */
-public class CheckerEntry {
+public class ApprovedEntry {
     //TODO: split to uri and uriPattern
     private String uri;
 

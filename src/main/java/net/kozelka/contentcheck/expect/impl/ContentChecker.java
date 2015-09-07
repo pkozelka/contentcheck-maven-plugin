@@ -6,8 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import net.kozelka.contentcheck.expect.model.CheckerEntry;
-import net.kozelka.contentcheck.expect.api.CheckerOutput;
+import net.kozelka.contentcheck.expect.model.ApprovedEntry;
+import net.kozelka.contentcheck.expect.api.ApproverReport;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.util.EventSink;
 import org.codehaus.plexus.util.SelectorUtils;
@@ -20,9 +20,9 @@ public class ContentChecker {
     private final EventSink<Events> events = EventSink.create(Events.class);
     private ContentIntrospector introspector;
 
-    static boolean entrysetContainsUri(Set<CheckerEntry> entryset, String uri) {
-        for (CheckerEntry checkerEntry : entryset) {
-            if (checkerEntry.getUri().equals(uri)) return true;
+    static boolean entrysetContainsUri(Set<ApprovedEntry> entryset, String uri) {
+        for (ApprovedEntry approvedEntry : entryset) {
+            if (approvedEntry.getUri().equals(uri)) return true;
         }
         return false;
     }
@@ -42,8 +42,8 @@ public class ContentChecker {
      * @return the result of source check
      * @throws IOException if something very bad happen
      */
-    public CheckerOutput check(final File listingFile) throws IOException{
-        final Set<CheckerEntry> approvedEntries = readApprovedContent(listingFile);
+    public ApproverReport check(final File listingFile) throws IOException{
+        final Set<ApprovedEntry> approvedEntries = readApprovedContent(listingFile);
         final Set<String> actualEntries = new LinkedHashSet<String>();
         final ContentIntrospector.Events collector = new ContentIntrospector.ContentCollector(actualEntries);
         introspector.getEvents().addListener(collector);
@@ -58,11 +58,11 @@ public class ContentChecker {
         return SelectorUtils.matchPath(approvedPattern, actual);
     }
 
-    static CheckerOutput compareEntries(Set<CheckerEntry> approvedEntries, Set<String> actualEntries) {
+    static ApproverReport compareEntries(Set<ApprovedEntry> approvedEntries, Set<String> actualEntries) {
         final Set<String> unexpectedEntries = new LinkedHashSet<String>(actualEntries.size());
         for (String actual : actualEntries) {
             boolean found = false;
-            for (CheckerEntry approved : approvedEntries) {
+            for (ApprovedEntry approved : approvedEntries) {
                 if (match(approved.getUri(), actual)) {
                     found = true;
                     break;
@@ -72,13 +72,13 @@ public class ContentChecker {
                 unexpectedEntries.add(actual);
             }
         }
-        final CheckerOutput result = new CheckerOutput(approvedEntries, actualEntries);
+        final ApproverReport result = new ApproverReport(approvedEntries, actualEntries);
         result.setUnexpectedEntries(unexpectedEntries);
 
         // TODO: merge these two iterations into one; remove from a working set while doing first iteration, etc. Beware of regexes on one side.
 
-        final Set<CheckerEntry> missingEntries = new LinkedHashSet<CheckerEntry>(approvedEntries.size());
-        for (CheckerEntry approved : approvedEntries) {
+        final Set<ApprovedEntry> missingEntries = new LinkedHashSet<ApprovedEntry>(approvedEntries.size());
+        for (ApprovedEntry approved : approvedEntries) {
             boolean found = false;
             for (String actual : actualEntries) {
                 if (match(approved.getUri(), actual)) {
@@ -94,8 +94,8 @@ public class ContentChecker {
         return result;
     }
 
-    protected Set<CheckerEntry> readApprovedContent(final File approvedContentFile) throws IOException {
-        final Set<CheckerEntry> approvedContent = new LinkedHashSet<CheckerEntry>();
+    protected Set<ApprovedEntry> readApprovedContent(final File approvedContentFile) throws IOException {
+        final Set<ApprovedEntry> approvedContent = new LinkedHashSet<ApprovedEntry>();
         final BufferedReader reader = new BufferedReader(new FileReader(approvedContentFile));
         try {
             int totalCnt = 0;
@@ -110,7 +110,7 @@ public class ContentChecker {
                 if(entrysetContainsUri(approvedContent, line)) {
                     events.fire.duplicate(approvedContentFile, line);
                 }
-                final CheckerEntry entry = new CheckerEntry();
+                final ApprovedEntry entry = new ApprovedEntry();
                 entry.setUri(line);
                 approvedContent.add(entry);
             }

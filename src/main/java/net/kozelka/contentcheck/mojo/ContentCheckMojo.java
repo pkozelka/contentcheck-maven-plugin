@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-import net.kozelka.contentcheck.expect.model.CheckerEntry;
+import net.kozelka.contentcheck.expect.model.ApprovedEntry;
 import net.kozelka.contentcheck.expect.impl.ContentChecker;
-import net.kozelka.contentcheck.expect.api.CheckerOutput;
+import net.kozelka.contentcheck.expect.api.ApproverReport;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -83,11 +83,11 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
             contentChecker.setIntrospector(introspector);
             //
             getLog().info("Reading listing: " + contentListing);
-            final CheckerOutput output = contentChecker.check(contentListing);
+            final ApproverReport output = contentChecker.check(contentListing);
 
             // report missing entries
-            final Set<CheckerEntry> missingEntries = output.getMissingEntries();
-            for (CheckerEntry missing : missingEntries) {
+            final Set<ApprovedEntry> missingEntries = output.getMissingEntries();
+            for (ApprovedEntry missing : missingEntries) {
                 log(failOnMissing, String.format(msgMissing, missing));
             }
             // report unexpected entries
