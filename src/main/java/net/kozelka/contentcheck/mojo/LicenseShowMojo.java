@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.kozelka.contentcheck.expect.impl.ContentCollector;
+import net.kozelka.contentcheck.expect.impl.VendorFilter;
 import net.kozelka.contentcheck.expect.model.ActualEntry;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.artifact.Artifact;
@@ -194,8 +195,8 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
         final List<MavenProject> mavenProjectForDependencies = getMavenProjectForDependencies();
 
         try {
-            final ContentIntrospector introspector = ContentIntrospector.create(new MyIntrospectionListener(getLog()),
-                    ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final ContentIntrospector introspector = VendorFilter.createIntrospector(new MyIntrospectionListener(getLog()),
+                ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             final Set<ActualEntry> archiveEntries = new LinkedHashSet<ActualEntry>();
             introspector.setSourceFile(src);
             //TODO: instead of collecting, put the dependency comparison right inside

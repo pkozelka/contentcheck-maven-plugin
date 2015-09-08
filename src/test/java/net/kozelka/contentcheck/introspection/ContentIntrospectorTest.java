@@ -20,7 +20,7 @@ public class ContentIntrospectorTest {
     @Test
     public void testIntrospection() throws IOException{
         final ContentIntrospector.Events listener = mock(ContentIntrospector.Events.class);
-        final ContentIntrospector introspector = ContentIntrospector.create(listener, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentIntrospector introspector = VendorFilter.createIntrospector(listener, false, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         final List<ActualEntry> sourceEntries = new ArrayList<ActualEntry>();
         final ContentIntrospector.Events collector = new ContentCollector(sourceEntries);
         introspector.getEvents().addListener(collector);
@@ -44,7 +44,7 @@ public class ContentIntrospectorTest {
     @Test
     public void testIntrospectionWithIgnoringOwnArtifacts() throws IOException{
         final ContentIntrospector.Events listener = mock(ContentIntrospector.Events.class);
-        final ContentIntrospector introspector = ContentIntrospector.create(listener, true, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
+        final ContentIntrospector introspector = VendorFilter.createIntrospector(listener, true, SupportUtils.VENDOR1, VendorFilter.DEFAULT_VENDOR_MANIFEST_ENTRY_NAME, SupportUtils.DEFAULT_CHECK_FILES_PATTERN);
         introspector.setSourceFile(SupportUtils.getFile("test.war"));
         final List<ActualEntry> sourceEntries = new ArrayList<ActualEntry>();
         final ContentIntrospector.Events collector = new ContentCollector(sourceEntries);

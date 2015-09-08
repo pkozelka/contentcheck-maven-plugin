@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
-import net.kozelka.contentcheck.expect.impl.VendorFilter;
 import net.kozelka.contentcheck.util.EventSink;
 import org.codehaus.plexus.util.SelectorUtils;
 
@@ -22,19 +21,6 @@ public class ContentIntrospector {
     private EntryContentFilter entryContentFilter;
     private File sourceFile;
     private IntrospectorInputStrategy walker;
-
-    public static ContentIntrospector create(Events listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
-        final ContentIntrospector contentIntrospector = new ContentIntrospector();
-        contentIntrospector.getEvents().addListener(listener);
-        contentIntrospector.setCheckFilesPattern(checkFilesPattern);
-        if (ignoreVendorArchives) {
-            final VendorFilter vendorFilter = new VendorFilter(vendorId);
-            vendorFilter.setManifestVendorEntry(manifestVendorEntry);
-            vendorFilter.getEvents().addListener(listener);
-            contentIntrospector.setEntryContentFilter(vendorFilter);
-        }
-        return contentIntrospector;
-    }
 
     public EventSink<Events> getEvents() {
         return events;

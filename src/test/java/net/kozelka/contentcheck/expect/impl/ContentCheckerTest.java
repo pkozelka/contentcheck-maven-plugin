@@ -165,11 +165,11 @@ public class ContentCheckerTest {
 
         final ContentChecker contentChecker = new ContentChecker();
         contentChecker.getEvents().addListener(contentCheckerListener);
-        final ContentIntrospector introspector = ContentIntrospector.create(introspectionListener,
-                ignoreVendorArchives,
-                vendor,
-                vendorManifestEntryName,
-                checkFilesPattern);
+        final ContentIntrospector introspector = VendorFilter.createIntrospector(introspectionListener,
+            ignoreVendorArchives,
+            vendor,
+            vendorManifestEntryName,
+            checkFilesPattern);
         introspector.setSourceFile(sourceFile);
         contentChecker.setIntrospector(introspector);
         return contentChecker;

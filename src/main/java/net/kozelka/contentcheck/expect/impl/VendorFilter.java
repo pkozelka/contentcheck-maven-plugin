@@ -30,6 +30,19 @@ public class VendorFilter implements ContentIntrospector.EntryContentFilter {
         this.vendorId = vendorId;
     }
 
+    public static ContentIntrospector createIntrospector(ContentIntrospector.Events listener, boolean ignoreVendorArchives, String vendorId, String manifestVendorEntry, String checkFilesPattern) {
+        final ContentIntrospector contentIntrospector = new ContentIntrospector();
+        contentIntrospector.getEvents().addListener(listener);
+        contentIntrospector.setCheckFilesPattern(checkFilesPattern);
+        if (ignoreVendorArchives) {
+            final VendorFilter vendorFilter = new VendorFilter(vendorId);
+            vendorFilter.setManifestVendorEntry(manifestVendorEntry);
+            vendorFilter.getEvents().addListener(listener);
+            contentIntrospector.setEntryContentFilter(vendorFilter);
+        }
+        return contentIntrospector;
+    }
+
     public void setManifestVendorEntry(String manifestVendorEntry) {
         this.manifestVendorEntry = manifestVendorEntry;
     }

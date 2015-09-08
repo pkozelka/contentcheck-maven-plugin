@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import net.kozelka.contentcheck.expect.impl.VendorFilter;
 import net.kozelka.contentcheck.expect.model.ActualEntry;
 import net.kozelka.contentcheck.expect.model.ApprovedEntry;
 import net.kozelka.contentcheck.expect.impl.ContentChecker;
@@ -77,7 +78,7 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
 
         try {
             final MyIntrospectionListener introspectionListener = new MyIntrospectionListener(getLog());
-            final ContentIntrospector introspector = ContentIntrospector.create(introspectionListener, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final ContentIntrospector introspector = VendorFilter.createIntrospector(introspectionListener, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             introspector.setSourceFile(sourceFile);
             final ContentChecker contentChecker = new ContentChecker();
             contentChecker.getEvents().addListener(new MyContentCheckerListener(getLog()));

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import net.kozelka.contentcheck.expect.impl.ContentCollector;
+import net.kozelka.contentcheck.expect.impl.VendorFilter;
 import net.kozelka.contentcheck.expect.model.ActualEntry;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -49,8 +50,8 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
             if (ignoreVendorArchives) {
                 getLog().warn(String.format("Archives of vendor '%s', indicated by manifest entry '%s', will not be added to the list", vendorId, manifestVendorEntry));
             }
-            final ContentIntrospector introspector = ContentIntrospector.create(new MyIntrospectionListener(getLog()),
-                    ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            final ContentIntrospector introspector = VendorFilter.createIntrospector(new MyIntrospectionListener(getLog()),
+                ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             introspector.setSourceFile(sourceFile);
             final List<ActualEntry> sourceEntries = new ArrayList<ActualEntry>();
             final ContentIntrospector.Events collector = new ContentCollector(sourceEntries);
