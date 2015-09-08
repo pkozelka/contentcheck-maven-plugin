@@ -6,6 +6,7 @@ import java.util.List;
 import net.kozelka.contentcheck.SupportUtils;
 import net.kozelka.contentcheck.expect.TestUtils;
 import net.kozelka.contentcheck.expect.impl.ContentCollector;
+import net.kozelka.contentcheck.expect.impl.VendorFilter;
 import net.kozelka.contentcheck.expect.model.ActualEntry;
 import org.junit.Test;
 

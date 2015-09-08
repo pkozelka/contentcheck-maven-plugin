@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import net.kozelka.contentcheck.expect.impl.VendorFilter;
 import net.kozelka.contentcheck.util.EventSink;
 import org.codehaus.plexus.util.SelectorUtils;
 

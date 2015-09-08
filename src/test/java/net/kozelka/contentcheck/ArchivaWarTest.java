@@ -11,7 +11,7 @@ import net.kozelka.contentcheck.conflict.util.ArchiveLoader;
 import net.kozelka.contentcheck.expect.api.ApproverReport;
 import net.kozelka.contentcheck.expect.impl.ContentChecker;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
-import net.kozelka.contentcheck.introspection.VendorFilter;
+import net.kozelka.contentcheck.expect.impl.VendorFilter;
 import org.codehaus.plexus.util.cli.DefaultConsumer;
 import org.junit.Assert;
 import org.junit.Before;

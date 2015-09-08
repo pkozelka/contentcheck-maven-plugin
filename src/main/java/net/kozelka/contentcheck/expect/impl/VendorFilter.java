@@ -1,4 +1,4 @@
-package net.kozelka.contentcheck.introspection;
+package net.kozelka.contentcheck.expect.impl;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import net.kozelka.contentcheck.util.EventSink;
 import org.codehaus.plexus.util.IOUtil;
 

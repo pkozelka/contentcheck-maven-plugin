@@ -9,7 +9,6 @@ import net.kozelka.contentcheck.expect.api.ApproverReport;
 import net.kozelka.contentcheck.expect.model.ActualEntry;
 import net.kozelka.contentcheck.expect.model.ApprovedEntry;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
-import net.kozelka.contentcheck.introspection.VendorFilter;
 import net.kozelka.contentcheck.mojo.MyContentCheckerListener;
 import net.kozelka.contentcheck.mojo.MyIntrospectionListener;
 import org.hamcrest.CoreMatchers;
