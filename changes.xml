@@ -6,8 +6,8 @@
     </properties>
     <body>
         <release version="1.0-SNAPSHOT">
-            <action dev="Petr Kozelka" type="update">property "ignoreVendorArchive" now available also on commandline
-            </action>
+            <action dev="Petr Kozelka" type="add" issue="19">distinguish between serious conflicts and duplicates</action>
+            <action dev="Petr Kozelka" type="update">property "ignoreVendorArchive" now available also on commandline</action>
         </release>
         <release version="1.0.4" date="2014-07-22" description="Subsequent release">
             <action dev="Petr Kozelka" type="update">check: property "ignoreVendorArchive" now available also on commandline</action>
