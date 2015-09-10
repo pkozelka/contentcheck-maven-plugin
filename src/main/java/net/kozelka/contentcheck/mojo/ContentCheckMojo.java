@@ -3,12 +3,11 @@ package net.kozelka.contentcheck.mojo;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
-
+import net.kozelka.contentcheck.expect.api.ApproverReport;
+import net.kozelka.contentcheck.expect.impl.ContentChecker;
 import net.kozelka.contentcheck.expect.impl.VendorFilter;
 import net.kozelka.contentcheck.expect.model.ActualEntry;
 import net.kozelka.contentcheck.expect.model.ApprovedEntry;
-import net.kozelka.contentcheck.expect.impl.ContentChecker;
-import net.kozelka.contentcheck.expect.api.ApproverReport;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -77,23 +76,23 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
         assertSourceFileExists();
 
         try {
-            final MyIntrospectionListener introspectionListener = new MyIntrospectionListener(getLog());
-            final ContentIntrospector introspector = VendorFilter.createIntrospector(introspectionListener, ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+            getLog().info("Reading listing: " + contentListing);
+            final ContentIntrospector introspector = VendorFilter.createIntrospector(new MyIntrospectionListener(getLog()),
+                ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
             introspector.setSourceFile(sourceFile);
             final ContentChecker contentChecker = new ContentChecker();
             contentChecker.getEvents().addListener(new MyContentCheckerListener(getLog()));
             contentChecker.setIntrospector(introspector);
             //
-            getLog().info("Reading listing: " + contentListing);
-            final ApproverReport output = contentChecker.check(contentListing);
+            final ApproverReport report = contentChecker.check(contentListing);
 
             // report missing entries
-            final Set<ApprovedEntry> missingEntries = output.getMissingEntries();
+            final Set<ApprovedEntry> missingEntries = report.getMissingEntries();
             for (ApprovedEntry missing : missingEntries) {
                 log(failOnMissing, String.format(msgMissing, missing));
             }
             // report unexpected entries
-            final Set<ActualEntry> unexpectedEntries = output.getUnexpectedEntries();
+            final Set<ActualEntry> unexpectedEntries = report.getUnexpectedEntries();
             for (ActualEntry actualEntry : unexpectedEntries) {
                 log(failOnUnexpected, String.format(msgUnexpected, actualEntry.getUri()));
             }

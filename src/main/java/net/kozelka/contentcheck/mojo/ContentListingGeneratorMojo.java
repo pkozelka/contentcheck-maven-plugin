@@ -1,7 +1,6 @@
 package net.kozelka.contentcheck.mojo;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,6 +9,7 @@ import java.util.List;
 import net.kozelka.contentcheck.expect.impl.ContentCollector;
 import net.kozelka.contentcheck.expect.impl.VendorFilter;
 import net.kozelka.contentcheck.expect.model.ActualEntry;
+import net.kozelka.contentcheck.expect.util.ExpectUtils;
 import net.kozelka.contentcheck.introspection.ContentIntrospector;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -54,7 +54,7 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
             getLog().info(String.format("Generated %d entries.", sourceEntries.size()));
 //            getLog().info(String.format("The source contains %d entries, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));
 
-            generateListing(sourceEntries, contentListing);
+            ExpectUtils.generateListing(sourceEntries, contentListing);
             getLog().info(String.format("The listing file '%s' has been successfully generated.", contentListing));
         } catch (IOException e) {
             throw new MojoFailureException(e.getMessage(), e);
@@ -66,29 +66,15 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
         final ContentIntrospector introspector = VendorFilter.createIntrospector(new MyIntrospectionListener(getLog()),
             ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
         introspector.setSourceFile(sourceFile);
-        final List<ActualEntry> sourceEntries = new ArrayList<ActualEntry>();
-        final ContentIntrospector.Events collector = new ContentCollector(sourceEntries);
+        final List<ActualEntry> actualEntries = new ArrayList<ActualEntry>();
+        final ContentIntrospector.Events collector = new ContentCollector(actualEntries);
         introspector.getEvents().addListener(collector);
-        Collections.sort(sourceEntries, new Comparator<ActualEntry>() {
+        Collections.sort(actualEntries, new Comparator<ActualEntry>() {
             public int compare(ActualEntry o1, ActualEntry o2) {
                 return o1.getUri().compareTo(o2.getUri());
             }
         });
-        return sourceEntries;
-    }
-
-    private static void generateListing(List<ActualEntry> sourceEntries, File contentListing) throws IOException {
-        contentListing.getParentFile().mkdirs();
-        final FileWriter writer = new FileWriter(contentListing);
-        try {
-            writer.write(String.format("#%n# Edit this file to approve or unpraprove individual libraries; will be checked by contentcheck-maven-plugin.%n#%n"));
-            writer.write(String.format("#%n# Keep the entries sorted alphabetically for easier eye-seeking.%n#%n"));
-            for (final ActualEntry actualEntry : sourceEntries) {
-                writer.write(String.format("%s%n", actualEntry));
-            }
-        } finally {
-            writer.close();
-        }
+        return actualEntries;
     }
 
 }
