@@ -50,35 +50,44 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
             if (ignoreVendorArchives) {
                 getLog().warn(String.format("Archives of vendor '%s', indicated by manifest entry '%s', will not be added to the list", vendorId, manifestVendorEntry));
             }
-            final ContentIntrospector introspector = VendorFilter.createIntrospector(new MyIntrospectionListener(getLog()),
-                ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-            introspector.setSourceFile(sourceFile);
-            final List<ActualEntry> sourceEntries = new ArrayList<ActualEntry>();
-            final ContentIntrospector.Events collector = new ContentCollector(sourceEntries);
-            introspector.getEvents().addListener(collector);
-            final int count = introspector.walk();
-            Collections.sort(sourceEntries, new Comparator<ActualEntry>() {
-                public int compare(ActualEntry o1, ActualEntry o2) {
-                    return o1.getUri().compareTo(o2.getUri());
-                }
-            });
-            getLog().info(String.format("The source contains %d entries, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));
-            //TODO: explain/display the criteria
+            final List<ActualEntry> sourceEntries = scanActualEntries();
+            getLog().info(String.format("Generated %d entries.", sourceEntries.size()));
+//            getLog().info(String.format("The source contains %d entries, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));
 
-            contentListing.getParentFile().mkdirs();
-            final FileWriter writer = new FileWriter(contentListing);
-            try {
-                writer.write(String.format("#%n# Edit this file to approve or unpraprove individual libraries; will be checked by contentcheck-maven-plugin.%n#%n"));
-                writer.write(String.format("#%n# Keep the entries sorted alphabetically for easier eye-seeking.%n#%n"));
-                for (final ActualEntry actualEntry : sourceEntries) {
-                    writer.write(String.format("%s%n", actualEntry));
-                }
-            } finally {
-                writer.close();
-            }
+            generateListing(sourceEntries, contentListing);
             getLog().info(String.format("The listing file '%s' has been successfully generated.", contentListing));
         } catch (IOException e) {
             throw new MojoFailureException(e.getMessage(), e);
+        }
+    }
+
+    // TODO: following methods should be moved to/unified with ContentChecker class
+    private List<ActualEntry> scanActualEntries() throws IOException {
+        final ContentIntrospector introspector = VendorFilter.createIntrospector(new MyIntrospectionListener(getLog()),
+            ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+        introspector.setSourceFile(sourceFile);
+        final List<ActualEntry> sourceEntries = new ArrayList<ActualEntry>();
+        final ContentIntrospector.Events collector = new ContentCollector(sourceEntries);
+        introspector.getEvents().addListener(collector);
+        Collections.sort(sourceEntries, new Comparator<ActualEntry>() {
+            public int compare(ActualEntry o1, ActualEntry o2) {
+                return o1.getUri().compareTo(o2.getUri());
+            }
+        });
+        return sourceEntries;
+    }
+
+    private static void generateListing(List<ActualEntry> sourceEntries, File contentListing) throws IOException {
+        contentListing.getParentFile().mkdirs();
+        final FileWriter writer = new FileWriter(contentListing);
+        try {
+            writer.write(String.format("#%n# Edit this file to approve or unpraprove individual libraries; will be checked by contentcheck-maven-plugin.%n#%n"));
+            writer.write(String.format("#%n# Keep the entries sorted alphabetically for easier eye-seeking.%n#%n"));
+            for (final ActualEntry actualEntry : sourceEntries) {
+                writer.write(String.format("%s%n", actualEntry));
+            }
+        } finally {
+            writer.close();
         }
     }
 
