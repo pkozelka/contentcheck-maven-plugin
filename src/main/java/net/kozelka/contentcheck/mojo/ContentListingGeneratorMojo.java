@@ -3,8 +3,6 @@ package net.kozelka.contentcheck.mojo;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import net.kozelka.contentcheck.expect.impl.ContentCollector;
 import net.kozelka.contentcheck.expect.impl.VendorFilter;
@@ -69,11 +67,6 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
         final List<ActualEntry> actualEntries = new ArrayList<ActualEntry>();
         final ContentIntrospector.Events collector = new ContentCollector(actualEntries);
         introspector.getEvents().addListener(collector);
-        Collections.sort(actualEntries, new Comparator<ActualEntry>() {
-            public int compare(ActualEntry o1, ActualEntry o2) {
-                return o1.getUri().compareTo(o2.getUri());
-            }
-        });
         return actualEntries;
     }
 
