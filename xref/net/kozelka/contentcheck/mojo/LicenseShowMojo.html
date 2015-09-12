@@ -19,357 +19,360 @@
 <a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> java.util.List;
 <a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
 <a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> java.util.Set;
-<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.introspection.ContentIntrospector;
-<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.Artifact;
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.factory.ArtifactFactory;
-<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.manager.WagonManager;
-<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.metadata.ArtifactMetadataSource;
-<a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.repository.ArtifactRepository;
-<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.repository.metadata.RepositoryMetadataManager;
-<a class="jxr_linenumber" name="19" href="#19">19</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.resolver.ArtifactCollector;
-<a class="jxr_linenumber" name="20" href="#20">20</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.resolver.ArtifactResolver;
-<a class="jxr_linenumber" name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.resolver.filter.ArtifactFilter;
-<a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
-<a class="jxr_linenumber" name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.model.License;
-<a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugin.MojoExecutionException;
-<a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugin.MojoFailureException;
-<a class="jxr_linenumber" name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugin.logging.Log;
-<a class="jxr_linenumber" name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.Component;
-<a class="jxr_linenumber" name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.Mojo;
-<a class="jxr_linenumber" name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.Parameter;
-<a class="jxr_linenumber" name="30" href="#30">30</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.project.MavenProject;
-<a class="jxr_linenumber" name="31" href="#31">31</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.project.MavenProjectBuilder;
-<a class="jxr_linenumber" name="32" href="#32">32</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.project.ProjectBuildingException;
-<a class="jxr_linenumber" name="33" href="#33">33</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.report.projectinfo.dependencies.Dependencies;
-<a class="jxr_linenumber" name="34" href="#34">34</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.report.projectinfo.dependencies.RepositoryUtils;
-<a class="jxr_linenumber" name="35" href="#35">35</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.settings.Settings;
-<a class="jxr_linenumber" name="36" href="#36">36</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.shared.dependency.tree.DependencyNode;
-<a class="jxr_linenumber" name="37" href="#37">37</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
-<a class="jxr_linenumber" name="38" href="#38">38</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
-<a class="jxr_linenumber" name="39" href="#39">39</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.shared.jar.classes.JarClassesAnalysis;
-<a class="jxr_linenumber" name="40" href="#40">40</a>  <strong class="jxr_keyword">import</strong> org.codehaus.jackson.JsonParseException;
-<a class="jxr_linenumber" name="41" href="#41">41</a>  <strong class="jxr_keyword">import</strong> org.codehaus.jackson.map.JsonMappingException;
-<a class="jxr_linenumber" name="42" href="#42">42</a>  <strong class="jxr_keyword">import</strong> org.codehaus.plexus.util.FileUtils;
-<a class="jxr_linenumber" name="43" href="#43">43</a>  
-<a class="jxr_linenumber" name="44" href="#44">44</a>  <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="45" href="#45">45</a>  <em class="jxr_javadoccomment"> * Shows license information for selected source entries. By default, the information is parsed from dependency's POM,</em>
-<a class="jxr_linenumber" name="46" href="#46">46</a>  <em class="jxr_javadoccomment"> * but the project may define additional mapping between files in output archive and licenses.</em>
-<a class="jxr_linenumber" name="47" href="#47">47</a>  <em class="jxr_javadoccomment"> * @since 1.0.1</em>
-<a class="jxr_linenumber" name="48" href="#48">48</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="49" href="#49">49</a>  @Mojo(name = <span class="jxr_string">"show-licenses"</span>)
-<a class="jxr_linenumber" name="50" href="#50">50</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../net/kozelka/contentcheck/mojo/LicenseShowMojo.html">LicenseShowMojo</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../net/kozelka/contentcheck/mojo/AbstractArchiveContentMojo.html">AbstractArchiveContentMojo</a>{
-<a class="jxr_linenumber" name="51" href="#51">51</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="52" href="#52">52</a>  <em class="jxr_javadoccomment">     * The license mapping file, in JSON format.</em>
-<a class="jxr_linenumber" name="53" href="#53">53</a>  <em class="jxr_javadoccomment">     * This file may define additional license information for JARs that are not recognized.</em>
-<a class="jxr_linenumber" name="54" href="#54">54</a>  <em class="jxr_javadoccomment">     * &lt;h4&gt;Additional license information&lt;/h4&gt;</em>
-<a class="jxr_linenumber" name="55" href="#55">55</a>  <em class="jxr_javadoccomment">     * &lt;pre&gt;&lt;code&gt;{</em>
-<a class="jxr_linenumber" name="56" href="#56">56</a>  <em class="jxr_javadoccomment">     * "licenses": [</em>
-<a class="jxr_linenumber" name="57" href="#57">57</a>  <em class="jxr_javadoccomment">     *       {</em>
-<a class="jxr_linenumber" name="58" href="#58">58</a>  <em class="jxr_javadoccomment">     *          "name" : "License name",</em>
-<a class="jxr_linenumber" name="59" href="#59">59</a>  <em class="jxr_javadoccomment">     *           "url"  : "License text URL",</em>
-<a class="jxr_linenumber" name="60" href="#60">60</a>  <em class="jxr_javadoccomment">     *           "files": [</em>
-<a class="jxr_linenumber" name="61" href="#61">61</a>  <em class="jxr_javadoccomment">     *               "file name"</em>
-<a class="jxr_linenumber" name="62" href="#62">62</a>  <em class="jxr_javadoccomment">     *            ]</em>
-<a class="jxr_linenumber" name="63" href="#63">63</a>  <em class="jxr_javadoccomment">     *       }</em>
-<a class="jxr_linenumber" name="64" href="#64">64</a>  <em class="jxr_javadoccomment">     *  ]</em>
-<a class="jxr_linenumber" name="65" href="#65">65</a>  <em class="jxr_javadoccomment">     * }&lt;/code&gt;&lt;/pre&gt;</em>
-<a class="jxr_linenumber" name="66" href="#66">66</a>  <em class="jxr_javadoccomment">     * &lt;h4&gt;Example&lt;/h4&gt;</em>
-<a class="jxr_linenumber" name="67" href="#67">67</a>  <em class="jxr_javadoccomment">     * &lt;pre&gt;&lt;code&gt;{</em>
-<a class="jxr_linenumber" name="68" href="#68">68</a>  <em class="jxr_javadoccomment">     *    "licenses": [</em>
-<a class="jxr_linenumber" name="69" href="#69">69</a>  <em class="jxr_javadoccomment">     *       {</em>
-<a class="jxr_linenumber" name="70" href="#70">70</a>  <em class="jxr_javadoccomment">     *           "name"  : "The LGPL license 2.1",</em>
-<a class="jxr_linenumber" name="71" href="#71">71</a>  <em class="jxr_javadoccomment">     *           "url"   : "<a href="http://www.gnu.org/licenses/lgpl-2.1.html" target="alexandria_uri">http://www.gnu.org/licenses/lgpl-2.1.html</a>",</em>
-<a class="jxr_linenumber" name="72" href="#72">72</a>  <em class="jxr_javadoccomment">     *           "files" : [</em>
-<a class="jxr_linenumber" name="73" href="#73">73</a>  <em class="jxr_javadoccomment">     *                         "aspectwerkz-nodeps-jdk5-2.2.1.jar"</em>
-<a class="jxr_linenumber" name="74" href="#74">74</a>  <em class="jxr_javadoccomment">     *           ]</em>
-<a class="jxr_linenumber" name="75" href="#75">75</a>  <em class="jxr_javadoccomment">     *       },</em>
-<a class="jxr_linenumber" name="76" href="#76">76</a>  <em class="jxr_javadoccomment">     *       {</em>
-<a class="jxr_linenumber" name="77" href="#77">77</a>  <em class="jxr_javadoccomment">     *           "name"  : "The public domain",</em>
-<a class="jxr_linenumber" name="78" href="#78">78</a>  <em class="jxr_javadoccomment">     *           "url"   : "<a href="http://creativecommons.org/licenses/publicdomain/" target="alexandria_uri">http://creativecommons.org/licenses/publicdomain/</a>",</em>
-<a class="jxr_linenumber" name="79" href="#79">79</a>  <em class="jxr_javadoccomment">     *           "files" : [</em>
-<a class="jxr_linenumber" name="80" href="#80">80</a>  <em class="jxr_javadoccomment">     *               "jsr166x-1.0.jar",</em>
-<a class="jxr_linenumber" name="81" href="#81">81</a>  <em class="jxr_javadoccomment">     *               "xyz.jar"</em>
-<a class="jxr_linenumber" name="82" href="#82">82</a>  <em class="jxr_javadoccomment">     *           ]</em>
-<a class="jxr_linenumber" name="83" href="#83">83</a>  <em class="jxr_javadoccomment">     *       }</em>
-<a class="jxr_linenumber" name="84" href="#84">84</a>  <em class="jxr_javadoccomment">     *    ]</em>
-<a class="jxr_linenumber" name="85" href="#85">85</a>  <em class="jxr_javadoccomment">     * }&lt;/code&gt;&lt;/pre&gt;</em>
-<a class="jxr_linenumber" name="86" href="#86">86</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="87" href="#87">87</a>      @Parameter(defaultValue = <span class="jxr_string">"src/main/license.mapping.json"</span>, property = <span class="jxr_string">"licenseMappingFile"</span>)
-<a class="jxr_linenumber" name="88" href="#88">88</a>      File licenseMappingFile;
-<a class="jxr_linenumber" name="89" href="#89">89</a>  
-<a class="jxr_linenumber" name="90" href="#90">90</a>  
-<a class="jxr_linenumber" name="91" href="#91">91</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="92" href="#92">92</a>  <em class="jxr_javadoccomment">     * If true print the result of check to a CSV file in project build directory.</em>
-<a class="jxr_linenumber" name="93" href="#93">93</a>  <em class="jxr_javadoccomment">     * See {@link #csvOutputFile}</em>
-<a class="jxr_linenumber" name="94" href="#94">94</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="95" href="#95">95</a>      @Parameter(defaultValue = <span class="jxr_string">"true"</span>)
-<a class="jxr_linenumber" name="96" href="#96">96</a>      <strong class="jxr_keyword">boolean</strong> csvOutput;
-<a class="jxr_linenumber" name="97" href="#97">97</a>  
-<a class="jxr_linenumber" name="98" href="#98">98</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="99" href="#99">99</a>  <em class="jxr_javadoccomment">     * The CSV output file that is used when {@link #csvOutput} is turned on.</em>
-<a class="jxr_linenumber" name="100" href="#100">100</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="101" href="#101">101</a>     @Parameter(defaultValue = <span class="jxr_string">"${project.build.directory}/licenses.csv"</span>)
-<a class="jxr_linenumber" name="102" href="#102">102</a>     File csvOutputFile;
-<a class="jxr_linenumber" name="103" href="#103">103</a> 
-<a class="jxr_linenumber" name="104" href="#104">104</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="105" href="#105">105</a> <em class="jxr_javadoccomment">     * The archive file to be checked</em>
-<a class="jxr_linenumber" name="106" href="#106">106</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="107" href="#107">107</a>     @Parameter(defaultValue = <span class="jxr_string">"${project.build.directory}/${project.build.finalName}.zip"</span>)
-<a class="jxr_linenumber" name="108" href="#108">108</a>     File defaultBundleForPOMPacking;
-<a class="jxr_linenumber" name="109" href="#109">109</a> 
-<a class="jxr_linenumber" name="110" href="#110">110</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="111" href="#111">111</a> <em class="jxr_javadoccomment">     * Artifact collector component.</em>
-<a class="jxr_linenumber" name="112" href="#112">112</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="113" href="#113">113</a>     @Component
-<a class="jxr_linenumber" name="114" href="#114">114</a>     ArtifactCollector collector;
-<a class="jxr_linenumber" name="115" href="#115">115</a> 
-<a class="jxr_linenumber" name="116" href="#116">116</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="117" href="#117">117</a> <em class="jxr_javadoccomment">     * Artifact Factory component.</em>
-<a class="jxr_linenumber" name="118" href="#118">118</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="119" href="#119">119</a>     @Component
-<a class="jxr_linenumber" name="120" href="#120">120</a>     ArtifactFactory factory;
-<a class="jxr_linenumber" name="121" href="#121">121</a> 
-<a class="jxr_linenumber" name="122" href="#122">122</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="123" href="#123">123</a> <em class="jxr_javadoccomment">     * Dependency tree builder component.</em>
-<a class="jxr_linenumber" name="124" href="#124">124</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="125" href="#125">125</a>     @Component
-<a class="jxr_linenumber" name="126" href="#126">126</a>     DependencyTreeBuilder dependencyTreeBuilder;
-<a class="jxr_linenumber" name="127" href="#127">127</a> 
-<a class="jxr_linenumber" name="128" href="#128">128</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="129" href="#129">129</a> <em class="jxr_javadoccomment">     * Artifact metadata source component.</em>
-<a class="jxr_linenumber" name="130" href="#130">130</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="131" href="#131">131</a>     @Component
-<a class="jxr_linenumber" name="132" href="#132">132</a>     ArtifactMetadataSource artifactMetadataSource;
-<a class="jxr_linenumber" name="133" href="#133">133</a> 
-<a class="jxr_linenumber" name="134" href="#134">134</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="135" href="#135">135</a> <em class="jxr_javadoccomment">     * Jar classes analyzer component.</em>
-<a class="jxr_linenumber" name="136" href="#136">136</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="137" href="#137">137</a>     @Component
-<a class="jxr_linenumber" name="138" href="#138">138</a>     JarClassesAnalysis classesAnalyzer;
-<a class="jxr_linenumber" name="139" href="#139">139</a> 
-<a class="jxr_linenumber" name="140" href="#140">140</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="141" href="#141">141</a> <em class="jxr_javadoccomment">     * Local Repository.</em>
-<a class="jxr_linenumber" name="142" href="#142">142</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="143" href="#143">143</a>     @Parameter(property = <span class="jxr_string">"localRepository"</span>, required = <strong class="jxr_keyword">true</strong>, readonly = <strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="144" href="#144">144</a>     ArtifactRepository localRepository;
-<a class="jxr_linenumber" name="145" href="#145">145</a> 
-<a class="jxr_linenumber" name="146" href="#146">146</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="147" href="#147">147</a> <em class="jxr_javadoccomment">     * Maven Project Builder component.</em>
-<a class="jxr_linenumber" name="148" href="#148">148</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="149" href="#149">149</a>     @Component
-<a class="jxr_linenumber" name="150" href="#150">150</a>     MavenProjectBuilder mavenProjectBuilder;
-<a class="jxr_linenumber" name="151" href="#151">151</a> 
-<a class="jxr_linenumber" name="152" href="#152">152</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="153" href="#153">153</a> <em class="jxr_javadoccomment">     * The current user system settings for use in Maven.</em>
-<a class="jxr_linenumber" name="154" href="#154">154</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="155" href="#155">155</a>     @Parameter(property = <span class="jxr_string">"settings"</span>, required = <strong class="jxr_keyword">true</strong>, readonly = <strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="156" href="#156">156</a>     <strong class="jxr_keyword">protected</strong> Settings settings;
-<a class="jxr_linenumber" name="157" href="#157">157</a> 
-<a class="jxr_linenumber" name="158" href="#158">158</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="159" href="#159">159</a> <em class="jxr_javadoccomment">     * The Maven Project.</em>
-<a class="jxr_linenumber" name="160" href="#160">160</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="161" href="#161">161</a>     @Parameter(property = <span class="jxr_string">"project"</span>, required = <strong class="jxr_keyword">true</strong>, readonly = <strong class="jxr_keyword">true</strong>)
-<a class="jxr_linenumber" name="162" href="#162">162</a>     MavenProject project;
-<a class="jxr_linenumber" name="163" href="#163">163</a> 
-<a class="jxr_linenumber" name="164" href="#164">164</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="165" href="#165">165</a> <em class="jxr_javadoccomment">     * Wagon manager component.</em>
-<a class="jxr_linenumber" name="166" href="#166">166</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="167" href="#167">167</a>     @Component
-<a class="jxr_linenumber" name="168" href="#168">168</a>     WagonManager wagonManager;
-<a class="jxr_linenumber" name="169" href="#169">169</a> 
-<a class="jxr_linenumber" name="170" href="#170">170</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="171" href="#171">171</a> <em class="jxr_javadoccomment">     * Artifact Resolver component.</em>
-<a class="jxr_linenumber" name="172" href="#172">172</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="173" href="#173">173</a>     @Component
-<a class="jxr_linenumber" name="174" href="#174">174</a>     <strong class="jxr_keyword">protected</strong> ArtifactResolver resolver;
-<a class="jxr_linenumber" name="175" href="#175">175</a> 
-<a class="jxr_linenumber" name="176" href="#176">176</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="177" href="#177">177</a> <em class="jxr_javadoccomment">     * Repository metadata component.</em>
-<a class="jxr_linenumber" name="178" href="#178">178</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="179" href="#179">179</a>     @Component
-<a class="jxr_linenumber" name="180" href="#180">180</a>     RepositoryMetadataManager repositoryMetadataManager;
-<a class="jxr_linenumber" name="181" href="#181">181</a> 
-<a class="jxr_linenumber" name="182" href="#182">182</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="183" href="#183">183</a> <em class="jxr_javadoccomment">     * Artifact resolving and the rest of Maven repo magic taken from &lt;a href="<a href="http://maven.apache.org/plugins/maven-project-info-reports-plugin/index.html" target="alexandria_uri">http://maven.apache.org/plugins/maven-project-info-reports-plugin/index.html</a>"&gt;Maven Project Info Reports Plugin&lt;/a&gt;.</em>
-<a class="jxr_linenumber" name="184" href="#184">184</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="185" href="#185">185</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> execute() <strong class="jxr_keyword">throws</strong> MojoExecutionException, MojoFailureException {
-<a class="jxr_linenumber" name="186" href="#186">186</a>         <strong class="jxr_keyword">final</strong> File src = sourceFile.exists() ? sourceFile : defaultBundleForPOMPacking;
-<a class="jxr_linenumber" name="187" href="#187">187</a>         <strong class="jxr_keyword">if</strong>(!src.exists()) {
-<a class="jxr_linenumber" name="188" href="#188">188</a>             getLog().warn(<span class="jxr_string">"Skipping project since there is no archive to check."</span>);
-<a class="jxr_linenumber" name="189" href="#189">189</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="190" href="#190">190</a>         }
-<a class="jxr_linenumber" name="191" href="#191">191</a> 
-<a class="jxr_linenumber" name="192" href="#192">192</a>         <strong class="jxr_keyword">final</strong> List&lt;MavenProject&gt; mavenProjectForDependencies = getMavenProjectForDependencies();
-<a class="jxr_linenumber" name="193" href="#193">193</a> 
-<a class="jxr_linenumber" name="194" href="#194">194</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="195" href="#195">195</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../net/kozelka/contentcheck/introspection/ContentIntrospector.html">ContentIntrospector</a> introspector = ContentIntrospector.create(<strong class="jxr_keyword">new</strong> <a href="../../../../net/kozelka/contentcheck/mojo/MyIntrospectionListener.html">MyIntrospectionListener</a>(getLog()),
-<a class="jxr_linenumber" name="196" href="#196">196</a>                     ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
-<a class="jxr_linenumber" name="197" href="#197">197</a>             <strong class="jxr_keyword">final</strong> Set&lt;String&gt; archiveEntries = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;String&gt;();
-<a class="jxr_linenumber" name="198" href="#198">198</a>             introspector.setSourceFile(src);
-<a class="jxr_linenumber" name="199" href="#199">199</a>             <em class="jxr_comment">//TODO: instead of collecting, put the dependency comparison right inside</em>
-<a class="jxr_linenumber" name="200" href="#200">200</a>             <strong class="jxr_keyword">final</strong> ContentIntrospector.ContentCollector collector = <strong class="jxr_keyword">new</strong> ContentIntrospector.ContentCollector(archiveEntries);
-<a class="jxr_linenumber" name="201" href="#201">201</a>             introspector.getEvents().addListener(collector);
-<a class="jxr_linenumber" name="202" href="#202">202</a>             introspector.walk();
-<a class="jxr_linenumber" name="203" href="#203">203</a>             introspector.getEvents().removeListener(collector);
-<a class="jxr_linenumber" name="204" href="#204">204</a> 
-<a class="jxr_linenumber" name="205" href="#205">205</a>             <strong class="jxr_keyword">final</strong> Map&lt;String, List&lt;License&gt;&gt; entries = <strong class="jxr_keyword">new</strong> LinkedHashMap&lt;String, List&lt;License&gt;&gt;();
-<a class="jxr_linenumber" name="206" href="#206">206</a> 
-<a class="jxr_linenumber" name="207" href="#207">207</a>             <strong class="jxr_keyword">final</strong> Map&lt;String, List&lt;License&gt;&gt; additionalLicenseInformation = <strong class="jxr_keyword">new</strong> LinkedHashMap&lt;String, List&lt;License&gt;&gt;();
-<a class="jxr_linenumber" name="208" href="#208">208</a>             <strong class="jxr_keyword">if</strong>(licenseMappingFile != <strong class="jxr_keyword">null</strong> &amp;&amp; licenseMappingFile.exists()) {
-<a class="jxr_linenumber" name="209" href="#209">209</a>                 <em class="jxr_comment">//read additional license information</em>
-<a class="jxr_linenumber" name="210" href="#210">210</a>                 getLog().info(String.format(<span class="jxr_string">"Reading license mapping file %s"</span>, licenseMappingFile.getAbsolutePath()));
-<a class="jxr_linenumber" name="211" href="#211">211</a>                 <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="212" href="#212">212</a>                     additionalLicenseInformation.putAll(LicenseShow.parseLicenseMappingFile(licenseMappingFile));
-<a class="jxr_linenumber" name="213" href="#213">213</a>                 } <strong class="jxr_keyword">catch</strong> (JsonParseException e) {
-<a class="jxr_linenumber" name="214" href="#214">214</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(String.format(<span class="jxr_string">"Cannot parse JSON from file %s the content of the file is not well formed JSON."</span>, licenseMappingFile),e);
-<a class="jxr_linenumber" name="215" href="#215">215</a>                 } <strong class="jxr_keyword">catch</strong> (JsonMappingException e) {
-<a class="jxr_linenumber" name="216" href="#216">216</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(String.format(<span class="jxr_string">"Cannot deserialize JSON from file %s"</span>, licenseMappingFile),e);
-<a class="jxr_linenumber" name="217" href="#217">217</a>                 } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="218" href="#218">218</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(e.getMessage(), e);
-<a class="jxr_linenumber" name="219" href="#219">219</a>                 }
-<a class="jxr_linenumber" name="220" href="#220">220</a> 
-<a class="jxr_linenumber" name="221" href="#221">221</a>             }
-<a class="jxr_linenumber" name="222" href="#222">222</a> 
-<a class="jxr_linenumber" name="223" href="#223">223</a>             getLog().info(<span class="jxr_string">"Comparing the archive content with Maven project artifacts"</span>);
-<a class="jxr_linenumber" name="224" href="#224">224</a>             <strong class="jxr_keyword">for</strong>(String archiveEntry : archiveEntries) {
-<a class="jxr_linenumber" name="225" href="#225">225</a>                 List&lt;License&gt; licenses = <strong class="jxr_keyword">null</strong>; <em class="jxr_comment">//these licenses will be associated with the given archive entry</em>
-<a class="jxr_linenumber" name="226" href="#226">226</a> 
-<a class="jxr_linenumber" name="227" href="#227">227</a>                 <strong class="jxr_keyword">for</strong> (MavenProject mavenProject : mavenProjectForDependencies) {
-<a class="jxr_linenumber" name="228" href="#228">228</a>                     mavenProject.getGroupId();
-<a class="jxr_linenumber" name="229" href="#229">229</a>                     <strong class="jxr_keyword">final</strong> String artifactId = mavenProject.getArtifactId();
-<a class="jxr_linenumber" name="230" href="#230">230</a>                     <strong class="jxr_keyword">final</strong> String version = mavenProject.getVersion();
-<a class="jxr_linenumber" name="231" href="#231">231</a>                     <strong class="jxr_keyword">final</strong> String jarName = artifactId + <span class="jxr_string">"-"</span> + version + <span class="jxr_string">".jar"</span>; <em class="jxr_comment">//guess jar name</em>
-<a class="jxr_linenumber" name="232" href="#232">232</a>                     <strong class="jxr_keyword">if</strong>(archiveEntry.endsWith(jarName)) {
-<a class="jxr_linenumber" name="233" href="#233">233</a>                         @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
-<a class="jxr_linenumber" name="234" href="#234">234</a>                         <strong class="jxr_keyword">final</strong> List&lt;License&gt; _licenses = mavenProject.getLicenses();
-<a class="jxr_linenumber" name="235" href="#235">235</a>                         licenses = _licenses == <strong class="jxr_keyword">null</strong> || _licenses.size() == 0 ? <strong class="jxr_keyword">null</strong> : _licenses  ;
-<a class="jxr_linenumber" name="236" href="#236">236</a>                         <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="237" href="#237">237</a>                     }
-<a class="jxr_linenumber" name="238" href="#238">238</a>                 }
-<a class="jxr_linenumber" name="239" href="#239">239</a> 
-<a class="jxr_linenumber" name="240" href="#240">240</a>                 <strong class="jxr_keyword">final</strong> List&lt;License&gt; licensesMappingFile = additionalLicenseInformation.get(FileUtils.filename(archiveEntry));
-<a class="jxr_linenumber" name="241" href="#241">241</a> 
-<a class="jxr_linenumber" name="242" href="#242">242</a>                 <strong class="jxr_keyword">if</strong>(licenses == <strong class="jxr_keyword">null</strong> &amp;&amp; licensesMappingFile == <strong class="jxr_keyword">null</strong>) {<em class="jxr_comment">//misising license information</em>
-<a class="jxr_linenumber" name="243" href="#243">243</a>                     getLog().debug(String.format(<span class="jxr_string">"Cannot resolve license information for archive entry %s neither from the POM file nor the file for license mapping"</span>, archiveEntry));
-<a class="jxr_linenumber" name="244" href="#244">244</a>                     <em class="jxr_comment">//archive entry must be present even if there is no a matching Maven Project</em>
-<a class="jxr_linenumber" name="245" href="#245">245</a>                     entries.put(archiveEntry, Collections.&lt;License&gt;emptyList());
-<a class="jxr_linenumber" name="246" href="#246">246</a>                 } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(licenses != <strong class="jxr_keyword">null</strong> &amp;&amp; licensesMappingFile != <strong class="jxr_keyword">null</strong>) {<em class="jxr_comment">//licenses specified in both - POM and license mapping file</em>
-<a class="jxr_linenumber" name="247" href="#247">247</a>                     getLog().warn(String.format(<span class="jxr_string">"The license information for file %s are defined in the POM file and also in the file for license mapping. Using license information from the the file for license mapping."</span>, archiveEntry));
-<a class="jxr_linenumber" name="248" href="#248">248</a>                     entries.put(archiveEntry, licensesMappingFile); <em class="jxr_comment">//mapping manually specified licenses precedes licenses from POM</em>
-<a class="jxr_linenumber" name="249" href="#249">249</a>                 } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (licenses != <strong class="jxr_keyword">null</strong>) {<em class="jxr_comment">//license information in POM</em>
-<a class="jxr_linenumber" name="250" href="#250">250</a>                     entries.put(archiveEntry, licenses);<em class="jxr_comment">//license</em>
-<a class="jxr_linenumber" name="251" href="#251">251</a>                 } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="252" href="#252">252</a>                     <em class="jxr_comment">//license information in mapping file</em>
-<a class="jxr_linenumber" name="253" href="#253">253</a>                     <em class="jxr_comment">//put additional license information to the object that holds this information</em>
-<a class="jxr_linenumber" name="254" href="#254">254</a>                     entries.put(archiveEntry, licensesMappingFile);
-<a class="jxr_linenumber" name="255" href="#255">255</a>                 }
-<a class="jxr_linenumber" name="256" href="#256">256</a>             }
-<a class="jxr_linenumber" name="257" href="#257">257</a> 
-<a class="jxr_linenumber" name="258" href="#258">258</a>             <strong class="jxr_keyword">final</strong> LicenseShow.LicenseOutput logOutput = <strong class="jxr_keyword">new</strong> <a href="../../../../net/kozelka/contentcheck/mojo/LicenseShowMojo.html">MavenLogOutput</a>(getLog());
-<a class="jxr_linenumber" name="259" href="#259">259</a>             logOutput.output(entries);
+<a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.expect.impl.ContentCollector;
+<a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.expect.impl.VendorFilter;
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.expect.model.ActualEntry;
+<a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.introspection.ContentIntrospector;
+<a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.Artifact;
+<a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.factory.ArtifactFactory;
+<a class="jxr_linenumber" name="18" href="#18">18</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.manager.WagonManager;
+<a class="jxr_linenumber" name="19" href="#19">19</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.metadata.ArtifactMetadataSource;
+<a class="jxr_linenumber" name="20" href="#20">20</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.repository.ArtifactRepository;
+<a class="jxr_linenumber" name="21" href="#21">21</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.repository.metadata.RepositoryMetadataManager;
+<a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.resolver.ArtifactCollector;
+<a class="jxr_linenumber" name="23" href="#23">23</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.resolver.ArtifactResolver;
+<a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.artifact.resolver.filter.ScopeArtifactFilter;
+<a class="jxr_linenumber" name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.model.License;
+<a class="jxr_linenumber" name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugin.MojoExecutionException;
+<a class="jxr_linenumber" name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugin.MojoFailureException;
+<a class="jxr_linenumber" name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugin.logging.Log;
+<a class="jxr_linenumber" name="30" href="#30">30</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.Component;
+<a class="jxr_linenumber" name="31" href="#31">31</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.Mojo;
+<a class="jxr_linenumber" name="32" href="#32">32</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.plugins.annotations.Parameter;
+<a class="jxr_linenumber" name="33" href="#33">33</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.project.MavenProject;
+<a class="jxr_linenumber" name="34" href="#34">34</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.project.MavenProjectBuilder;
+<a class="jxr_linenumber" name="35" href="#35">35</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.project.ProjectBuildingException;
+<a class="jxr_linenumber" name="36" href="#36">36</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.report.projectinfo.dependencies.Dependencies;
+<a class="jxr_linenumber" name="37" href="#37">37</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.report.projectinfo.dependencies.RepositoryUtils;
+<a class="jxr_linenumber" name="38" href="#38">38</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.settings.Settings;
+<a class="jxr_linenumber" name="39" href="#39">39</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.shared.dependency.tree.DependencyNode;
+<a class="jxr_linenumber" name="40" href="#40">40</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.shared.dependency.tree.DependencyTreeBuilder;
+<a class="jxr_linenumber" name="41" href="#41">41</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.shared.dependency.tree.DependencyTreeBuilderException;
+<a class="jxr_linenumber" name="42" href="#42">42</a>  <strong class="jxr_keyword">import</strong> org.apache.maven.shared.jar.classes.JarClassesAnalysis;
+<a class="jxr_linenumber" name="43" href="#43">43</a>  <strong class="jxr_keyword">import</strong> org.codehaus.jackson.JsonParseException;
+<a class="jxr_linenumber" name="44" href="#44">44</a>  <strong class="jxr_keyword">import</strong> org.codehaus.jackson.map.JsonMappingException;
+<a class="jxr_linenumber" name="45" href="#45">45</a>  <strong class="jxr_keyword">import</strong> org.codehaus.plexus.util.FileUtils;
+<a class="jxr_linenumber" name="46" href="#46">46</a>  
+<a class="jxr_linenumber" name="47" href="#47">47</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="48" href="#48">48</a>  <em class="jxr_javadoccomment"> * Shows license information for selected source entries. By default, the information is parsed from dependency's POM,</em>
+<a class="jxr_linenumber" name="49" href="#49">49</a>  <em class="jxr_javadoccomment"> * but the project may define additional mapping between files in output archive and licenses.</em>
+<a class="jxr_linenumber" name="50" href="#50">50</a>  <em class="jxr_javadoccomment"> * @since 1.0.1</em>
+<a class="jxr_linenumber" name="51" href="#51">51</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="52" href="#52">52</a>  @Mojo(name = <span class="jxr_string">"show-licenses"</span>)
+<a class="jxr_linenumber" name="53" href="#53">53</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../net/kozelka/contentcheck/mojo/LicenseShowMojo.html">LicenseShowMojo</a> <strong class="jxr_keyword">extends</strong> <a href="../../../../net/kozelka/contentcheck/mojo/AbstractArchiveContentMojo.html">AbstractArchiveContentMojo</a>{
+<a class="jxr_linenumber" name="54" href="#54">54</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="55" href="#55">55</a>  <em class="jxr_javadoccomment">     * The license mapping file, in JSON format.</em>
+<a class="jxr_linenumber" name="56" href="#56">56</a>  <em class="jxr_javadoccomment">     * This file may define additional license information for JARs that are not recognized.</em>
+<a class="jxr_linenumber" name="57" href="#57">57</a>  <em class="jxr_javadoccomment">     * &lt;h4&gt;Additional license information&lt;/h4&gt;</em>
+<a class="jxr_linenumber" name="58" href="#58">58</a>  <em class="jxr_javadoccomment">     * &lt;pre&gt;&lt;code&gt;{</em>
+<a class="jxr_linenumber" name="59" href="#59">59</a>  <em class="jxr_javadoccomment">     * "licenses": [</em>
+<a class="jxr_linenumber" name="60" href="#60">60</a>  <em class="jxr_javadoccomment">     *       {</em>
+<a class="jxr_linenumber" name="61" href="#61">61</a>  <em class="jxr_javadoccomment">     *          "name" : "License name",</em>
+<a class="jxr_linenumber" name="62" href="#62">62</a>  <em class="jxr_javadoccomment">     *           "url"  : "License text URL",</em>
+<a class="jxr_linenumber" name="63" href="#63">63</a>  <em class="jxr_javadoccomment">     *           "files": [</em>
+<a class="jxr_linenumber" name="64" href="#64">64</a>  <em class="jxr_javadoccomment">     *               "file name"</em>
+<a class="jxr_linenumber" name="65" href="#65">65</a>  <em class="jxr_javadoccomment">     *            ]</em>
+<a class="jxr_linenumber" name="66" href="#66">66</a>  <em class="jxr_javadoccomment">     *       }</em>
+<a class="jxr_linenumber" name="67" href="#67">67</a>  <em class="jxr_javadoccomment">     *  ]</em>
+<a class="jxr_linenumber" name="68" href="#68">68</a>  <em class="jxr_javadoccomment">     * }&lt;/code&gt;&lt;/pre&gt;</em>
+<a class="jxr_linenumber" name="69" href="#69">69</a>  <em class="jxr_javadoccomment">     * &lt;h4&gt;Example&lt;/h4&gt;</em>
+<a class="jxr_linenumber" name="70" href="#70">70</a>  <em class="jxr_javadoccomment">     * &lt;pre&gt;&lt;code&gt;{</em>
+<a class="jxr_linenumber" name="71" href="#71">71</a>  <em class="jxr_javadoccomment">     *    "licenses": [</em>
+<a class="jxr_linenumber" name="72" href="#72">72</a>  <em class="jxr_javadoccomment">     *       {</em>
+<a class="jxr_linenumber" name="73" href="#73">73</a>  <em class="jxr_javadoccomment">     *           "name"  : "The LGPL license 2.1",</em>
+<a class="jxr_linenumber" name="74" href="#74">74</a>  <em class="jxr_javadoccomment">     *           "url"   : "<a href="http://www.gnu.org/licenses/lgpl-2.1.html" target="alexandria_uri">http://www.gnu.org/licenses/lgpl-2.1.html</a>",</em>
+<a class="jxr_linenumber" name="75" href="#75">75</a>  <em class="jxr_javadoccomment">     *           "files" : [</em>
+<a class="jxr_linenumber" name="76" href="#76">76</a>  <em class="jxr_javadoccomment">     *                         "aspectwerkz-nodeps-jdk5-2.2.1.jar"</em>
+<a class="jxr_linenumber" name="77" href="#77">77</a>  <em class="jxr_javadoccomment">     *           ]</em>
+<a class="jxr_linenumber" name="78" href="#78">78</a>  <em class="jxr_javadoccomment">     *       },</em>
+<a class="jxr_linenumber" name="79" href="#79">79</a>  <em class="jxr_javadoccomment">     *       {</em>
+<a class="jxr_linenumber" name="80" href="#80">80</a>  <em class="jxr_javadoccomment">     *           "name"  : "The public domain",</em>
+<a class="jxr_linenumber" name="81" href="#81">81</a>  <em class="jxr_javadoccomment">     *           "url"   : "<a href="http://creativecommons.org/licenses/publicdomain/" target="alexandria_uri">http://creativecommons.org/licenses/publicdomain/</a>",</em>
+<a class="jxr_linenumber" name="82" href="#82">82</a>  <em class="jxr_javadoccomment">     *           "files" : [</em>
+<a class="jxr_linenumber" name="83" href="#83">83</a>  <em class="jxr_javadoccomment">     *               "jsr166x-1.0.jar",</em>
+<a class="jxr_linenumber" name="84" href="#84">84</a>  <em class="jxr_javadoccomment">     *               "xyz.jar"</em>
+<a class="jxr_linenumber" name="85" href="#85">85</a>  <em class="jxr_javadoccomment">     *           ]</em>
+<a class="jxr_linenumber" name="86" href="#86">86</a>  <em class="jxr_javadoccomment">     *       }</em>
+<a class="jxr_linenumber" name="87" href="#87">87</a>  <em class="jxr_javadoccomment">     *    ]</em>
+<a class="jxr_linenumber" name="88" href="#88">88</a>  <em class="jxr_javadoccomment">     * }&lt;/code&gt;&lt;/pre&gt;</em>
+<a class="jxr_linenumber" name="89" href="#89">89</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="90" href="#90">90</a>      @Parameter(defaultValue = <span class="jxr_string">"src/main/license.mapping.json"</span>, property = <span class="jxr_string">"licenseMappingFile"</span>)
+<a class="jxr_linenumber" name="91" href="#91">91</a>      File licenseMappingFile;
+<a class="jxr_linenumber" name="92" href="#92">92</a>  
+<a class="jxr_linenumber" name="93" href="#93">93</a>  
+<a class="jxr_linenumber" name="94" href="#94">94</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="95" href="#95">95</a>  <em class="jxr_javadoccomment">     * If true print the result of check to a CSV file in project build directory.</em>
+<a class="jxr_linenumber" name="96" href="#96">96</a>  <em class="jxr_javadoccomment">     * See {@link #csvOutputFile}</em>
+<a class="jxr_linenumber" name="97" href="#97">97</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="98" href="#98">98</a>      @Parameter(defaultValue = <span class="jxr_string">"true"</span>)
+<a class="jxr_linenumber" name="99" href="#99">99</a>      <strong class="jxr_keyword">boolean</strong> csvOutput;
+<a class="jxr_linenumber" name="100" href="#100">100</a> 
+<a class="jxr_linenumber" name="101" href="#101">101</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="102" href="#102">102</a> <em class="jxr_javadoccomment">     * The CSV output file that is used when {@link #csvOutput} is turned on.</em>
+<a class="jxr_linenumber" name="103" href="#103">103</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="104" href="#104">104</a>     @Parameter(defaultValue = <span class="jxr_string">"${project.build.directory}/licenses.csv"</span>)
+<a class="jxr_linenumber" name="105" href="#105">105</a>     File csvOutputFile;
+<a class="jxr_linenumber" name="106" href="#106">106</a> 
+<a class="jxr_linenumber" name="107" href="#107">107</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="108" href="#108">108</a> <em class="jxr_javadoccomment">     * The archive file to be checked</em>
+<a class="jxr_linenumber" name="109" href="#109">109</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="110" href="#110">110</a>     @Parameter(defaultValue = <span class="jxr_string">"${project.build.directory}/${project.build.finalName}.zip"</span>)
+<a class="jxr_linenumber" name="111" href="#111">111</a>     File defaultBundleForPOMPacking;
+<a class="jxr_linenumber" name="112" href="#112">112</a> 
+<a class="jxr_linenumber" name="113" href="#113">113</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="114" href="#114">114</a> <em class="jxr_javadoccomment">     * Artifact collector component.</em>
+<a class="jxr_linenumber" name="115" href="#115">115</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="116" href="#116">116</a>     @Component
+<a class="jxr_linenumber" name="117" href="#117">117</a>     ArtifactCollector collector;
+<a class="jxr_linenumber" name="118" href="#118">118</a> 
+<a class="jxr_linenumber" name="119" href="#119">119</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="120" href="#120">120</a> <em class="jxr_javadoccomment">     * Artifact Factory component.</em>
+<a class="jxr_linenumber" name="121" href="#121">121</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="122" href="#122">122</a>     @Component
+<a class="jxr_linenumber" name="123" href="#123">123</a>     ArtifactFactory factory;
+<a class="jxr_linenumber" name="124" href="#124">124</a> 
+<a class="jxr_linenumber" name="125" href="#125">125</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="126" href="#126">126</a> <em class="jxr_javadoccomment">     * Dependency tree builder component.</em>
+<a class="jxr_linenumber" name="127" href="#127">127</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="128" href="#128">128</a>     @Component
+<a class="jxr_linenumber" name="129" href="#129">129</a>     DependencyTreeBuilder dependencyTreeBuilder;
+<a class="jxr_linenumber" name="130" href="#130">130</a> 
+<a class="jxr_linenumber" name="131" href="#131">131</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="132" href="#132">132</a> <em class="jxr_javadoccomment">     * Artifact metadata source component.</em>
+<a class="jxr_linenumber" name="133" href="#133">133</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="134" href="#134">134</a>     @Component
+<a class="jxr_linenumber" name="135" href="#135">135</a>     ArtifactMetadataSource artifactMetadataSource;
+<a class="jxr_linenumber" name="136" href="#136">136</a> 
+<a class="jxr_linenumber" name="137" href="#137">137</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="138" href="#138">138</a> <em class="jxr_javadoccomment">     * Jar classes analyzer component.</em>
+<a class="jxr_linenumber" name="139" href="#139">139</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="140" href="#140">140</a>     @Component
+<a class="jxr_linenumber" name="141" href="#141">141</a>     JarClassesAnalysis classesAnalyzer;
+<a class="jxr_linenumber" name="142" href="#142">142</a> 
+<a class="jxr_linenumber" name="143" href="#143">143</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="144" href="#144">144</a> <em class="jxr_javadoccomment">     * Local Repository.</em>
+<a class="jxr_linenumber" name="145" href="#145">145</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="146" href="#146">146</a>     @Parameter(property = <span class="jxr_string">"localRepository"</span>, required = <strong class="jxr_keyword">true</strong>, readonly = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="147" href="#147">147</a>     ArtifactRepository localRepository;
+<a class="jxr_linenumber" name="148" href="#148">148</a> 
+<a class="jxr_linenumber" name="149" href="#149">149</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="150" href="#150">150</a> <em class="jxr_javadoccomment">     * Maven Project Builder component.</em>
+<a class="jxr_linenumber" name="151" href="#151">151</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="152" href="#152">152</a>     @Component
+<a class="jxr_linenumber" name="153" href="#153">153</a>     MavenProjectBuilder mavenProjectBuilder;
+<a class="jxr_linenumber" name="154" href="#154">154</a> 
+<a class="jxr_linenumber" name="155" href="#155">155</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="156" href="#156">156</a> <em class="jxr_javadoccomment">     * The current user system settings for use in Maven.</em>
+<a class="jxr_linenumber" name="157" href="#157">157</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="158" href="#158">158</a>     @Parameter(property = <span class="jxr_string">"settings"</span>, required = <strong class="jxr_keyword">true</strong>, readonly = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="159" href="#159">159</a>     <strong class="jxr_keyword">protected</strong> Settings settings;
+<a class="jxr_linenumber" name="160" href="#160">160</a> 
+<a class="jxr_linenumber" name="161" href="#161">161</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="162" href="#162">162</a> <em class="jxr_javadoccomment">     * The Maven Project.</em>
+<a class="jxr_linenumber" name="163" href="#163">163</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="164" href="#164">164</a>     @Parameter(property = <span class="jxr_string">"project"</span>, required = <strong class="jxr_keyword">true</strong>, readonly = <strong class="jxr_keyword">true</strong>)
+<a class="jxr_linenumber" name="165" href="#165">165</a>     MavenProject project;
+<a class="jxr_linenumber" name="166" href="#166">166</a> 
+<a class="jxr_linenumber" name="167" href="#167">167</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="168" href="#168">168</a> <em class="jxr_javadoccomment">     * Wagon manager component.</em>
+<a class="jxr_linenumber" name="169" href="#169">169</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="170" href="#170">170</a>     @Component
+<a class="jxr_linenumber" name="171" href="#171">171</a>     WagonManager wagonManager;
+<a class="jxr_linenumber" name="172" href="#172">172</a> 
+<a class="jxr_linenumber" name="173" href="#173">173</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="174" href="#174">174</a> <em class="jxr_javadoccomment">     * Artifact Resolver component.</em>
+<a class="jxr_linenumber" name="175" href="#175">175</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="176" href="#176">176</a>     @Component
+<a class="jxr_linenumber" name="177" href="#177">177</a>     <strong class="jxr_keyword">protected</strong> ArtifactResolver resolver;
+<a class="jxr_linenumber" name="178" href="#178">178</a> 
+<a class="jxr_linenumber" name="179" href="#179">179</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="180" href="#180">180</a> <em class="jxr_javadoccomment">     * Repository metadata component.</em>
+<a class="jxr_linenumber" name="181" href="#181">181</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="182" href="#182">182</a>     @Component
+<a class="jxr_linenumber" name="183" href="#183">183</a>     RepositoryMetadataManager repositoryMetadataManager;
+<a class="jxr_linenumber" name="184" href="#184">184</a> 
+<a class="jxr_linenumber" name="185" href="#185">185</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="186" href="#186">186</a> <em class="jxr_javadoccomment">     * Artifact resolving and the rest of Maven repo magic taken from &lt;a href="<a href="http://maven.apache.org/plugins/maven-project-info-reports-plugin/index.html" target="alexandria_uri">http://maven.apache.org/plugins/maven-project-info-reports-plugin/index.html</a>"&gt;Maven Project Info Reports Plugin&lt;/a&gt;.</em>
+<a class="jxr_linenumber" name="187" href="#187">187</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="188" href="#188">188</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> execute() <strong class="jxr_keyword">throws</strong> MojoExecutionException, MojoFailureException {
+<a class="jxr_linenumber" name="189" href="#189">189</a>         <strong class="jxr_keyword">final</strong> File src = sourceFile.exists() ? sourceFile : defaultBundleForPOMPacking;
+<a class="jxr_linenumber" name="190" href="#190">190</a>         <strong class="jxr_keyword">if</strong>(!src.exists()) {
+<a class="jxr_linenumber" name="191" href="#191">191</a>             getLog().warn(<span class="jxr_string">"Skipping project since there is no archive to check."</span>);
+<a class="jxr_linenumber" name="192" href="#192">192</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="193" href="#193">193</a>         }
+<a class="jxr_linenumber" name="194" href="#194">194</a> 
+<a class="jxr_linenumber" name="195" href="#195">195</a>         <strong class="jxr_keyword">final</strong> List&lt;MavenProject&gt; mavenProjectForDependencies = getMavenProjectForDependencies();
+<a class="jxr_linenumber" name="196" href="#196">196</a> 
+<a class="jxr_linenumber" name="197" href="#197">197</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="198" href="#198">198</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../net/kozelka/contentcheck/introspection/ContentIntrospector.html">ContentIntrospector</a> introspector = VendorFilter.createIntrospector(<strong class="jxr_keyword">new</strong> <a href="../../../../net/kozelka/contentcheck/mojo/MyIntrospectionListener.html">MyIntrospectionListener</a>(getLog()),
+<a class="jxr_linenumber" name="199" href="#199">199</a>                 ignoreVendorArchives, vendorId, manifestVendorEntry, checkFilesPattern);
+<a class="jxr_linenumber" name="200" href="#200">200</a>             <strong class="jxr_keyword">final</strong> Set&lt;ActualEntry&gt; archiveEntries = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;ActualEntry&gt;();
+<a class="jxr_linenumber" name="201" href="#201">201</a>             introspector.setSourceFile(src);
+<a class="jxr_linenumber" name="202" href="#202">202</a>             <em class="jxr_comment">//TODO: instead of collecting, put the dependency comparison right inside</em>
+<a class="jxr_linenumber" name="203" href="#203">203</a>             <strong class="jxr_keyword">final</strong> <a href="../../../../net/kozelka/contentcheck/expect/impl/ContentCollector.html">ContentCollector</a> collector = <strong class="jxr_keyword">new</strong> <a href="../../../../net/kozelka/contentcheck/expect/impl/ContentCollector.html">ContentCollector</a>(archiveEntries);
+<a class="jxr_linenumber" name="204" href="#204">204</a>             introspector.getEvents().addListener(collector);
+<a class="jxr_linenumber" name="205" href="#205">205</a>             introspector.walk();
+<a class="jxr_linenumber" name="206" href="#206">206</a>             introspector.getEvents().removeListener(collector);
+<a class="jxr_linenumber" name="207" href="#207">207</a> 
+<a class="jxr_linenumber" name="208" href="#208">208</a>             <strong class="jxr_keyword">final</strong> Map&lt;String, List&lt;License&gt;&gt; entries = <strong class="jxr_keyword">new</strong> LinkedHashMap&lt;String, List&lt;License&gt;&gt;();
+<a class="jxr_linenumber" name="209" href="#209">209</a> 
+<a class="jxr_linenumber" name="210" href="#210">210</a>             <strong class="jxr_keyword">final</strong> Map&lt;String, List&lt;License&gt;&gt; additionalLicenseInformation = <strong class="jxr_keyword">new</strong> LinkedHashMap&lt;String, List&lt;License&gt;&gt;();
+<a class="jxr_linenumber" name="211" href="#211">211</a>             <strong class="jxr_keyword">if</strong>(licenseMappingFile != <strong class="jxr_keyword">null</strong> &amp;&amp; licenseMappingFile.exists()) {
+<a class="jxr_linenumber" name="212" href="#212">212</a>                 <em class="jxr_comment">//read additional license information</em>
+<a class="jxr_linenumber" name="213" href="#213">213</a>                 getLog().info(String.format(<span class="jxr_string">"Reading license mapping file %s"</span>, licenseMappingFile.getAbsolutePath()));
+<a class="jxr_linenumber" name="214" href="#214">214</a>                 <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="215" href="#215">215</a>                     additionalLicenseInformation.putAll(LicenseShow.parseLicenseMappingFile(licenseMappingFile));
+<a class="jxr_linenumber" name="216" href="#216">216</a>                 } <strong class="jxr_keyword">catch</strong> (JsonParseException e) {
+<a class="jxr_linenumber" name="217" href="#217">217</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(String.format(<span class="jxr_string">"Cannot parse JSON from file %s the content of the file is not well formed JSON."</span>, licenseMappingFile),e);
+<a class="jxr_linenumber" name="218" href="#218">218</a>                 } <strong class="jxr_keyword">catch</strong> (JsonMappingException e) {
+<a class="jxr_linenumber" name="219" href="#219">219</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(String.format(<span class="jxr_string">"Cannot deserialize JSON from file %s"</span>, licenseMappingFile),e);
+<a class="jxr_linenumber" name="220" href="#220">220</a>                 } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="221" href="#221">221</a>                     <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(e.getMessage(), e);
+<a class="jxr_linenumber" name="222" href="#222">222</a>                 }
+<a class="jxr_linenumber" name="223" href="#223">223</a> 
+<a class="jxr_linenumber" name="224" href="#224">224</a>             }
+<a class="jxr_linenumber" name="225" href="#225">225</a> 
+<a class="jxr_linenumber" name="226" href="#226">226</a>             getLog().info(<span class="jxr_string">"Comparing the archive content with Maven project artifacts"</span>);
+<a class="jxr_linenumber" name="227" href="#227">227</a>             <strong class="jxr_keyword">for</strong>(<a href="../../../../net/kozelka/contentcheck/expect/model/ActualEntry.html">ActualEntry</a> archiveEntry : archiveEntries) {
+<a class="jxr_linenumber" name="228" href="#228">228</a>                 List&lt;License&gt; licenses = <strong class="jxr_keyword">null</strong>; <em class="jxr_comment">//these licenses will be associated with the given archive entry</em>
+<a class="jxr_linenumber" name="229" href="#229">229</a> 
+<a class="jxr_linenumber" name="230" href="#230">230</a>                 <strong class="jxr_keyword">for</strong> (MavenProject mavenProject : mavenProjectForDependencies) {
+<a class="jxr_linenumber" name="231" href="#231">231</a>                     mavenProject.getGroupId();
+<a class="jxr_linenumber" name="232" href="#232">232</a>                     <strong class="jxr_keyword">final</strong> String artifactId = mavenProject.getArtifactId();
+<a class="jxr_linenumber" name="233" href="#233">233</a>                     <strong class="jxr_keyword">final</strong> String version = mavenProject.getVersion();
+<a class="jxr_linenumber" name="234" href="#234">234</a>                     <strong class="jxr_keyword">final</strong> String jarName = artifactId + <span class="jxr_string">"-"</span> + version + <span class="jxr_string">".jar"</span>; <em class="jxr_comment">//guess jar name</em>
+<a class="jxr_linenumber" name="235" href="#235">235</a>                     <strong class="jxr_keyword">if</strong>(archiveEntry.getUri().endsWith(jarName)) {
+<a class="jxr_linenumber" name="236" href="#236">236</a>                         @SuppressWarnings(<span class="jxr_string">"unchecked"</span>)
+<a class="jxr_linenumber" name="237" href="#237">237</a>                         <strong class="jxr_keyword">final</strong> List&lt;License&gt; _licenses = mavenProject.getLicenses();
+<a class="jxr_linenumber" name="238" href="#238">238</a>                         licenses = _licenses == <strong class="jxr_keyword">null</strong> || _licenses.size() == 0 ? <strong class="jxr_keyword">null</strong> : _licenses  ;
+<a class="jxr_linenumber" name="239" href="#239">239</a>                         <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="240" href="#240">240</a>                     }
+<a class="jxr_linenumber" name="241" href="#241">241</a>                 }
+<a class="jxr_linenumber" name="242" href="#242">242</a> 
+<a class="jxr_linenumber" name="243" href="#243">243</a>                 <strong class="jxr_keyword">final</strong> List&lt;License&gt; licensesMappingFile = additionalLicenseInformation.get(FileUtils.filename(archiveEntry.getUri()));
+<a class="jxr_linenumber" name="244" href="#244">244</a> 
+<a class="jxr_linenumber" name="245" href="#245">245</a>                 <strong class="jxr_keyword">if</strong>(licenses == <strong class="jxr_keyword">null</strong> &amp;&amp; licensesMappingFile == <strong class="jxr_keyword">null</strong>) {<em class="jxr_comment">//misising license information</em>
+<a class="jxr_linenumber" name="246" href="#246">246</a>                     getLog().debug(String.format(<span class="jxr_string">"Cannot resolve license information for archive entry %s neither from the POM file nor the file for license mapping"</span>, archiveEntry));
+<a class="jxr_linenumber" name="247" href="#247">247</a>                     <em class="jxr_comment">//archive entry must be present even if there is no a matching Maven Project</em>
+<a class="jxr_linenumber" name="248" href="#248">248</a>                     entries.put(archiveEntry.getUri(), Collections.&lt;License&gt;emptyList());
+<a class="jxr_linenumber" name="249" href="#249">249</a>                 } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(licenses != <strong class="jxr_keyword">null</strong> &amp;&amp; licensesMappingFile != <strong class="jxr_keyword">null</strong>) {<em class="jxr_comment">//licenses specified in both - POM and license mapping file</em>
+<a class="jxr_linenumber" name="250" href="#250">250</a>                     getLog().warn(String.format(<span class="jxr_string">"The license information for file %s are defined in the POM file and also in the file for license mapping. Using license information from the the file for license mapping."</span>, archiveEntry));
+<a class="jxr_linenumber" name="251" href="#251">251</a>                     entries.put(archiveEntry.getUri(), licensesMappingFile); <em class="jxr_comment">//mapping manually specified licenses precedes licenses from POM</em>
+<a class="jxr_linenumber" name="252" href="#252">252</a>                 } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (licenses != <strong class="jxr_keyword">null</strong>) {<em class="jxr_comment">//license information in POM</em>
+<a class="jxr_linenumber" name="253" href="#253">253</a>                     entries.put(archiveEntry.getUri(), licenses);<em class="jxr_comment">//license</em>
+<a class="jxr_linenumber" name="254" href="#254">254</a>                 } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="255" href="#255">255</a>                     <em class="jxr_comment">//license information in mapping file</em>
+<a class="jxr_linenumber" name="256" href="#256">256</a>                     <em class="jxr_comment">//put additional license information to the object that holds this information</em>
+<a class="jxr_linenumber" name="257" href="#257">257</a>                     entries.put(archiveEntry.getUri(), licensesMappingFile);
+<a class="jxr_linenumber" name="258" href="#258">258</a>                 }
+<a class="jxr_linenumber" name="259" href="#259">259</a>             }
 <a class="jxr_linenumber" name="260" href="#260">260</a> 
-<a class="jxr_linenumber" name="261" href="#261">261</a>             <strong class="jxr_keyword">if</strong>(csvOutput) {
-<a class="jxr_linenumber" name="262" href="#262">262</a>                 <strong class="jxr_keyword">final</strong> LicenseShow.CsvOutput csvOutput = <strong class="jxr_keyword">new</strong> LicenseShow.CsvOutput(csvOutputFile);
-<a class="jxr_linenumber" name="263" href="#263">263</a>                 getLog().info(String.format(<span class="jxr_string">"Creating license output to CSV file %s"</span>, csvOutputFile.getPath()));
-<a class="jxr_linenumber" name="264" href="#264">264</a>                 csvOutput.output(entries);
-<a class="jxr_linenumber" name="265" href="#265">265</a>             }
-<a class="jxr_linenumber" name="266" href="#266">266</a>         } <strong class="jxr_keyword">catch</strong> (IOException e) {
-<a class="jxr_linenumber" name="267" href="#267">267</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(e.getMessage(), e);
-<a class="jxr_linenumber" name="268" href="#268">268</a>         }
-<a class="jxr_linenumber" name="269" href="#269">269</a>     }
-<a class="jxr_linenumber" name="270" href="#270">270</a> 
-<a class="jxr_linenumber" name="271" href="#271">271</a>     <strong class="jxr_keyword">private</strong> List&lt;MavenProject&gt; getMavenProjectForDependencies() <strong class="jxr_keyword">throws</strong> MojoExecutionException, MojoFailureException {
-<a class="jxr_linenumber" name="272" href="#272">272</a>         <strong class="jxr_keyword">final</strong> DependencyNode dependencyTreeNode = resolveProject();
-<a class="jxr_linenumber" name="273" href="#273">273</a>         <strong class="jxr_keyword">final</strong> Dependencies dependencies = <strong class="jxr_keyword">new</strong> Dependencies( project, dependencyTreeNode, classesAnalyzer );
-<a class="jxr_linenumber" name="274" href="#274">274</a>         <strong class="jxr_keyword">final</strong> Log log = getLog();
-<a class="jxr_linenumber" name="275" href="#275">275</a>         <strong class="jxr_keyword">final</strong> RepositoryUtils repoUtils = <strong class="jxr_keyword">new</strong> RepositoryUtils( log, wagonManager, settings, mavenProjectBuilder, factory, resolver, project.getRemoteArtifactRepositories(), project.getPluginArtifactRepositories(), localRepository,repositoryMetadataManager );
-<a class="jxr_linenumber" name="276" href="#276">276</a>         <strong class="jxr_keyword">final</strong> Artifact projectArtifact = project.getArtifact();
-<a class="jxr_linenumber" name="277" href="#277">277</a>         log.info(String.format(<span class="jxr_string">"Resolving project %s:%s:%s dependencies"</span>, projectArtifact.getGroupId(), projectArtifact.getArtifactId(), projectArtifact.getVersion()));
-<a class="jxr_linenumber" name="278" href="#278">278</a>         <strong class="jxr_keyword">final</strong> List&lt;Artifact&gt; allDependencies = dependencies.getAllDependencies();
-<a class="jxr_linenumber" name="279" href="#279">279</a>         <strong class="jxr_keyword">final</strong> List&lt;MavenProject&gt; mavenProjects = <strong class="jxr_keyword">new</strong> ArrayList&lt;MavenProject&gt;();
-<a class="jxr_linenumber" name="280" href="#280">280</a>         <strong class="jxr_keyword">for</strong> (Artifact artifact : allDependencies) {
-<a class="jxr_linenumber" name="281" href="#281">281</a>             log.debug(String.format(<span class="jxr_string">"Resolving project information for %s:%s:%s"</span>, artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion()));
-<a class="jxr_linenumber" name="282" href="#282">282</a>             <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="283" href="#283">283</a>                 <strong class="jxr_keyword">final</strong> MavenProject mavenProject = repoUtils.getMavenProjectFromRepository(artifact);
-<a class="jxr_linenumber" name="284" href="#284">284</a>                 mavenProjects.add(mavenProject);
-<a class="jxr_linenumber" name="285" href="#285">285</a>             } <strong class="jxr_keyword">catch</strong> (ProjectBuildingException e) {
-<a class="jxr_linenumber" name="286" href="#286">286</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(String.format(<span class="jxr_string">"Cannot get project information for artifact %s:%s:%s from repository"</span>,artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion()), e);
-<a class="jxr_linenumber" name="287" href="#287">287</a>             }
-<a class="jxr_linenumber" name="288" href="#288">288</a>         }
-<a class="jxr_linenumber" name="289" href="#289">289</a>         <strong class="jxr_keyword">return</strong> mavenProjects;
-<a class="jxr_linenumber" name="290" href="#290">290</a>     }
-<a class="jxr_linenumber" name="291" href="#291">291</a> 
-<a class="jxr_linenumber" name="292" href="#292">292</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="293" href="#293">293</a> <em class="jxr_javadoccomment">     * @return resolve the dependency tree</em>
-<a class="jxr_linenumber" name="294" href="#294">294</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="295" href="#295">295</a>     <strong class="jxr_keyword">private</strong> DependencyNode resolveProject()
-<a class="jxr_linenumber" name="296" href="#296">296</a>     {
-<a class="jxr_linenumber" name="297" href="#297">297</a>         <strong class="jxr_keyword">try</strong>
-<a class="jxr_linenumber" name="298" href="#298">298</a>         {
-<a class="jxr_linenumber" name="299" href="#299">299</a>             <strong class="jxr_keyword">final</strong> ArtifactFilter artifactFilter = <strong class="jxr_keyword">new</strong> ScopeArtifactFilter( Artifact.SCOPE_TEST );
-<a class="jxr_linenumber" name="300" href="#300">300</a>             <strong class="jxr_keyword">return</strong> dependencyTreeBuilder.buildDependencyTree( project, localRepository, factory, artifactMetadataSource, artifactFilter, collector );
-<a class="jxr_linenumber" name="301" href="#301">301</a>         }
-<a class="jxr_linenumber" name="302" href="#302">302</a>         <strong class="jxr_keyword">catch</strong> ( DependencyTreeBuilderException e )
-<a class="jxr_linenumber" name="303" href="#303">303</a>         {
-<a class="jxr_linenumber" name="304" href="#304">304</a>             getLog().error( <span class="jxr_string">"Unable to build dependency tree."</span>, e );
-<a class="jxr_linenumber" name="305" href="#305">305</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="306" href="#306">306</a>         }
-<a class="jxr_linenumber" name="307" href="#307">307</a>     }
-<a class="jxr_linenumber" name="308" href="#308">308</a> 
-<a class="jxr_linenumber" name="309" href="#309">309</a>     <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../net/kozelka/contentcheck/mojo/LicenseShowMojo.html">MavenLogOutput</a> <strong class="jxr_keyword">implements</strong> LicenseShow.LicenseOutput {
-<a class="jxr_linenumber" name="310" href="#310">310</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Log log;
+<a class="jxr_linenumber" name="261" href="#261">261</a>             <strong class="jxr_keyword">final</strong> LicenseShow.LicenseOutput logOutput = <strong class="jxr_keyword">new</strong> <a href="../../../../net/kozelka/contentcheck/mojo/LicenseShowMojo.html">MavenLogOutput</a>(getLog());
+<a class="jxr_linenumber" name="262" href="#262">262</a>             logOutput.output(entries);
+<a class="jxr_linenumber" name="263" href="#263">263</a> 
+<a class="jxr_linenumber" name="264" href="#264">264</a>             <strong class="jxr_keyword">if</strong>(csvOutput) {
+<a class="jxr_linenumber" name="265" href="#265">265</a>                 <strong class="jxr_keyword">final</strong> LicenseShow.CsvOutput csvOutput = <strong class="jxr_keyword">new</strong> LicenseShow.CsvOutput(csvOutputFile);
+<a class="jxr_linenumber" name="266" href="#266">266</a>                 getLog().info(String.format(<span class="jxr_string">"Creating license output to CSV file %s"</span>, csvOutputFile.getPath()));
+<a class="jxr_linenumber" name="267" href="#267">267</a>                 csvOutput.output(entries);
+<a class="jxr_linenumber" name="268" href="#268">268</a>             }
+<a class="jxr_linenumber" name="269" href="#269">269</a>         } <strong class="jxr_keyword">catch</strong> (IOException e) {
+<a class="jxr_linenumber" name="270" href="#270">270</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(e.getMessage(), e);
+<a class="jxr_linenumber" name="271" href="#271">271</a>         }
+<a class="jxr_linenumber" name="272" href="#272">272</a>     }
+<a class="jxr_linenumber" name="273" href="#273">273</a> 
+<a class="jxr_linenumber" name="274" href="#274">274</a>     <strong class="jxr_keyword">private</strong> List&lt;MavenProject&gt; getMavenProjectForDependencies() <strong class="jxr_keyword">throws</strong> MojoExecutionException, MojoFailureException {
+<a class="jxr_linenumber" name="275" href="#275">275</a>         <strong class="jxr_keyword">final</strong> DependencyNode dependencyTreeNode = resolveProject();
+<a class="jxr_linenumber" name="276" href="#276">276</a>         <strong class="jxr_keyword">final</strong> Dependencies dependencies = <strong class="jxr_keyword">new</strong> Dependencies( project, dependencyTreeNode, classesAnalyzer );
+<a class="jxr_linenumber" name="277" href="#277">277</a>         <strong class="jxr_keyword">final</strong> Log log = getLog();
+<a class="jxr_linenumber" name="278" href="#278">278</a>         <strong class="jxr_keyword">final</strong> RepositoryUtils repoUtils = <strong class="jxr_keyword">new</strong> RepositoryUtils( log, wagonManager, settings, mavenProjectBuilder, factory, resolver, project.getRemoteArtifactRepositories(), project.getPluginArtifactRepositories(), localRepository,repositoryMetadataManager );
+<a class="jxr_linenumber" name="279" href="#279">279</a>         <strong class="jxr_keyword">final</strong> Artifact projectArtifact = project.getArtifact();
+<a class="jxr_linenumber" name="280" href="#280">280</a>         log.info(String.format(<span class="jxr_string">"Resolving project %s:%s:%s dependencies"</span>, projectArtifact.getGroupId(), projectArtifact.getArtifactId(), projectArtifact.getVersion()));
+<a class="jxr_linenumber" name="281" href="#281">281</a>         <strong class="jxr_keyword">final</strong> List&lt;Artifact&gt; allDependencies = dependencies.getAllDependencies();
+<a class="jxr_linenumber" name="282" href="#282">282</a>         <strong class="jxr_keyword">final</strong> List&lt;MavenProject&gt; mavenProjects = <strong class="jxr_keyword">new</strong> ArrayList&lt;MavenProject&gt;();
+<a class="jxr_linenumber" name="283" href="#283">283</a>         <strong class="jxr_keyword">for</strong> (Artifact artifact : allDependencies) {
+<a class="jxr_linenumber" name="284" href="#284">284</a>             log.debug(String.format(<span class="jxr_string">"Resolving project information for %s:%s:%s"</span>, artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion()));
+<a class="jxr_linenumber" name="285" href="#285">285</a>             <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="286" href="#286">286</a>                 <strong class="jxr_keyword">final</strong> MavenProject mavenProject = repoUtils.getMavenProjectFromRepository(artifact);
+<a class="jxr_linenumber" name="287" href="#287">287</a>                 mavenProjects.add(mavenProject);
+<a class="jxr_linenumber" name="288" href="#288">288</a>             } <strong class="jxr_keyword">catch</strong> (ProjectBuildingException e) {
+<a class="jxr_linenumber" name="289" href="#289">289</a>                 <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> MojoFailureException(String.format(<span class="jxr_string">"Cannot get project information for artifact %s:%s:%s from repository"</span>,artifact.getGroupId(), artifact.getArtifactId(), artifact.getVersion()), e);
+<a class="jxr_linenumber" name="290" href="#290">290</a>             }
+<a class="jxr_linenumber" name="291" href="#291">291</a>         }
+<a class="jxr_linenumber" name="292" href="#292">292</a>         <strong class="jxr_keyword">return</strong> mavenProjects;
+<a class="jxr_linenumber" name="293" href="#293">293</a>     }
+<a class="jxr_linenumber" name="294" href="#294">294</a> 
+<a class="jxr_linenumber" name="295" href="#295">295</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="296" href="#296">296</a> <em class="jxr_javadoccomment">     * @return resolve the dependency tree</em>
+<a class="jxr_linenumber" name="297" href="#297">297</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="298" href="#298">298</a>     <strong class="jxr_keyword">private</strong> DependencyNode resolveProject()
+<a class="jxr_linenumber" name="299" href="#299">299</a>     {
+<a class="jxr_linenumber" name="300" href="#300">300</a>         <strong class="jxr_keyword">try</strong>
+<a class="jxr_linenumber" name="301" href="#301">301</a>         {
+<a class="jxr_linenumber" name="302" href="#302">302</a>             <strong class="jxr_keyword">final</strong> ArtifactFilter artifactFilter = <strong class="jxr_keyword">new</strong> ScopeArtifactFilter( Artifact.SCOPE_TEST );
+<a class="jxr_linenumber" name="303" href="#303">303</a>             <strong class="jxr_keyword">return</strong> dependencyTreeBuilder.buildDependencyTree( project, localRepository, factory, artifactMetadataSource, artifactFilter, collector );
+<a class="jxr_linenumber" name="304" href="#304">304</a>         }
+<a class="jxr_linenumber" name="305" href="#305">305</a>         <strong class="jxr_keyword">catch</strong> ( DependencyTreeBuilderException e )
+<a class="jxr_linenumber" name="306" href="#306">306</a>         {
+<a class="jxr_linenumber" name="307" href="#307">307</a>             getLog().error( <span class="jxr_string">"Unable to build dependency tree."</span>, e );
+<a class="jxr_linenumber" name="308" href="#308">308</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="309" href="#309">309</a>         }
+<a class="jxr_linenumber" name="310" href="#310">310</a>     }
 <a class="jxr_linenumber" name="311" href="#311">311</a> 
-<a class="jxr_linenumber" name="312" href="#312">312</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../net/kozelka/contentcheck/mojo/LicenseShowMojo.html">MavenLogOutput</a>(<strong class="jxr_keyword">final</strong> Log log) {
-<a class="jxr_linenumber" name="313" href="#313">313</a>             <strong class="jxr_keyword">super</strong>();
-<a class="jxr_linenumber" name="314" href="#314">314</a>             <strong class="jxr_keyword">this</strong>.log = log;
-<a class="jxr_linenumber" name="315" href="#315">315</a>         }
-<a class="jxr_linenumber" name="316" href="#316">316</a> 
-<a class="jxr_linenumber" name="317" href="#317">317</a>         <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="318" href="#318">318</a> <em class="jxr_javadoccomment">         * @see net.kozelka.contentcheck.mojo.LicenseShow.LicenseOutput#output(java.util.Map)</em>
-<a class="jxr_linenumber" name="319" href="#319">319</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="320" href="#320">320</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> output(<strong class="jxr_keyword">final</strong> Map&lt;String, List&lt;License&gt;&gt; licensesPerFile) {
-<a class="jxr_linenumber" name="321" href="#321">321</a>             <strong class="jxr_keyword">final</strong> Set&lt;String&gt; keySet = licensesPerFile.keySet();
-<a class="jxr_linenumber" name="322" href="#322">322</a>             <strong class="jxr_keyword">final</strong> Set&lt;String&gt; knownEntries = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;String&gt;();
-<a class="jxr_linenumber" name="323" href="#323">323</a>             <strong class="jxr_keyword">final</strong> Set&lt;String&gt; unknownEntries = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;String&gt;();
-<a class="jxr_linenumber" name="324" href="#324">324</a> 
-<a class="jxr_linenumber" name="325" href="#325">325</a>             <strong class="jxr_keyword">for</strong> (String entry : keySet) {
-<a class="jxr_linenumber" name="326" href="#326">326</a>                 <strong class="jxr_keyword">final</strong> List&lt;License&gt; licenses = licensesPerFile.get(entry);
-<a class="jxr_linenumber" name="327" href="#327">327</a>                 <strong class="jxr_keyword">if</strong>(licenses.size() &gt; 1) {
-<a class="jxr_linenumber" name="328" href="#328">328</a>                     <strong class="jxr_keyword">final</strong> StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder(<span class="jxr_string">""</span>);
-<a class="jxr_linenumber" name="329" href="#329">329</a>                     <strong class="jxr_keyword">for</strong>(License licence : licenses) {
-<a class="jxr_linenumber" name="330" href="#330">330</a>                         sb.append(String.format(<span class="jxr_string">"%s(%s) "</span>, licence.getName(), licence.getUrl()));
-<a class="jxr_linenumber" name="331" href="#331">331</a>                     }
-<a class="jxr_linenumber" name="332" href="#332">332</a>                     knownEntries.add(String.format(<span class="jxr_string">"%s has multiple licenses: %s"</span>, entry, sb));
-<a class="jxr_linenumber" name="333" href="#333">333</a>                 } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(licenses.size() == 1) {
-<a class="jxr_linenumber" name="334" href="#334">334</a>                     <strong class="jxr_keyword">final</strong> License licence = licenses.get(0);
-<a class="jxr_linenumber" name="335" href="#335">335</a>                     knownEntries.add(String.format(<span class="jxr_string">"%s %s (%s)"</span>, entry, licence.getName(), licence.getUrl()));
-<a class="jxr_linenumber" name="336" href="#336">336</a>                 } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="337" href="#337">337</a>                     unknownEntries.add(entry);
-<a class="jxr_linenumber" name="338" href="#338">338</a>                 }
-<a class="jxr_linenumber" name="339" href="#339">339</a>             }
-<a class="jxr_linenumber" name="340" href="#340">340</a> 
-<a class="jxr_linenumber" name="341" href="#341">341</a>             <strong class="jxr_keyword">if</strong>(unknownEntries.size() == 0) {
-<a class="jxr_linenumber" name="342" href="#342">342</a>                 log.info(<span class="jxr_string">"All artifact entries have associated license information."</span>);
-<a class="jxr_linenumber" name="343" href="#343">343</a>             } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="344" href="#344">344</a>                 log.warn(<span class="jxr_string">"Some of the entries have no associated license information or the plugin wasn't able to determine them. Please check them manually."</span>);
-<a class="jxr_linenumber" name="345" href="#345">345</a>             }
-<a class="jxr_linenumber" name="346" href="#346">346</a> 
-<a class="jxr_linenumber" name="347" href="#347">347</a>             log.info(<span class="jxr_string">""</span>);
-<a class="jxr_linenumber" name="348" href="#348">348</a>             log.info(<span class="jxr_string">"The archive contains following entries with known license information:"</span>);
-<a class="jxr_linenumber" name="349" href="#349">349</a>             <strong class="jxr_keyword">for</strong> (String entryDesc : knownEntries) {
-<a class="jxr_linenumber" name="350" href="#350">350</a>                 log.info(entryDesc);
-<a class="jxr_linenumber" name="351" href="#351">351</a>             }
-<a class="jxr_linenumber" name="352" href="#352">352</a> 
-<a class="jxr_linenumber" name="353" href="#353">353</a>             <strong class="jxr_keyword">if</strong>(unknownEntries.size() &gt; 0) {
-<a class="jxr_linenumber" name="354" href="#354">354</a>                 log.info(<span class="jxr_string">""</span>);
-<a class="jxr_linenumber" name="355" href="#355">355</a>                 log.warn(<span class="jxr_string">"The archive contains following entries with uknown license inforamtion:"</span>);
-<a class="jxr_linenumber" name="356" href="#356">356</a>                 <strong class="jxr_keyword">for</strong> (String archiveName : unknownEntries) {
-<a class="jxr_linenumber" name="357" href="#357">357</a>                     log.warn(archiveName);
-<a class="jxr_linenumber" name="358" href="#358">358</a>                 }
-<a class="jxr_linenumber" name="359" href="#359">359</a>             }
-<a class="jxr_linenumber" name="360" href="#360">360</a>         }
-<a class="jxr_linenumber" name="361" href="#361">361</a>     }
-<a class="jxr_linenumber" name="362" href="#362">362</a> }
+<a class="jxr_linenumber" name="312" href="#312">312</a>     <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../net/kozelka/contentcheck/mojo/LicenseShowMojo.html">MavenLogOutput</a> <strong class="jxr_keyword">implements</strong> LicenseShow.LicenseOutput {
+<a class="jxr_linenumber" name="313" href="#313">313</a>         <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Log log;
+<a class="jxr_linenumber" name="314" href="#314">314</a> 
+<a class="jxr_linenumber" name="315" href="#315">315</a>         <strong class="jxr_keyword">public</strong> <a href="../../../../net/kozelka/contentcheck/mojo/LicenseShowMojo.html">MavenLogOutput</a>(<strong class="jxr_keyword">final</strong> Log log) {
+<a class="jxr_linenumber" name="316" href="#316">316</a>             <strong class="jxr_keyword">super</strong>();
+<a class="jxr_linenumber" name="317" href="#317">317</a>             <strong class="jxr_keyword">this</strong>.log = log;
+<a class="jxr_linenumber" name="318" href="#318">318</a>         }
+<a class="jxr_linenumber" name="319" href="#319">319</a> 
+<a class="jxr_linenumber" name="320" href="#320">320</a>         <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="321" href="#321">321</a> <em class="jxr_javadoccomment">         * @see net.kozelka.contentcheck.mojo.LicenseShow.LicenseOutput#output(java.util.Map)</em>
+<a class="jxr_linenumber" name="322" href="#322">322</a> <em class="jxr_javadoccomment">         */</em>
+<a class="jxr_linenumber" name="323" href="#323">323</a>         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> output(<strong class="jxr_keyword">final</strong> Map&lt;String, List&lt;License&gt;&gt; licensesPerFile) {
+<a class="jxr_linenumber" name="324" href="#324">324</a>             <strong class="jxr_keyword">final</strong> Set&lt;String&gt; keySet = licensesPerFile.keySet();
+<a class="jxr_linenumber" name="325" href="#325">325</a>             <strong class="jxr_keyword">final</strong> Set&lt;String&gt; knownEntries = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;String&gt;();
+<a class="jxr_linenumber" name="326" href="#326">326</a>             <strong class="jxr_keyword">final</strong> Set&lt;String&gt; unknownEntries = <strong class="jxr_keyword">new</strong> LinkedHashSet&lt;String&gt;();
+<a class="jxr_linenumber" name="327" href="#327">327</a> 
+<a class="jxr_linenumber" name="328" href="#328">328</a>             <strong class="jxr_keyword">for</strong> (String entry : keySet) {
+<a class="jxr_linenumber" name="329" href="#329">329</a>                 <strong class="jxr_keyword">final</strong> List&lt;License&gt; licenses = licensesPerFile.get(entry);
+<a class="jxr_linenumber" name="330" href="#330">330</a>                 <strong class="jxr_keyword">if</strong>(licenses.size() &gt; 1) {
+<a class="jxr_linenumber" name="331" href="#331">331</a>                     <strong class="jxr_keyword">final</strong> StringBuilder sb = <strong class="jxr_keyword">new</strong> StringBuilder(<span class="jxr_string">""</span>);
+<a class="jxr_linenumber" name="332" href="#332">332</a>                     <strong class="jxr_keyword">for</strong>(License licence : licenses) {
+<a class="jxr_linenumber" name="333" href="#333">333</a>                         sb.append(String.format(<span class="jxr_string">"%s(%s) "</span>, licence.getName(), licence.getUrl()));
+<a class="jxr_linenumber" name="334" href="#334">334</a>                     }
+<a class="jxr_linenumber" name="335" href="#335">335</a>                     knownEntries.add(String.format(<span class="jxr_string">"%s has multiple licenses: %s"</span>, entry, sb));
+<a class="jxr_linenumber" name="336" href="#336">336</a>                 } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong>(licenses.size() == 1) {
+<a class="jxr_linenumber" name="337" href="#337">337</a>                     <strong class="jxr_keyword">final</strong> License licence = licenses.get(0);
+<a class="jxr_linenumber" name="338" href="#338">338</a>                     knownEntries.add(String.format(<span class="jxr_string">"%s %s (%s)"</span>, entry, licence.getName(), licence.getUrl()));
+<a class="jxr_linenumber" name="339" href="#339">339</a>                 } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="340" href="#340">340</a>                     unknownEntries.add(entry);
+<a class="jxr_linenumber" name="341" href="#341">341</a>                 }
+<a class="jxr_linenumber" name="342" href="#342">342</a>             }
+<a class="jxr_linenumber" name="343" href="#343">343</a> 
+<a class="jxr_linenumber" name="344" href="#344">344</a>             <strong class="jxr_keyword">if</strong>(unknownEntries.size() == 0) {
+<a class="jxr_linenumber" name="345" href="#345">345</a>                 log.info(<span class="jxr_string">"All artifact entries have associated license information."</span>);
+<a class="jxr_linenumber" name="346" href="#346">346</a>             } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="347" href="#347">347</a>                 log.warn(<span class="jxr_string">"Some of the entries have no associated license information or the plugin wasn't able to determine them. Please check them manually."</span>);
+<a class="jxr_linenumber" name="348" href="#348">348</a>             }
+<a class="jxr_linenumber" name="349" href="#349">349</a> 
+<a class="jxr_linenumber" name="350" href="#350">350</a>             log.info(<span class="jxr_string">""</span>);
+<a class="jxr_linenumber" name="351" href="#351">351</a>             log.info(<span class="jxr_string">"The archive contains following entries with known license information:"</span>);
+<a class="jxr_linenumber" name="352" href="#352">352</a>             <strong class="jxr_keyword">for</strong> (String entryDesc : knownEntries) {
+<a class="jxr_linenumber" name="353" href="#353">353</a>                 log.info(entryDesc);
+<a class="jxr_linenumber" name="354" href="#354">354</a>             }
+<a class="jxr_linenumber" name="355" href="#355">355</a> 
+<a class="jxr_linenumber" name="356" href="#356">356</a>             <strong class="jxr_keyword">if</strong>(unknownEntries.size() &gt; 0) {
+<a class="jxr_linenumber" name="357" href="#357">357</a>                 log.info(<span class="jxr_string">""</span>);
+<a class="jxr_linenumber" name="358" href="#358">358</a>                 log.warn(<span class="jxr_string">"The archive contains following entries with uknown license inforamtion:"</span>);
+<a class="jxr_linenumber" name="359" href="#359">359</a>                 <strong class="jxr_keyword">for</strong> (String archiveName : unknownEntries) {
+<a class="jxr_linenumber" name="360" href="#360">360</a>                     log.warn(archiveName);
+<a class="jxr_linenumber" name="361" href="#361">361</a>                 }
+<a class="jxr_linenumber" name="362" href="#362">362</a>             }
+<a class="jxr_linenumber" name="363" href="#363">363</a>         }
+<a class="jxr_linenumber" name="364" href="#364">364</a>     }
+<a class="jxr_linenumber" name="365" href="#365">365</a> }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

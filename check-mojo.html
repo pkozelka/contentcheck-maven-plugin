@@ -7,7 +7,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="Date-Revision-yyyymmdd" content="20150906" />
+    <meta name="Date-Revision-yyyymmdd" content="20150912" />
     <meta http-equiv="Content-Language" content="en" />
     <title>contentcheck-maven-plugin - 
     contentcheck:check</title>
@@ -160,7 +160,7 @@
         
                 
                     
-                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2015-09-06</li>
+                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2015-09-12</li>
               <li id="projectVersion" class="pull-right">
                     Version: 1.0-SNAPSHOT
         </li>
@@ -255,6 +255,18 @@ with '#') are ignored.<br /><b>Default value is</b>: <tt>${basedir}/approved-con
           
 <tr class="a">
             
+<td><b><a href="#contentListingGenerated">contentListingGenerated</a></b></td>
+            
+<td><tt>File</tt></td>
+            
+<td><tt>1.0.0</tt></td>
+            
+<td>Where to generate content listing. Can be used to fix or initiate
+the <tt>approved-content.txt</tt> file.<br /><b>Default value is</b>: <tt>${project.build.directory}/contentcheck-maven-plugin/approved-content.txt</tt>.<br /></td>
+          </tr>
+          
+<tr class="b">
+            
 <td><b><a href="#directory">directory</a></b></td>
             
 <td><tt>File</tt></td>
@@ -264,7 +276,7 @@ with '#') are ignored.<br /><b>Default value is</b>: <tt>${basedir}/approved-con
 <td><b>Deprecated.</b> use <tt>sourceFile</tt> instead<br /></td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#failOnMissing">failOnMissing</a></b></td>
             
@@ -275,7 +287,7 @@ with '#') are ignored.<br /><b>Default value is</b>: <tt>${basedir}/approved-con
 <td>If true, stops the build when there is any file missing.<br /><b>Default value is</b>: <tt>false</tt>.<br /></td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#failOnUnexpected">failOnUnexpected</a></b></td>
             
@@ -286,7 +298,7 @@ with '#') are ignored.<br /><b>Default value is</b>: <tt>${basedir}/approved-con
 <td>If true, stops the build when there is any unexpected file.<br /><b>Default value is</b>: <tt>true</tt>.<br /></td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#ignoreVendorArchives">ignoreVendorArchives</a></b></td>
             
@@ -299,7 +311,7 @@ determined by a value (<tt>vendorId</tt>) in its manifest key
 (<tt>manifestVendorEntry</tt>).<br /><b>Default value is</b>: <tt>false</tt>.<br /><b>User property is</b>: <tt>ignoreVendorArchives</tt>.</td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#manifestVendorEntry">manifestVendorEntry</a></b></td>
             
@@ -310,7 +322,7 @@ determined by a value (<tt>vendorId</tt>) in its manifest key
 <td>The name of manifest entry that holds vendor's identification<br /><b>Default value is</b>: <tt>Implementation-Vendor-Id</tt>.<br /></td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#msgMissing">msgMissing</a></b></td>
             
@@ -322,7 +334,7 @@ determined by a value (<tt>vendorId</tt>) in its manifest key
 <tt>Formatter</tt> syntax to embed entry name.<br /><b>Default value is</b>: <tt>File is expected but not found: %s</tt>.<br /></td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#msgUnexpected">msgUnexpected</a></b></td>
             
@@ -334,7 +346,7 @@ determined by a value (<tt>vendorId</tt>) in its manifest key
 <tt>Formatter</tt> syntax to embed entry name.<br /><b>Default value is</b>: <tt>Found unexpected file: %s</tt>.<br /></td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#skip">skip</a></b></td>
             
@@ -345,7 +357,7 @@ determined by a value (<tt>vendorId</tt>) in its manifest key
 <td>If true, no check is performed.<br /><b>Default value is</b>: <tt>false</tt>.<br /><b>User property is</b>: <tt>contentcheck.skip</tt>.</td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#sourceFile">sourceFile</a></b></td>
             
@@ -356,7 +368,7 @@ determined by a value (<tt>vendorId</tt>) in its manifest key
 <td>The archive file or directory to be checked.<br /><b>Default value is</b>: <tt>${project.build.directory}/${project.build.finalName}.${project.packaging}</tt>.<br /><b>User property is</b>: <tt>source.file</tt>.</td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#vendorId">vendorId</a></b></td>
             
@@ -420,6 +432,21 @@ with '#') are ignored.</div>
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>Default</b>: <tt>${basedir}/approved-content.txt</tt></li>
+        </ul><hr />
+<p><b><a name="contentListingGenerated">contentListingGenerated</a>:</b></p>
+        
+<div>Where to generate content listing. Can be used to fix or initiate
+the <tt>approved-content.txt</tt> file.</div>
+        
+<ul>
+          
+<li><b>Type</b>: <tt>java.io.File</tt></li>
+          
+<li><b>Since</b>: <tt>1.0.0</tt></li>
+          
+<li><b>Required</b>: <tt>No</tt></li>
+          
+<li><b>Default</b>: <tt>${project.build.directory}/contentcheck-maven-plugin/approved-content.txt</tt></li>
         </ul><hr />
 <p><b><a name="directory">directory</a>:</b></p>
         

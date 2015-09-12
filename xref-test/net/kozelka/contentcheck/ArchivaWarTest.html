@@ -18,10 +18,10 @@
 <a class="jxr_linenumber" name="8" href="#8">8</a>   <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.conflict.impl.ClassConflictPrinter;
 <a class="jxr_linenumber" name="9" href="#9">9</a>   <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 <a class="jxr_linenumber" name="10" href="#10">10</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.conflict.util.ArchiveLoader;
-<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.expect.api.CheckerOutput;
+<a class="jxr_linenumber" name="11" href="#11">11</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.expect.api.ApproverReport;
 <a class="jxr_linenumber" name="12" href="#12">12</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.expect.impl.ContentChecker;
 <a class="jxr_linenumber" name="13" href="#13">13</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.introspection.ContentIntrospector;
-<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.introspection.VendorFilter;
+<a class="jxr_linenumber" name="14" href="#14">14</a>  <strong class="jxr_keyword">import</strong> net.kozelka.contentcheck.expect.impl.VendorFilter;
 <a class="jxr_linenumber" name="15" href="#15">15</a>  <strong class="jxr_keyword">import</strong> org.codehaus.plexus.util.cli.DefaultConsumer;
 <a class="jxr_linenumber" name="16" href="#16">16</a>  <strong class="jxr_keyword">import</strong> org.junit.Assert;
 <a class="jxr_linenumber" name="17" href="#17">17</a>  <strong class="jxr_keyword">import</strong> org.junit.Before;
@@ -48,7 +48,7 @@
 <a class="jxr_linenumber" name="38" href="#38">38</a>          introspector.setEntryContentFilter(<strong class="jxr_keyword">new</strong> VendorFilter(<span class="jxr_string">"org.apache.archiva"</span>));
 <a class="jxr_linenumber" name="39" href="#39">39</a>          introspector.setSourceFile(archivaWar);
 <a class="jxr_linenumber" name="40" href="#40">40</a>          cc.setIntrospector(introspector);
-<a class="jxr_linenumber" name="41" href="#41">41</a>          <strong class="jxr_keyword">final</strong> CheckerOutput result = cc.check(archivaApprovedContent);
+<a class="jxr_linenumber" name="41" href="#41">41</a>          <strong class="jxr_keyword">final</strong> ApproverReport result = cc.check(archivaApprovedContent);
 <a class="jxr_linenumber" name="42" href="#42">42</a>          <em class="jxr_comment">//</em>
 <a class="jxr_linenumber" name="43" href="#43">43</a>          Assert.assertEquals(<span class="jxr_string">"Missing entries"</span>, 5, result.getMissingEntries().size());
 <a class="jxr_linenumber" name="44" href="#44">44</a>          Assert.assertEquals(<span class="jxr_string">"Unexpected entries"</span>, 0, result.getUnexpectedEntries().size());
