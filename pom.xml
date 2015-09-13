@@ -327,7 +327,7 @@
     </issueManagement>
     <organization>
         <name>Petr Kozelka</name>
-        <url>http://kozelka.net</url>
+        <url>http://petr.kozelka.net</url>
     </organization>
     <licenses>
         <license>
@@ -343,7 +343,7 @@
     </licenses>
     <profiles>
         <profile>
-            <id>sonatype-oss-release</id>
+            <id>release</id>
             <build>
                 <plugins>
                     <plugin>
