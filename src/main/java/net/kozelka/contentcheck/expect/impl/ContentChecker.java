@@ -37,14 +37,15 @@ public class ContentChecker {
     }
 
     /**
-     * Checks a content of {@code sourceFile} according to an allowed content defined by {@code listingFile}.
+     * Checks a content of {@code sourceFile} according to an allowed content defined by {@code approvedContentFile}.
      *
-     * @param listingFile a file that defines allowed content
+     * @param approvedContentFile a file that defines allowed content
      * @return the result of source check
      * @throws IOException if something very bad happen
      */
-    public ApproverReport check(final File listingFile) throws IOException{
-        final Set<ApprovedEntry> approvedEntries = readApprovedContent(listingFile);
+    public ApproverReport check(final File approvedContentFile) throws IOException{
+        final Set<ApprovedEntry> approvedEntries = readApprovedContent(approvedContentFile);
+        events.fire.contentListingSummary(approvedContentFile, approvedEntries.size());
         final Set<ActualEntry> actualEntries = new LinkedHashSet<ActualEntry>();
         final ContentIntrospector.Events collector = new ContentCollector(actualEntries);
         introspector.getEvents().addListener(collector);
@@ -96,13 +97,12 @@ public class ContentChecker {
     }
 
     protected Set<ApprovedEntry> readApprovedContent(final File approvedContentFile) throws IOException {
+        //TODO this should become a separate "parser/loader" class, to enable support of multiple formats and new features
         final Set<ApprovedEntry> approvedContent = new LinkedHashSet<ApprovedEntry>();
         final BufferedReader reader = new BufferedReader(new FileReader(approvedContentFile));
         try {
-            int totalCnt = 0;
             String line;
             while ((line = reader.readLine())!= null) {
-                totalCnt ++;
                 line = line.trim();
                 // we ignore empty and comments lines
                 if (line.length() == 0) continue;
@@ -115,7 +115,6 @@ public class ContentChecker {
                 entry.setUri(line);
                 approvedContent.add(entry);
             }
-            events.fire.contentListingSummary(approvedContentFile, approvedContent.size(), totalCnt);
             return approvedContent;
         } finally {
             reader.close();
@@ -127,7 +126,7 @@ public class ContentChecker {
 
         void duplicate(File listingFile, String line);
 
-        void contentListingSummary(File listingFile, int pathCount, int totalCount);
+        void contentListingSummary(File listingFile, int pathCount);
     }
 
 }

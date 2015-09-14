@@ -23,7 +23,7 @@ public class MyContentCheckerListener implements ContentChecker.Events {
         log.warn("The listing file " + listingFile + "  defines duplicate entry " + line);
     }
 
-    public void contentListingSummary(File listingFile, int pathCount, int totalCount) {
-        log.info(String.format("Content listing file '%s' contains %d paths on %d total lines", listingFile, pathCount, totalCount));
+    public void contentListingSummary(File approvedContentFile, int definedEntryCount) {
+        log.info(String.format("Content listing file '%s' defines %d approved entries", approvedContentFile, definedEntryCount));
     }
 }
