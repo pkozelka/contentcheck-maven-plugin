@@ -21,6 +21,8 @@ import org.apache.maven.plugins.annotations.Parameter;
  * and {@link #ignoreVendorArchives} are generated.
  * @since 1.0.1
  */
+//TODO * @deprecated use goal <code>setup</code> (class {@link SetupMojo}) instead
+//TODO @Deprecated
 @Mojo(name = "generate")
 public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
 
