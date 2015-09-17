@@ -69,6 +69,7 @@ public class ContentListingGeneratorMojo extends AbstractArchiveContentMojo {
         final List<ActualEntry> actualEntries = new ArrayList<ActualEntry>();
         final ContentIntrospector.Events collector = new ContentCollector(actualEntries);
         introspector.getEvents().addListener(collector);
+        introspector.walk();
         return actualEntries;
     }
 
