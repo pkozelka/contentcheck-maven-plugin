@@ -5,10 +5,11 @@
 [![Codeship Status](https://codeship.com/projects/b3d55ae0-f6b0-0132-cdf6-4e1088c82680/status?branch=master)](https://codeship.com/projects/86152)
 
 
-Protects your WAR against
+Gives you more control over your WAR file's contents:
 
-* uncontrolled *arrival of new jars* into WEB-INF/lib - which happens easily in the Maven's world of *transitive dependencies*
-* *class conflicts* between contained jars
+* detects *arrival of new jars* into `WEB-INF/lib` - dependency changes have non-trivial *transitive impacts*
+* detects *class conflicts* between contained jars - are often easy to avoid, but rarely detected - and can cause really ugly, mysterious troubles
+* helps you identify *license issues*
 
 For more info, see the [project website](http://code.kozelka.net/contentcheck-maven-plugin/index.html).
 
