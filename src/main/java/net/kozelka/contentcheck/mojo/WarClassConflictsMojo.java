@@ -53,6 +53,19 @@ public class WarClassConflictsMojo extends AbstractMojo {
     int toleratedOverlapCount;
 
     /**
+     * Reports jar pairs in the log. Each two conflicting jars are displayed, with number of their overlaps and conflicts.
+     */
+    @Parameter(defaultValue = "true")
+    boolean reportJarPairs;
+
+    /**
+     * Reports every overlaping resource in the log, with all files that provide it.
+     * This report is not very mature to it is turned off by default.
+     */
+    @Parameter(defaultValue = "false")
+    boolean reportResources;
+
+    /**
      * @deprecated Use {@link #toleratedOverlapCount} instead.
      */
     @Deprecated
@@ -83,19 +96,23 @@ public class WarClassConflictsMojo extends AbstractMojo {
             if (archiveConflicts.isEmpty()) {
                 getLog().info("No overlaps detected.");
             } else {
-                final ClassConflictPrinter printer = new ClassConflictPrinter();
-                printer.setPreviewThreshold(previewThreshold);
                 final StreamConsumer output = new StreamConsumer() {
                     public void consumeLine(String line) {
                         getLog().error(line);
                     }
                 };
-                printer.setOutput(output);
-                printer.print(report);
-                final ConflictingResourcesReport printer2 = new ConflictingResourcesReport();
-                printer2.setOutput(output);
-                printer2.print(report);
-                final String errorMessage = String.format("Found %d overlapping resources in %d archive conflicts in %s",
+                if (reportJarPairs) {
+                    final ClassConflictPrinter printer = new ClassConflictPrinter();
+                    printer.setPreviewThreshold(previewThreshold);
+                    printer.setOutput(output);
+                    printer.print(report);
+                }
+                if (reportResources) {
+                    final ConflictingResourcesReport printer = new ConflictingResourcesReport();
+                    printer.setOutput(output);
+                    printer.print(report);
+                }
+                final String errorMessage = String.format("Found %d overlapping resources in %d competing archives in %s",
                     totalOverlaps,
                     archiveConflicts.size(),
                     sourceFile);
