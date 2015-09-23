@@ -21,11 +21,11 @@ import org.apache.maven.project.MavenProject;
  * Convenient way to start using contentcheck plugin, with all its capabilities enabled.
  * Use it to make all following at once:
  * <ul>
- *     <li>TODO: generate the <code>approved-content.txt</code> file to match current war content</li>
+ *     <li>generate the <code>approved-content.txt</code> file to match current war content</li>
  *     <li>TODO: count war conflicts, show resolution hints</li>
- *     <li>TODO: generate POM fragment with complete configuration</li>
+ *     <li>TODO: generate POM fragment with complete configuration (in target/...)</li>
  *     <li>TODO: operate on each module of multi-module project</li>
- *     <li>TODO: optionally, adjust POM configuration</li>
+ *     <li>TODO: optionally, adjust POM configuration: `-DeditPom=true`</li>
  * </ul>
  */
 @Mojo(name = "init")
