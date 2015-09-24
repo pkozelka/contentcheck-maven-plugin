@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import net.kozelka.contentcheck.conflict.api.ArchiveConflict;
 import net.kozelka.contentcheck.conflict.api.ClassConflictReport;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictAnalyzer;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictPrinter;
