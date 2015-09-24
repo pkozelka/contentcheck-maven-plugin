@@ -21,6 +21,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.cli.StreamConsumer;
 
 /**
@@ -30,7 +32,7 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  *     <li>generate the <code>approved-content.txt</code> file to match current war content</li>
  *     <li>count war overlaps</li>
  *     <li>TODO: show resolution hints</li>
- *     <li>TODO: generate POM fragment with complete configuration (in target/...)</li>
+ *     <li>generate POM fragment with complete configuration (under target/contentcheck-maven-plugin/)</li>
  *     <li>TODO: operate on each module of multi-module project</li>
  *     <li>TODO: optionally, adjust POM configuration: `-DeditPom=true`</li>
  * </ul>
@@ -38,13 +40,8 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
 @Mojo(name = "init")
 public class InitMojo extends AbstractMojo {
 
-    /**
-     * The file with list of approved files. If such file does not exist, the check is skipped. This enables multimodule use.
-     * Each line in represents one pathname entry.
-     * Empty lines and comments (starting with '#') are ignored.
-     */
-    @Parameter(defaultValue = "${basedir}/approved-content.txt")
-    File contentListing;
+    @Parameter(defaultValue = "${project.build.directory}/contentcheck-maven-plugin")
+    File outputDirectory;
 
     /**
      * The Maven Project.
@@ -75,12 +72,20 @@ public class InitMojo extends AbstractMojo {
             }
 
             // list source entries into `approved-content.txt`
+            outputDirectory.mkdirs();
+            final File contentListing = new File(outputDirectory, "approved-content.txt");
             final List<ActualEntry> sourceEntries = scanActualEntries(sourceFile);
             getLog().info(String.format("Generated %d entries.", sourceEntries.size()));
 //            getLog().info(String.format("The source contains %d entries, but only %d matches the plugin configuration criteria.", count, sourceEntries.size()));
-
             ExpectUtils.generateListing(sourceEntries, contentListing);
             getLog().info(String.format("The listing file '%s' has been successfully generated.", contentListing));
+
+            // generate pom fragment
+            final String template = IOUtil.toString(InitMojo.class.getResourceAsStream("init-pom-template.txt"));
+            String fragment = template.replace("@overlap.count@", report.getTotalOverlaps() + "");
+            fragment = fragment.replace("@project.version@", "__TODO_CCMP_VERSION__"); //TODO - find and use real version here!
+            final File fragmentFile = new File(outputDirectory, "fragment-pom.xml");
+            FileUtils.fileWrite(fragmentFile, fragment);
         } catch (IOException e) {
             throw new MojoFailureException(e.getMessage(), e);
         }
