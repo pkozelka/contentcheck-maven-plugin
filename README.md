@@ -7,7 +7,7 @@
 
 Gives you more control over your WAR file's contents:
 
-* detects *arrival of new jars* into `WEB-INF/lib` - dependency changes have non-trivial *transitive impacts*
+* detects *arrival of new jars* into `WEB-INF/lib` - dependency changes have non-trivial *transitive impacts*; some commonly used libraries embed others which makes the real content of the class-path quite chaotic
 * detects *class conflicts* between contained jars - are often easy to avoid, but rarely detected - and can cause really ugly, mysterious troubles
 * helps you identify *license issues*
 
