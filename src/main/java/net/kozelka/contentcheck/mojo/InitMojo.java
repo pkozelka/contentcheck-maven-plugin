@@ -1,9 +1,12 @@
 package net.kozelka.contentcheck.mojo;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import net.kozelka.contentcheck.conflict.api.ClassConflictReport;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictAnalyzer;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictPrinter;
@@ -82,8 +85,9 @@ public class InitMojo extends AbstractMojo {
 
             // generate pom fragment
             final String template = IOUtil.toString(InitMojo.class.getResourceAsStream("init-pom-template.txt"));
+            final String version = readMyOwnVersion();
             String fragment = template.replace("@overlap.count@", report.getTotalOverlaps() + "");
-            fragment = fragment.replace("@project.version@", "__TODO_CCMP_VERSION__"); //TODO - find and use real version here!
+            fragment = fragment.replace("@project.version@", version); //TODO - find and use real version here!
             final File fragmentFile = new File(outputDirectory, "fragment-pom.xml");
             FileUtils.fileWrite(fragmentFile, fragment);
         } catch (IOException e) {
@@ -106,4 +110,27 @@ public class InitMojo extends AbstractMojo {
         return actualEntries;
     }
 
+    private static Properties readPomProperties() throws IOException {
+        final Properties result = new Properties();
+        final String resource = "META-INF/maven/net.kozelka.maven/contentcheck-maven-plugin/pom.properties";
+        final InputStream is = InitMojo.class.getClassLoader().getResourceAsStream(resource);
+        if (is == null) {
+            throw new FileNotFoundException("classpath:" + resource);
+        }
+        try {
+            result.load(is);
+            return result;
+        } finally {
+            is.close();
+        }
+    }
+
+    private static String readMyOwnVersion() throws IOException {
+        final Properties pomProperties = readPomProperties();
+        final String version = pomProperties.getProperty("version");
+        if (version == null) {
+            throw new IllegalStateException("Failed to load plugin's own version");
+        }
+        return version;
+    }
 }
