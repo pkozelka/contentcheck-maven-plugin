@@ -36,7 +36,7 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  *     <li>count war overlaps</li>
  *     <li>TODO: show resolution hints</li>
  *     <li>generate POM fragment with complete configuration (under target/contentcheck-maven-plugin/)</li>
- *     <li>TODO: operate on each module of multi-module project</li>
+ *     <li>operate on each module of multi-module project</li>
  *     <li>TODO: optionally, adjust POM configuration: `-DeditPom=true`</li>
  * </ul>
  */
@@ -55,6 +55,10 @@ public class InitMojo extends AbstractMojo {
     private boolean reportJarPairs = true;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (! project.getPackaging().equals("war")) {
+            getLog().warn(String.format("Skipping '%s' module - currently we support only war", project.getPackaging()));
+            return;
+        }
         final Build build = project.getBuild();
         final File sourceFile = new File(build.getDirectory(), build.getFinalName() + "." + project.getArtifact().getType());
         try {
