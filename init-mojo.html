@@ -7,7 +7,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="Date-Revision-yyyymmdd" content="20150923" />
+    <meta name="Date-Revision-yyyymmdd" content="20150929" />
     <meta http-equiv="Content-Language" content="en" />
     <title>contentcheck-maven-plugin - 
     contentcheck:init</title>
@@ -97,8 +97,6 @@
 </li>
                                   <li>      <a href="pmd.html"  title="PMD">PMD</a>
 </li>
-                                  <li>      <a href="cpd.html"  title="CPD">CPD</a>
-</li>
                                   <li>      <a href="findbugs.html"  title="FindBugs Report">FindBugs Report</a>
 </li>
                                   <li>      <a href="changes-report.html"  title="Changes Report">Changes Report</a>
@@ -164,7 +162,7 @@
         
                 
                     
-                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2015-09-23</li>
+                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2015-09-29</li>
               <li id="projectVersion" class="pull-right">
                     Version: 1.0-SNAPSHOT
         </li>
@@ -192,16 +190,20 @@ capabilities enabled. Use it to make all following at once:
 
 <ul>
 
-<li>TODO: generate the <tt>approved-content.txt</tt> file to
-match current war content</li>
+<li>generate the <tt>approved-content.txt</tt> file to match
+current war content</li>
 
-<li>TODO: count war conflicts, show resolution hints</li>
+<li>count war overlaps</li>
 
-<li>TODO: generate POM fragment with complete configuration</li>
+<li>TODO: show resolution hints</li>
 
-<li>TODO: operate on each module of multi-module project</li>
+<li>generate POM fragment with complete configuration (under
+target/contentcheck-maven-plugin/)</li>
 
-<li>TODO: optionally, adjust POM configuration</li>
+<li>operate on each module of multi-module project</li>
+
+<li>TODO: optionally, adjust POM configuration:
+`-DeditPom=true`</li>
 </ul></div>
       
 <p><b>Attributes</b>:</p>
@@ -229,16 +231,13 @@ match current war content</li>
           
 <tr class="b">
             
-<td><b><a href="#contentListing">contentListing</a></b></td>
+<td><b><a href="#outputDirectory">outputDirectory</a></b></td>
             
 <td><tt>File</tt></td>
             
 <td><tt>-</tt></td>
             
-<td>The file with list of approved files. If such file does not exist,
-the check is skipped. This enables multimodule use. Each line in
-represents one pathname entry. Empty lines and comments (starting
-with '#') are ignored.<br /><b>Default value is</b>: <tt>${basedir}/approved-content.txt</tt>.<br /></td>
+<td>(no description)<br /><b>Default value is</b>: <tt>${project.build.directory}/contentcheck-maven-plugin</tt>.<br /></td>
           </tr>
         </table>
       </div>
@@ -246,12 +245,9 @@ with '#') are ignored.<br /><b>Default value is</b>: <tt>${basedir}/approved-con
 <div class="section">
 <h3>Parameter Details<a name="Parameter_Details"></a></h3>
         
-<p><b><a name="contentListing">contentListing</a>:</b></p>
+<p><b><a name="outputDirectory">outputDirectory</a>:</b></p>
         
-<div>The file with list of approved files. If such file does not exist,
-the check is skipped. This enables multimodule use. Each line in
-represents one pathname entry. Empty lines and comments (starting
-with '#') are ignored.</div>
+<div>(no description)</div>
         
 <ul>
           
@@ -259,7 +255,7 @@ with '#') are ignored.</div>
           
 <li><b>Required</b>: <tt>No</tt></li>
           
-<li><b>Default</b>: <tt>${basedir}/approved-content.txt</tt></li>
+<li><b>Default</b>: <tt>${project.build.directory}/contentcheck-maven-plugin</tt></li>
         </ul>
       </div>
     </div>

@@ -7,7 +7,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="Date-Revision-yyyymmdd" content="20150923" />
+    <meta name="Date-Revision-yyyymmdd" content="20150929" />
     <meta http-equiv="Content-Language" content="en" />
     <title>contentcheck-maven-plugin - 
     contentcheck:warcc</title>
@@ -97,8 +97,6 @@
 </li>
                                   <li>      <a href="pmd.html"  title="PMD">PMD</a>
 </li>
-                                  <li>      <a href="cpd.html"  title="CPD">CPD</a>
-</li>
                                   <li>      <a href="findbugs.html"  title="FindBugs Report">FindBugs Report</a>
 </li>
                                   <li>      <a href="changes-report.html"  title="Changes Report">Changes Report</a>
@@ -164,7 +162,7 @@
         
                 
                     
-                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2015-09-23</li>
+                  <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2015-09-29</li>
               <li id="projectVersion" class="pull-right">
                     Version: 1.0-SNAPSHOT
         </li>
@@ -226,6 +224,31 @@
             
 <td>How many class conflicts to list directly. Use <tt>-1</tt> to
 list all.<br /><b>Default value is</b>: <tt>5</tt>.<br /></td>
+          </tr>
+          
+<tr class="a">
+            
+<td><b><a href="#reportJarPairs">reportJarPairs</a></b></td>
+            
+<td><tt>boolean</tt></td>
+            
+<td><tt>1.0.3</tt></td>
+            
+<td>Reports jar pairs in the log. Each two conflicting jars are
+displayed, with number of their overlaps and conflicts.<br /><b>Default value is</b>: <tt>true</tt>.<br /></td>
+          </tr>
+          
+<tr class="b">
+            
+<td><b><a href="#reportResources">reportResources</a></b></td>
+            
+<td><tt>boolean</tt></td>
+            
+<td><tt>1.0.3</tt></td>
+            
+<td>Reports every overlaping resource in the log, with all files that
+provide it. This report is not very mature to it is turned off by
+default.<br /><b>Default value is</b>: <tt>false</tt>.<br /></td>
           </tr>
           
 <tr class="a">
@@ -292,6 +315,37 @@ list all.</div>
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>Default</b>: <tt>5</tt></li>
+        </ul><hr />
+<p><b><a name="reportJarPairs">reportJarPairs</a>:</b></p>
+        
+<div>Reports jar pairs in the log. Each two conflicting jars are
+displayed, with number of their overlaps and conflicts.</div>
+        
+<ul>
+          
+<li><b>Type</b>: <tt>boolean</tt></li>
+          
+<li><b>Since</b>: <tt>1.0.3</tt></li>
+          
+<li><b>Required</b>: <tt>No</tt></li>
+          
+<li><b>Default</b>: <tt>true</tt></li>
+        </ul><hr />
+<p><b><a name="reportResources">reportResources</a>:</b></p>
+        
+<div>Reports every overlaping resource in the log, with all files that
+provide it. This report is not very mature to it is turned off by
+default.</div>
+        
+<ul>
+          
+<li><b>Type</b>: <tt>boolean</tt></li>
+          
+<li><b>Since</b>: <tt>1.0.3</tt></li>
+          
+<li><b>Required</b>: <tt>No</tt></li>
+          
+<li><b>Default</b>: <tt>false</tt></li>
         </ul><hr />
 <p><b><a name="skip">skip</a>:</b></p>
         
