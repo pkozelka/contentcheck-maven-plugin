@@ -23,9 +23,7 @@ public class ConflictingResourcesReport {
             output.consumeLine(rwo.getUri());
             for (Map.Entry<String, List<ArchiveInfo>> entry : rwo.getCandidatesByHash().entrySet()) {
                 output.consumeLine(String.format("  - %s: %s", entry.getKey(), entry.getValue()));
-
             }
-
         }
     }
 }

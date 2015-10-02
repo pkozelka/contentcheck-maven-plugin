@@ -6,6 +6,7 @@ import java.util.List;
 import net.kozelka.contentcheck.conflict.api.ClassConflictReport;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictAnalyzer;
 import net.kozelka.contentcheck.conflict.impl.ClassConflictPrinter;
+import net.kozelka.contentcheck.conflict.impl.ConflictingResourcesReport;
 import net.kozelka.contentcheck.conflict.model.ArchiveInfo;
 import net.kozelka.contentcheck.conflict.util.ArchiveLoader;
 import net.kozelka.contentcheck.expect.api.ApproverReport;
@@ -50,13 +51,24 @@ public class ArchivaWarTest {
     public void classConflicts() throws Exception {
         final ClassConflictAnalyzer ccd = new ClassConflictAnalyzer();
         final List<ArchiveInfo> archives = ArchiveLoader.loadWar(archivaWar);
-        final ClassConflictReport response = ccd.analyze(archives);
+        final ClassConflictReport report = ccd.analyze(archives);
+        printJarOverlaps(report);
+        Assert.assertEquals("Total overlaps", 290, report.getTotalOverlaps());
+        Assert.assertEquals("Total entries", 235, report.getExploredArchives().size());
+        Assert.assertEquals("Archive conflicts", 18, report.getArchiveConflicts().size());
+        printClassOverlaps(report);
+    }
+
+    private void printJarOverlaps(ClassConflictReport report) {
         final ClassConflictPrinter printer = new ClassConflictPrinter();
         printer.setPreviewThreshold(2);
         printer.setOutput(new DefaultConsumer());
-        printer.print(response);
-        Assert.assertEquals("Total overlaps", 290, response.getTotalOverlaps());
-        Assert.assertEquals("Total entries", 235, response.getExploredArchives().size());
-        Assert.assertEquals("Archive conflicts", 18, response.getArchiveConflicts().size());
+        printer.print(report);
+    }
+
+    private void printClassOverlaps(ClassConflictReport report) {
+        final ConflictingResourcesReport printer = new ConflictingResourcesReport();
+        printer.setOutput(new DefaultConsumer());
+        printer.print(report);
     }
 }
