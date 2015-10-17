@@ -8,9 +8,9 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <parent>
-        <groupId>net.sf.buildbox.maven</groupId>
-        <artifactId>buildbox-pom</artifactId>
-        <version>1.0.5</version>
+        <groupId>net.kozelka.maven</groupId>
+        <artifactId>kozelka-pom</artifactId>
+        <version>1.0.0</version>
         <relativePath/>
     </parent>
     <url>http://code.kozelka.net/${project.artifactId}</url>
