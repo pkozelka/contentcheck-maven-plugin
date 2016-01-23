@@ -8,7 +8,7 @@
         <release version="1.0-SNAPSHOT">
             <!-- add changes here -->
         </release>
-        <release version="1.0.5" date="2015-10-18" 
+        <release version="1.0.5" date="2015-10-18">
             <action dev="Petr Kozelka" type="add">new parameters `reportJarPairs` and `reportResources` customize which report to display in the log</action>
             <action dev="Petr Kozelka" type="add" issue="19">distinguish between serious conflicts and duplicates</action>
             <action dev="Petr Kozelka" type="update">property "ignoreVendorArchive" now available also on commandline</action>
