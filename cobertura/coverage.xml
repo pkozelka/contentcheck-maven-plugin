@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.5309090909090909" branch-rate="0.4251968503937008" lines-covered="438" lines-valid="825" branches-covered="108" branches-valid="254" complexity="2.0555555555555554" version="2.0.3" timestamp="1445275156626">
+<coverage line-rate="0.5309090909090909" branch-rate="0.4251968503937008" lines-covered="438" lines-valid="825" branches-covered="108" branches-valid="254" complexity="2.0555555555555554" version="2.0.3" timestamp="1460896023056">
 	<sources>
 		<source>--source</source>
 		<source>/home/pk/github.com/contentcheck-maven-plugin/target/generated-sources/annotations</source>
