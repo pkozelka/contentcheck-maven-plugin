@@ -16,6 +16,8 @@ site:
 site-deploy:
 	git push origin gh-pages
 
+gitsite:
+	mvn clean install site site-deploy
 
 codeship-setup:
 	# maven repository will be cached between builds - it has no snapshots anyway
