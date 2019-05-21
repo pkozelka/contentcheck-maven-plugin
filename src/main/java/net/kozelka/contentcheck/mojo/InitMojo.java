@@ -39,6 +39,8 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  *     <li>operate on each module of multi-module project</li>
  *     <li>TODO: optionally, adjust POM configuration: `-DeditPom=true`</li>
  * </ul>
+ *
+ * @since 1.0.5
  */
 @Mojo(name = "init")
 public class InitMojo extends AbstractMojo {
