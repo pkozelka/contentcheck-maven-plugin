@@ -1,8 +1,6 @@
 # Maven Content Check Plugin
 
-[![TravisCI Status](https://travis-ci.org/pkozelka/contentcheck-maven-plugin.png?branch=master)](https://travis-ci.org/pkozelka/contentcheck-maven-plugin)
-
-[![Codeship Status](https://codeship.com/projects/b3d55ae0-f6b0-0132-cdf6-4e1088c82680/status?branch=master)](https://codeship.com/projects/86152)
+[![TravisCI Status](https://travis-ci.org/pkozelka/contentcheck-maven-plugin.png?branch=master)](https://travis-ci.org/pkozelka/contentcheck-maven-plugin) [![Codeship Status](https://codeship.com/projects/b3d55ae0-f6b0-0132-cdf6-4e1088c82680/status?branch=master)](https://codeship.com/projects/86152)
 
 
 Gives you more control over your WAR file's contents:
@@ -11,7 +9,7 @@ Gives you more control over your WAR file's contents:
 * detects *class conflicts* between contained jars - are often easy to avoid, but rarely detected - and can cause really ugly, mysterious troubles
 * helps you identify *license issues*
 
-For more info, see the [project website](http://code.kozelka.net/contentcheck-maven-plugin/index.html).
+For more info, see the [project website](http://code.kozelka.net/contentcheck-maven-plugin/index.html) or [usage](src/site/markdown/usage.md).
 
 ## Contributing
 

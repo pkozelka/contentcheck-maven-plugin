@@ -20,8 +20,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Checks the archive content according to an authoritative source. This authoritative source
- * defines set of allowed files in the archive.
+ * Checks the specified source file (archive or directory, typically project artifact) according to an authoritative
+ * source. This authoritative source defines set of allowed files in the source.
+ *
  * @since 1.0.0
  */
 @Mojo(name = "check", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
