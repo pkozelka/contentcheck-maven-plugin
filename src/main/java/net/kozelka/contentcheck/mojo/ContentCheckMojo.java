@@ -121,10 +121,10 @@ public class ContentCheckMojo extends AbstractArchiveContentMojo {
             log(failOnUnexpected, String.format(msgUnexpected, actualEntry.getUri()));
         }
         // error summary
-        if (missingEntries.size() > 0) {
+        if (!missingEntries.isEmpty()) {
             log(failOnMissing, "Missing: " + missingEntries.size() + " entries");
         }
-        if (unexpectedEntries.size() > 0) {
+        if (!unexpectedEntries.isEmpty()) {
             log(failOnUnexpected, "Unexpected: " + unexpectedEntries.size() + " entries");
         }
         // fail as necessary, after reporting all detected problems

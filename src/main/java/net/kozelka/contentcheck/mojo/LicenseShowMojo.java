@@ -235,7 +235,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
                     if(archiveEntry.getUri().endsWith(jarName)) {
                         @SuppressWarnings("unchecked")
                         final List<License> _licenses = mavenProject.getLicenses();
-                        licenses = _licenses == null || _licenses.size() == 0 ? null : _licenses  ;
+                        licenses = _licenses == null || _licenses.isEmpty() ? null : _licenses  ;
                         break;
                     }
                 }
@@ -341,7 +341,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
                 }
             }
 
-            if(unknownEntries.size() == 0) {
+            if (!unknownEntries.isEmpty()) {
                 log.info("All artifact entries have associated license information.");
             } else {
                 log.warn("Some of the entries have no associated license information or the plugin wasn't able to determine them. Please check them manually.");
@@ -353,7 +353,7 @@ public class LicenseShowMojo extends AbstractArchiveContentMojo{
                 log.info(entryDesc);
             }
 
-            if(unknownEntries.size() > 0) {
+            if (!unknownEntries.isEmpty()) {
                 log.info("");
                 log.warn("The archive contains following entries with uknown license inforamtion:");
                 for (String archiveName : unknownEntries) {
