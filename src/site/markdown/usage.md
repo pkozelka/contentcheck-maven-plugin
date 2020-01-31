@@ -68,4 +68,4 @@ You can run the goal by following command
 
 ``mvn net.kozelka.maven:contentcheck-maven-plugin:show-licenses``
 
-(Or just `mvn contentcheck:init` if you have this plugin defined in pluginManagement or plugins.)
+(Or just `mvn contentcheck:show-licenses` if you have this plugin defined in pluginManagement or plugins.)
