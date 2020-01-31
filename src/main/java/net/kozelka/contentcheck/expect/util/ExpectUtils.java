@@ -23,7 +23,7 @@ public final class ExpectUtils {
         generatedFile.getParentFile().mkdirs();
         final FileWriter writer = new FileWriter(generatedFile);
         try {
-            writer.write(String.format("#%n# Edit this file to approve or unpraprove individual libraries; will be checked by contentcheck-maven-plugin.%n#%n"));
+            writer.write(String.format("#%n# Edit this file to approve or disapprove individual libraries; will be checked by contentcheck-maven-plugin.%n#%n"));
             writer.write(String.format("# Keep the entries sorted alphabetically for easier eye-seeking.%n#%n"));
             for (final ActualEntry actualEntry : sortedEntries) {
                 writer.write(String.format("%s%n", actualEntry.getUri()));
