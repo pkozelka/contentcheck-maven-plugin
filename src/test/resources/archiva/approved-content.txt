@@ -1,5 +1,5 @@
 #
-# Edit this file to approve or unpraprove individual libraries; will be checked by contentcheck-maven-plugin.
+# Edit this file to approve or disapprove individual libraries; will be checked by contentcheck-maven-plugin.
 #
 WEB-INF/lib/aether-api-1.13.1.jar
 WEB-INF/lib/aether-connector-file-1.13.1.jar
