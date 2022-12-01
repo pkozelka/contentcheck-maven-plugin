@@ -7,3 +7,4 @@ target
 .DS_Store
 .project
 .classpath
+.mvn/wrapper/maven-wrapper.jar
