@@ -8,10 +8,10 @@ import net.kozelka.contentcheck.expect.TestUtils;
 import net.kozelka.contentcheck.expect.impl.ContentCollector;
 import net.kozelka.contentcheck.expect.impl.VendorFilter;
 import net.kozelka.contentcheck.expect.model.ActualEntry;
+import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 
@@ -26,16 +26,16 @@ public class ContentIntrospectorTest {
         introspector.getEvents().addListener(collector);
         introspector.setSourceFile(SupportUtils.getFile("test.war"));
         introspector.walk();
-        assertThat("Unexpected count of source archive entries",
+        MatcherAssert.assertThat("Unexpected count of source archive entries",
             sourceEntries.size(),
             is(3));
-        assertThat("Missing entry WEB-INF/lib/a.jar in collection of source archive entries",
+        MatcherAssert.assertThat("Missing entry WEB-INF/lib/a.jar in collection of source archive entries",
             TestUtils.contains(sourceEntries, "WEB-INF/lib/a.jar"),
             is(true));
-        assertThat("Missing entry WEB-INF/lib/b.jar in collection of source archive entries",
+        MatcherAssert.assertThat("Missing entry WEB-INF/lib/b.jar in collection of source archive entries",
             TestUtils.contains(sourceEntries, "WEB-INF/lib/b.jar"),
             is(true));
-        assertThat("Missing entry WEB-INF/lib/c.jar in collection of source archive entries",
+        MatcherAssert.assertThat("Missing entry WEB-INF/lib/c.jar in collection of source archive entries",
             TestUtils.contains(sourceEntries,
                 "WEB-INF/lib/c.jar"),
             is(true));
@@ -50,11 +50,11 @@ public class ContentIntrospectorTest {
         final ContentIntrospector.Events collector = new ContentCollector(sourceEntries);
         introspector.getEvents().addListener(collector);
         introspector.walk();
-        assertThat("Unexpected count of source entries", sourceEntries.size(), is(2));
-        assertThat("Missing entry WEB-INF/lib/b.jar in collection of source archive entries",
+        MatcherAssert.assertThat("Unexpected count of source entries", sourceEntries.size(), is(2));
+        MatcherAssert.assertThat("Missing entry WEB-INF/lib/b.jar in collection of source archive entries",
             TestUtils.contains(sourceEntries, "WEB-INF/lib/b.jar"),
             is(true));
-        assertThat("Missing entry WEB-INF/lib/c.jar in collection of source archive entries",
+        MatcherAssert.assertThat("Missing entry WEB-INF/lib/c.jar in collection of source archive entries",
             TestUtils.contains(sourceEntries, "WEB-INF/lib/c.jar"),
             is(true));
     }
