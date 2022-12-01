@@ -11,8 +11,7 @@ import org.apache.maven.plugin.logging.Log;
 public class MyIntrospectionListener implements ContentIntrospector.Events {
     private final Log log;
 
-    public //TODO: just for now (#10)
-    MyIntrospectionListener(Log log) {
+    public MyIntrospectionListener(Log log) {
         this.log = log;
     }
 
